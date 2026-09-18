@@ -284,6 +284,42 @@
               <sc-if value="{{ err.vehicle }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Select a vehicle.</div></sc-if>
             </div>
             <div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Driver name</span>
+                <span style="font-size:12px;color:var(--text-muted)">{{ dc.tag }}</span>
+              </div>
+              <sc-if value="{{ dc.none }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px;padding:14px;border:2px dashed {{ dc.border }};border-radius:var(--radius-md);font-size:14px;color:var(--text-muted)">Select a vehicle first. Its mapped driver appears here to confirm.</div>
+              </sc-if>
+              <sc-if value="{{ dc.has }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:8px;display:flex;align-items:center;gap:12px;padding:12px;border:2px solid {{ dc.border }};border-radius:var(--radius-md);background:{{ dc.bg }}">
+                  <div aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:50%;background:{{ dc.avatarBg }};color:{{ dc.avatarFg }};display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:15px">{{ dc.initials }}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:{{ dc.statusFg }}">{{ dc.status }}</div>
+                    <div style="margin-top:2px;font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.2;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dc.name }}</div>
+                    <div style="font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dc.sub }}</div>
+                  </div>
+                  <sc-if value="{{ dc.ask }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:none;display:flex;gap:8px">
+                      <button onClick="{{ rejectDriver }}" aria-label="Not this driver, choose another" title="Choose another driver" style="all:unset;cursor:pointer;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--kr-red-600);background:#fff;color:var(--kr-red-600)" style-hover="background:var(--kr-red-100)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+                      <button onClick="{{ acceptDriver }}" aria-label="Confirm this driver" title="Confirm driver" style="all:unset;cursor:pointer;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--color-brand);background:var(--color-brand);color:#fff" style-hover="background:var(--kr-green-800)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ dc.ok }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ openDrvPick }}" style="all:unset;cursor:pointer;flex:none;box-sizing:border-box;height:44px;padding:0 12px;display:grid;place-items:center;border-radius:var(--radius-md);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-brand)" style-hover="background:#fff">Change</button>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ dc.empty }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px;padding:14px;border:2px solid var(--color-hazard);border-radius:var(--radius-md);background:var(--color-hazard-soft);display:flex;flex-direction:column;gap:12px">
+                  <div style="font-size:14px;line-height:1.5;color:#7A4300">{{ dc.emptyText }}</div>
+                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ openDrvPick }}" hint-size="100%,44px">Choose driver</x-import>
+                </div>
+              </sc-if>
+              <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ dc.hint }}</div>
+              <sc-if value="{{ err.driver }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ driverErrText }}</div></sc-if>
+            </div>
+            <div>
               <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Loading location" placeholder="Select predefined location" options="{{ locationOptions }}" value="{{ form.loading }}" on-change="{{ setLoading }}" hint-size="100%,72px"></x-import>
               <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ loadingHint }}</div>
               <sc-if value="{{ err.loading }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Select the loading location.</div></sc-if>
@@ -307,7 +343,22 @@
                 <span style="font-size:12px;color:var(--text-muted)">{{ unloadCountLabel }}</span>
               </div>
               <sc-if value="{{ hasCustomers }}" hint-placeholder-val="{{ true }}">
-                <div style="margin-top:8px;border:2px solid var(--border-strong);border-radius:var(--radius-md);overflow:hidden">
+                <div role="radiogroup" aria-label="Unloading drops" style="margin-top:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+                  <sc-for list="{{ unloadModeTabs }}" as="um" hint-placeholder-count="2">
+                    <button role="radio" aria-checked="{{ um.on }}" data-v="{{ um.value }}" onClick="{{ setUnloadMode }}" style="all:unset;cursor:pointer;box-sizing:border-box;min-height:48px;padding:6px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:var(--radius-md);border:2px solid {{ um.border }};background:{{ um.bg }};color:{{ um.fg }};transition:background var(--dur-fast)"><span style="font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:0.04em;text-transform:uppercase">{{ um.label }}</span><span style="font-size:12px;opacity:.85">{{ um.sub }}</span></button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ unloadSingle }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:10px">
+                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Customer" placeholder="Select unloading customer" options="{{ singleCustOptions }}" value="{{ singleCust }}" on-change="{{ setSingleCust }}" hint-size="100%,72px"></x-import>
+                  <sc-if value="{{ singleCustInfo }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ singleCustInfo }}</div>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ unloadMulti }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:10px;border:2px solid var(--border-strong);border-radius:var(--radius-md);overflow:hidden">
                   <sc-for list="{{ customerOptions }}" as="c" hint-placeholder-count="3">
                     <div style="padding:12px 14px;border-bottom:1px solid {{ c.divider }};background:{{ c.bg }}">
                       <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Checkbox" label="{{ c.name }}" description="{{ c.sub }}" checked="{{ c.on }}" on-change="{{ c.toggle }}" style="{{ fullRow }}" hint-size="100%,44px"></x-import>
@@ -318,7 +369,7 @@
               <sc-if value="{{ noCustomers }}" hint-placeholder-val="{{ false }}">
                 <div style="margin-top:8px;padding:14px;border:2px dashed var(--border-strong);border-radius:var(--radius-md);font-size:14px;color:var(--text-muted)">{{ unloadEmptyText }}</div>
               </sc-if>
-              <sc-if value="{{ err.unloading }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Tick at least one unloading customer.</div></sc-if>
+              <sc-if value="{{ err.unloading }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ unloadErrText }}</div></sc-if>
               <sc-if value="{{ routeKnown }}" hint-placeholder-val="{{ false }}">
                 <div style="margin-top:10px;padding:12px 14px;background:var(--color-hazard-soft);border-radius:var(--radius-md);font-size:13px;color:#7A4300;line-height:1.5"><strong>Route diversion alert is on.</strong> {{ routeSummary }} GPS raises an exception to Head Office if the vehicle leaves this corridor by more than 10 km.</div>
               </sc-if>
@@ -326,24 +377,6 @@
             <div>
               <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Start KM" value="{{ form.startKm }}" on-change="{{ setStartKm }}" input-mode="numeric" disabled="{{ startKmLocked }}" suffix="km" hint="{{ startKmHint }}" hint-size="100%,90px"></x-import>
               <sc-if value="{{ err.startKm }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Enter the odometer reading. This is the vehicle&rsquo;s first recorded trip.</div></sc-if>
-            </div>
-            <div>
-              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Driver name" placeholder="Select driver" options="{{ driverOptions }}" value="{{ form.driver }}" on-change="{{ setDriver }}" hint-size="100%,72px"></x-import>
-              <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ driverHint }}</div>
-              <sc-if value="{{ err.driver }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Select the driver taking this trip.</div></sc-if>
-              <sc-if value="{{ addDrvOpen }}" hint-placeholder-val="{{ false }}">
-                <div style="margin-top:10px;padding:14px;border:2px dashed var(--color-hazard);border-radius:var(--radius-md);background:var(--color-hazard-soft);display:flex;flex-direction:column;gap:12px">
-                  <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A4300">New or acting driver</div>
-                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Driver name" placeholder="Full name as on licence" value="{{ newDrv.name }}" on-change="{{ setNewDrvName }}" error="{{ newDrvErr.name }}" hint-size="100%,72px"></x-import>
-                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Licence number" placeholder="TN28 2022 0007710" value="{{ newDrv.licence }}" on-change="{{ setNewDrvLicence }}" error="{{ newDrvErr.licence }}" hint-size="100%,72px"></x-import>
-                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Mobile number" placeholder="90031 55012" prefix="+91" input-mode="numeric" value="{{ newDrv.phone }}" on-change="{{ setNewDrvPhone }}" error="{{ newDrvErr.phone }}" hint-size="100%,72px"></x-import>
-                  <div style="font-size:13px;color:#7A4300;line-height:1.5">Approver permission is required. The trip can open now; the driver stays <strong>Pending approval</strong> in the master until Head Office clears it.</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="md" on-click="{{ saveNewDrv }}" hint-size="140px,44px">Add driver</x-import>
-                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="md" on-click="{{ cancelNewDrv }}" hint-size="100px,44px">Cancel</x-import>
-                  </div>
-                </div>
-              </sc-if>
             </div>
             <label style="display:flex;flex-direction:column;gap:6px">
               <span style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Remarks</span><span style="font-size:12px;color:var(--text-muted)">Optional &middot; {{ remarksCount }}/250</span></span>
@@ -376,9 +409,40 @@
               <sc-if value="{{ err.vehicle }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Select a vehicle.</div></sc-if>
             </div>
             <div>
-              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Driver name" placeholder="Select driver" options="{{ nbDriverOptions }}" value="{{ form.driver }}" on-change="{{ setDriver }}" hint-size="100%,72px"></x-import>
-              <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ nbDriverHint }}</div>
-              <sc-if value="{{ err.driver }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">Select the driver.</div></sc-if>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Driver name</span>
+                <span style="font-size:12px;color:var(--text-muted)">{{ dc.tag }}</span>
+              </div>
+              <sc-if value="{{ dc.none }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px;padding:14px;border:2px dashed {{ dc.border }};border-radius:var(--radius-md);font-size:14px;color:var(--text-muted)">Select a vehicle first. Its mapped driver appears here to confirm.</div>
+              </sc-if>
+              <sc-if value="{{ dc.has }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:8px;display:flex;align-items:center;gap:12px;padding:12px;border:2px solid {{ dc.border }};border-radius:var(--radius-md);background:{{ dc.bg }}">
+                  <div aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:50%;background:{{ dc.avatarBg }};color:{{ dc.avatarFg }};display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:15px">{{ dc.initials }}</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:{{ dc.statusFg }}">{{ dc.status }}</div>
+                    <div style="margin-top:2px;font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.2;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dc.name }}</div>
+                    <div style="font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dc.sub }}</div>
+                  </div>
+                  <sc-if value="{{ dc.ask }}" hint-placeholder-val="{{ true }}">
+                    <div style="flex:none;display:flex;gap:8px">
+                      <button onClick="{{ rejectDriver }}" aria-label="Not this driver, choose another" title="Choose another driver" style="all:unset;cursor:pointer;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--kr-red-600);background:#fff;color:var(--kr-red-600)" style-hover="background:var(--kr-red-100)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+                      <button onClick="{{ acceptDriver }}" aria-label="Confirm this driver" title="Confirm driver" style="all:unset;cursor:pointer;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--color-brand);background:var(--color-brand);color:#fff" style-hover="background:var(--kr-green-800)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ dc.ok }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ openDrvPick }}" style="all:unset;cursor:pointer;flex:none;box-sizing:border-box;height:44px;padding:0 12px;display:grid;place-items:center;border-radius:var(--radius-md);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-brand)" style-hover="background:#fff">Change</button>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ dc.empty }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px;padding:14px;border:2px solid var(--color-hazard);border-radius:var(--radius-md);background:var(--color-hazard-soft);display:flex;flex-direction:column;gap:12px">
+                  <div style="font-size:14px;line-height:1.5;color:#7A4300">{{ dc.emptyText }}</div>
+                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ openDrvPick }}" hint-size="100%,44px">Choose driver</x-import>
+                </div>
+              </sc-if>
+              <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ dc.hint }}</div>
+              <sc-if value="{{ err.driver }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ driverErrText }}</div></sc-if>
             </div>
             </div>
             </sc-if>
@@ -464,28 +528,127 @@
             </sc-if>
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Loading invoice number" placeholder="e.g. SP/INV/22890" value="{{ cf.invoice }}" on-change="{{ setCf.invoice }}" error="{{ cerr.invoice }}" hint-size="100%,72px"></x-import>
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="LR number (optional)" placeholder="Lorry receipt" value="{{ cf.lr }}" on-change="{{ setCf.lr }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Closing odometer" placeholder="{{ sel.startKm }}" value="{{ cf.closeKm }}" on-change="{{ setCf.closeKm }}" input-mode="numeric" suffix="km" hint="{{ closeKmHint }}" error="{{ cerr.closeKm }}" hint-size="100%,90px"></x-import>
+
+            <!-- ODOMETER · point-to-point readings with photos -->
+            <section style="border:1px solid {{ legBox.border }};border-radius:var(--radius-lg);padding:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Odometer readings</span>
+                <span style="font-size:12px;color:var(--text-muted)">From &rarr; to, with photo</span>
+              </div>
+              <sc-for list="{{ legCards }}" as="l" hint-placeholder-count="1">
+                <div style="display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:{{ l.bg }}">
+                  <div aria-hidden="true" style="flex:none;box-sizing:border-box;width:56px;height:44px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:#fff;display:grid;place-items:center;overflow:hidden;color:var(--text-muted)"><sc-if value="{{ l.url }}" hint-placeholder-val="{{ false }}"><img src="{{ l.url }}" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></sc-if><sc-if value="{{ l.noPhoto }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg></sc-if></div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:12px;font-weight:700;color:var(--text-muted)">{{ l.title }}</div>
+                    <div style="font-weight:700;font-size:14px;color:var(--text-heading);line-height:1.3">{{ l.route }}</div>
+                    <div style="font-size:13px;color:var(--text-body)">{{ l.reading }} &middot; <strong style="color:var(--text-brand)">{{ l.km }}</strong></div>
+                  </div>
+                  <div style="flex:none;display:flex;flex-direction:column;gap:2px">
+                    <button data-i="{{ l.i }}" onClick="{{ editLeg }}" style="all:unset;cursor:pointer;min-height:32px;padding:0 8px;font-size:13px;font-weight:700;color:var(--text-brand)">Edit</button>
+                    <button data-i="{{ l.i }}" onClick="{{ removeLeg }}" style="all:unset;cursor:pointer;min-height:32px;padding:0 8px;font-size:13px;font-weight:700;color:var(--kr-red-600)">Remove</button>
+                  </div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ legSummary }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface-muted);border-radius:var(--radius-md)">
+                  <span style="font-size:14px;color:var(--text-muted)">Closing odometer</span>
+                  <span style="text-align:right"><strong style="font-family:var(--font-display);font-size:17px;color:var(--text-heading)">{{ legSummary.close }}</strong><br><span style="font-size:12px;color:var(--text-muted)">{{ legSummary.dist }}</span></span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ legEditorOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:12px;border:2px dashed var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand-tint);display:flex;flex-direction:column;gap:10px">
+                  <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--kr-green-900)">{{ legEditorTitle }}</div>
+                  <div style="display:flex;flex-direction:column;gap:10px">
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="From" placeholder="Select point" options="{{ pointOptions }}" value="{{ cf.legDraft.from }}" on-change="{{ setLegFrom }}" hint-size="100%,72px"></x-import>
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="To" placeholder="Select point" options="{{ pointOptions }}" value="{{ cf.legDraft.to }}" on-change="{{ setLegTo }}" hint-size="100%,72px"></x-import>
+                  </div>
+                  <sc-if value="{{ legErr.route }}" hint-placeholder-val="{{ false }}"><div style="margin-top:-4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ legErr.route }}</div></sc-if>
+                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Odometer at To point" placeholder="{{ legPrevText }}" value="{{ cf.legDraft.reading }}" on-change="{{ setLegReading }}" input-mode="numeric" suffix="km" error="{{ legErr.reading }}" hint="{{ legReadingHint }}" hint-size="100%,90px"></x-import>
+                  <div>
+                    <div style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Odometer photo</div>
+                    <sc-if value="{{ legPhotoEmpty }}" hint-placeholder-val="{{ true }}">
+                      <label style="margin-top:8px;position:relative;box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px;border:2px dashed {{ legPhotoBorder }};border-radius:var(--radius-md);background:#fff;cursor:pointer">
+                        <input type="file" accept="image/*" aria-label="Odometer photo" onChange="{{ pickLegPhoto }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer">
+                        <span aria-hidden="true" style="flex:none;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+                        <span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:14px;color:var(--text-heading)">Take photo of the odometer</span><span style="font-size:12px;color:var(--text-muted)">Reading must be clearly visible</span></span>
+                      </label>
+                    </sc-if>
+                    <sc-if value="{{ legPhotoSet }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:8px;display:flex;align-items:center;gap:12px;padding:8px;border:2px solid var(--color-brand);border-radius:var(--radius-md);background:#fff">
+                        <div aria-hidden="true" style="flex:none;box-sizing:border-box;width:64px;height:48px;border-radius:var(--radius-sm);border:1px solid var(--border-default);background:var(--surface-muted);overflow:hidden"><sc-if value="{{ legPhoto.url }}" hint-placeholder-val="{{ false }}"><img src="{{ legPhoto.url }}" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></sc-if></div>
+                        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ legPhoto.name }}</div><div style="font-size:12px;color:var(--kr-green-800)">{{ legPhoto.size }} &middot; attached</div></div>
+                        <button onClick="{{ clearLegPhoto }}" aria-label="Remove odometer photo" style="all:unset;cursor:pointer;flex:none;width:40px;height:40px;display:grid;place-items:center;border-radius:var(--radius-md);color:var(--kr-red-600)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ legErr.photo }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ legErr.photo }}</div></sc-if>
+                  </div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="md" on-click="{{ saveLeg }}" hint-size="150px,44px">{{ legSaveLabel }}</x-import>
+                    <sc-if value="{{ legCanCancel }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="md" on-click="{{ cancelLeg }}" hint-size="100px,44px">Cancel</x-import></sc-if>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ legAddShown }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ openLegEditor }}" hint-size="100%,44px">+ Add reading</x-import>
+              </sc-if>
+              <sc-if value="{{ cerr.legs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--status-danger);font-weight:600">{{ cerr.legs }}</div></sc-if>
+            </section>
+
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Advance given" prefix="&#8377;" value="{{ cf.advance }}" on-change="{{ setCf.advance }}" input-mode="numeric" error="{{ cerr.advance }}" hint-size="100%,72px"></x-import>
-            <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:14px;display:flex;flex-direction:column;gap:12px">
-              <div style="display:flex;justify-content:space-between;align-items:baseline">
+
+            <!-- DIESEL · one entry per bunk -->
+            <section style="border:1px solid {{ fillBox.border }};border-radius:var(--radius-lg);padding:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
                 <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Diesel given</span>
-                <span style="font-size:12px;color:var(--text-muted)">Bunk, rate and quantity</span>
+                <span style="font-size:12px;color:var(--text-muted)">Bunk, quantity and rate</span>
               </div>
-              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Bunk name" placeholder="e.g. IOC &ndash; Sriperumbudur Highway" value="{{ cf.bunk }}" on-change="{{ setBunk }}" hint="{{ bunkHint }}" error="{{ cerr.bunk }}" hint-size="100%,90px"></x-import>
-              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-                <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Rate" prefix="&#8377;" suffix="/L" value="{{ cf.rate }}" on-change="{{ setCf.rate }}" input-mode="decimal" error="{{ cerr.rate }}" hint-size="100%,72px"></x-import>
-                <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Quantity" suffix="L" value="{{ cf.litres }}" on-change="{{ setCf.litres }}" input-mode="decimal" error="{{ cerr.litres }}" hint-size="100%,72px"></x-import>
-              </div>
+              <sc-for list="{{ fillCards }}" as="d" hint-placeholder-count="1">
+                <div style="display:flex;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--border-default);border-radius:var(--radius-md);background:{{ d.bg }}">
+                  <span aria-hidden="true" style="flex:none;width:36px;height:36px;border-radius:50%;background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:14px">{{ d.n }}</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:700;font-size:14px;color:var(--text-heading);line-height:1.3">{{ d.bunk }}</div>
+                    <div style="font-size:13px;color:var(--text-body)">{{ d.line }}</div>
+                  </div>
+                  <div style="flex:none;display:flex;flex-direction:column;gap:2px">
+                    <button data-i="{{ d.i }}" onClick="{{ editFill }}" style="all:unset;cursor:pointer;min-height:32px;padding:0 8px;font-size:13px;font-weight:700;color:var(--text-brand)">Edit</button>
+                    <button data-i="{{ d.i }}" onClick="{{ removeFill }}" style="all:unset;cursor:pointer;min-height:32px;padding:0 8px;font-size:13px;font-weight:700;color:var(--kr-red-600)">Remove</button>
+                  </div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ fillEditorOpen }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:12px;border:2px dashed var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand-tint);display:flex;flex-direction:column;gap:10px">
+                  <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--kr-green-900)">{{ fillEditorTitle }}</div>
+                  <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Bunk name" placeholder="e.g. IOC &ndash; Sriperumbudur Highway" value="{{ cf.fillDraft.bunk }}" on-change="{{ setFillBunk }}" error="{{ fillErr.bunk }}" hint="{{ fillBunkHint }}" hint-size="100%,90px"></x-import>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Quantity" suffix="L" value="{{ cf.fillDraft.litres }}" on-change="{{ setFillLitres }}" input-mode="decimal" error="{{ fillErr.litres }}" hint-size="100%,72px"></x-import>
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Rate" prefix="&#8377;" suffix="/L" value="{{ cf.fillDraft.rate }}" on-change="{{ setFillRate }}" input-mode="decimal" error="{{ fillErr.rate }}" hint-size="100%,72px"></x-import>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px"><span style="color:var(--text-muted)">Amount</span><strong style="color:var(--text-heading)">{{ fillDraftAmount }}</strong></div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="md" on-click="{{ saveFill }}" hint-size="150px,44px">{{ fillSaveLabel }}</x-import>
+                    <sc-if value="{{ fillCanCancel }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="md" on-click="{{ cancelFill }}" hint-size="100px,44px">Cancel</x-import></sc-if>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ fillAddShown }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="md" full-width="{{ true }}" on-click="{{ openFillEditor }}" hint-size="100%,44px">+ Add bunk</x-import>
+              </sc-if>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface-muted);border-radius:var(--radius-md)">
-                <span style="font-size:14px;color:var(--text-muted)">Diesel amount</span>
+                <span style="font-size:14px;color:var(--text-muted)">{{ dieselTotalLabel }}</span>
                 <strong style="font-family:var(--font-display);font-size:18px;color:var(--text-heading)">{{ dieselAmount }}</strong>
               </div>
-              <div style="font-size:13px;color:var(--text-muted)">{{ dieselHint }}</div>
-            </div>
+              <sc-if value="{{ cerr.fills }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--status-danger);font-weight:600">{{ cerr.fills }}</div></sc-if>
+            </section>
+
             <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
               <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Loading qty" value="{{ cf.qtyLoad }}" on-change="{{ setCf.qtyLoad }}" error="{{ cerr.qtyLoad }}" hint-size="100%,72px"></x-import>
               <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Unloading qty" value="{{ cf.qtyUnload }}" on-change="{{ setCf.qtyUnload }}" error="{{ cerr.qtyUnload }}" hint-size="100%,72px"></x-import>
             </div>
+            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Total expense" prefix="&#8377;" placeholder="0" value="{{ cf.totalExpense }}" on-change="{{ setTotalExpense }}" input-mode="numeric" error="{{ cerr.totalExpense }}" hint="{{ totalExpenseHint }}" hint-size="100%,90px"></x-import>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Remarks</span><span style="font-size:12px;color:var(--text-muted)">Optional &middot; {{ closeRemarksCount }}/250</span></span>
+              <textarea value="{{ cf.remarks }}" onChange="{{ setCloseRemarks }}" maxlength="250" rows="3" placeholder="Delays, short delivery, extra stops or anything Head Office should know" style="box-sizing:border-box;width:100%;min-height:88px;padding:10px 12px;font-family:inherit;font-size:16px;line-height:1.4;color:var(--text-heading);background:#fff;border:2px solid var(--border-strong);border-radius:var(--radius-md);outline:0;resize:vertical" style-focus="border-color:var(--color-brand);box-shadow:var(--focus-ring)"></textarea>
+            </label>
             <sc-if value="{{ closeManualException }}" hint-placeholder-val="{{ false }}">
               <div style="padding:12px 14px;background:var(--color-hazard-soft);border-radius:var(--radius-md);font-size:14px;color:#7A4300"><strong>Manual exception.</strong> GPS and odometer both unavailable for this trip. Admin will receive an exception report; enter the closing reading from the dashboard photo.</div>
             </sc-if>
@@ -493,6 +656,43 @@
           <div style="position:sticky;bottom:0;margin-top:auto;padding:12px 16px 40px;background:#fff;border-top:1px solid var(--border-default);display:flex;flex-direction:column;gap:8px">
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" full-width="{{ true }}" on-click="{{ submitClose }}" style="{{ bigBtn }}" hint-size="100%,56px">Close trip</x-import>
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="lg" full-width="{{ true }}" on-click="{{ back }}" hint-size="100%,48px">Back</x-import>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- CLOSE TRIP REVIEW -->
+      <sc-if value="{{ is.closeReview }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column">
+          <div style="padding:16px;display:flex;flex-direction:column">
+            <p style="margin:0;font-size:15px">Check the details before closing. Once closed, the trip is locked and the vehicle is free for the next assignment.</p>
+            <sc-for list="{{ closeSummary }}" as="sec" hint-placeholder-count="4">
+              <div style="margin-top:16px">
+                <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">{{ sec.title }}</div>
+                <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                  <sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="4">
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:11px 14px;border-bottom:1px solid var(--border-default);font-size:14px;background:{{ r.bg }}"><span style="flex:none;max-width:48%;color:var(--text-muted)">{{ r.k }}</span><span style="font-weight:700;color:var(--text-heading);text-align:right;overflow-wrap:anywhere">{{ r.v }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ hasClosePhotos }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:16px">
+                <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Odometer photos</div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+                  <sc-for list="{{ closePhotos }}" as="ph" hint-placeholder-count="2">
+                    <div style="border:1px solid var(--border-default);border-radius:var(--radius-md);overflow:hidden">
+                      <div aria-hidden="true" style="height:96px;background:var(--surface-muted);overflow:hidden"><sc-if value="{{ ph.url }}" hint-placeholder-val="{{ false }}"><img src="{{ ph.url }}" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></sc-if></div>
+                      <div style="padding:6px 8px;font-size:12px;color:var(--text-body)">{{ ph.caption }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <div style="margin-top:16px;padding:12px 14px;background:{{ verify.bg }};border-radius:var(--radius-md);font-size:14px;color:{{ verify.fg }}"><strong>{{ closeReviewHead }}</strong> {{ closeReviewNote }}</div>
+          </div>
+          <div style="position:sticky;bottom:0;margin-top:auto;padding:12px 16px 40px;background:#fff;border-top:1px solid var(--border-default);display:flex;flex-direction:column;gap:8px">
+            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" full-width="{{ true }}" on-click="{{ confirmClose }}" style="{{ bigBtn }}" hint-size="100%,56px">Confirm and close trip</x-import>
+            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="lg" full-width="{{ true }}" on-click="{{ back }}" hint-size="100%,48px">Edit details</x-import>
           </div>
         </div>
       </sc-if>
@@ -946,16 +1146,70 @@
       <!-- REQUEST DRIVER -->
       <sc-if value="{{ is.reqDriver }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1;display:flex;flex-direction:column">
-          <div style="padding:16px;display:flex;flex-direction:column;gap:18px">
-            <p style="margin:0;font-size:15px">New and supporting drivers need admin approval before they can be assigned to a trip. The request goes to Head Office.</p>
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Driver name" placeholder="As on licence" value="{{ rf.name }}" on-change="{{ setRf.name }}" error="{{ rerr.name }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Licence number" placeholder="TN28 2019 0004521" value="{{ rf.licence }}" on-change="{{ setRf.licence }}" error="{{ rerr.licence }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Mobile number" prefix="+91" input-mode="numeric" value="{{ rf.phone }}" on-change="{{ setRf.phone }}" error="{{ rerr.phone }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Driver type" options="{{ driverTypeOptions }}" value="{{ rf.type }}" on-change="{{ setRf.type }}" hint-size="100%,72px"></x-import>
-            <div style="padding:12px 14px;background:var(--surface-muted);border-radius:var(--radius-md);font-size:14px;color:var(--text-body)">Pending requests from Chennai HO: <strong>Anbu M.</strong> (supporting) submitted 12 Sep, awaiting approval.</div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:16px">
+            <div style="padding:12px 14px;background:var(--color-hazard-soft);border-radius:var(--radius-md);font-size:14px;line-height:1.5;color:#7A4300">{{ reqIntro }}</div>
+            <sc-if value="{{ reqHasErrors }}" hint-placeholder-val="{{ false }}">
+              <div role="alert" style="padding:12px 14px;border-left:4px solid var(--status-danger);background:var(--kr-red-100);border-radius:var(--radius-md);font-size:14px;color:var(--kr-red-800)"><strong>{{ reqErrorCount }} {{ reqErrorWord }} to fix.</strong> Check the highlighted fields below.</div>
+            </sc-if>
+
+            <section style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="width:26px;height:26px;border-radius:50%;background:var(--color-brand);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px">1</span><h3 style="margin:0;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">Driver details</h3></div>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Driver name" placeholder="Full name as on licence" value="{{ rf.name }}" on-change="{{ setRf.name }}" error="{{ rerr.name }}" hint-size="100%,72px"></x-import>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Licence number" placeholder="TN28 2019 0004521" value="{{ rf.licence }}" on-change="{{ setRfLicence }}" error="{{ rerr.licence }}" hint-size="100%,72px"></x-import>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Mobile number" placeholder="90031 55012" prefix="+91" input-mode="numeric" value="{{ rf.phone }}" on-change="{{ setRfPhone }}" error="{{ rerr.phone }}" hint-size="100%,72px"></x-import>
+            </section>
+
+            <section style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="width:26px;height:26px;border-radius:50%;background:var(--color-brand);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px">2</span><h3 style="margin:0;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">Documents</h3></div>
+              <sc-for list="{{ uploads }}" as="u" hint-placeholder-count="2">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                    <span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">{{ u.label }}</span>
+                    <span style="font-size:12px;color:var(--text-muted)">{{ u.note }}</span>
+                  </div>
+                  <sc-if value="{{ u.empty }}" hint-placeholder-val="{{ true }}">
+                    <label style="margin-top:8px;position:relative;box-sizing:border-box;display:flex;align-items:center;gap:14px;min-height:76px;padding:14px;border:2px dashed {{ u.border }};border-radius:var(--radius-md);background:var(--surface-muted);cursor:pointer" style-hover="border-color:var(--color-brand)">
+                      <input type="file" accept="image/*" aria-label="{{ u.label }}" data-k="{{ u.key }}" onChange="{{ pickUpload }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer">
+                      <span aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
+                      <span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:15px;color:var(--text-heading)">Take photo or upload</span><span style="font-size:13px;color:var(--text-muted)">JPG or PNG &middot; up to 5 MB</span></span>
+                    </label>
+                  </sc-if>
+                  <sc-if value="{{ u.set }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:8px;display:flex;align-items:center;gap:12px;padding:10px;border:2px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand-tint)">
+                      <div aria-hidden="true" style="flex:none;box-sizing:border-box;width:72px;height:52px;border-radius:var(--radius-sm);background:#fff;border:1px solid var(--border-default);display:grid;place-items:center;overflow:hidden;color:var(--text-muted)"><sc-if value="{{ u.url }}" hint-placeholder-val="{{ false }}"><img src="{{ u.url }}" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></sc-if><sc-if value="{{ u.noPreview }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg></sc-if></div>
+                      <div style="flex:1;min-width:0">
+                        <div style="font-weight:700;font-size:14px;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.name }}</div>
+                        <div style="font-size:12px;color:var(--kr-green-800)">{{ u.size }} &middot; attached</div>
+                      </div>
+                      <button data-k="{{ u.key }}" onClick="{{ clearUpload }}" aria-label="{{ u.removeLabel }}" style="all:unset;cursor:pointer;flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);color:var(--kr-red-600)" style-hover="background:#fff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ u.err }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ u.errText }}</div></sc-if>
+                </div>
+              </sc-for>
+            </section>
+
+            <section style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="width:26px;height:26px;border-radius:50%;background:var(--color-brand);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px">3</span><h3 style="margin:0;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">Bank account</h3></div>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Account holder name" placeholder="As in bank passbook" value="{{ rf.holder }}" on-change="{{ setRf.holder }}" error="{{ rerr.holder }}" hint-size="100%,72px"></x-import>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Account number" placeholder="9 to 18 digits" input-mode="numeric" value="{{ rf.account }}" on-change="{{ setRfAccount }}" error="{{ rerr.account }}" hint-size="100%,72px"></x-import>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="IFSC code" placeholder="SBIN0001234" value="{{ rf.ifsc }}" on-change="{{ setRfIfsc }}" error="{{ rerr.ifsc }}" hint="11 characters, printed on the passbook or cheque leaf." hint-size="100%,90px"></x-import>
+            </section>
+
+            <section style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="width:26px;height:26px;border-radius:50%;background:var(--color-brand);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px">4</span><h3 style="margin:0;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">Family &amp; reference</h3></div>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Family contact number" placeholder="Emergency contact" prefix="+91" input-mode="numeric" value="{{ rf.family }}" on-change="{{ setRfFamily }}" error="{{ rerr.family }}" hint-size="100%,72px"></x-import>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Reference</span><span style="font-size:12px;color:var(--text-muted)">Optional &middot; {{ refCount }}/250</span></span>
+                <textarea value="{{ rf.reference }}" onChange="{{ setRfReference }}" maxlength="250" rows="3" placeholder="Who referred this driver, previous employer, years of experience" style="box-sizing:border-box;width:100%;min-height:88px;padding:10px 12px;font-family:inherit;font-size:16px;line-height:1.4;color:var(--text-heading);background:#fff;border:2px solid var(--border-strong);border-radius:var(--radius-md);outline:0;resize:vertical" style-focus="border-color:var(--color-brand);box-shadow:var(--focus-ring)"></textarea>
+              </label>
+            </section>
           </div>
-          <div style="position:sticky;bottom:0;margin-top:auto;padding:12px 16px 40px;background:#fff;border-top:1px solid var(--border-default)">
+          <div style="position:sticky;bottom:0;margin-top:auto;padding:12px 16px 40px;background:#fff;border-top:1px solid var(--border-default);display:flex;flex-direction:column;gap:8px">
             <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" full-width="{{ true }}" on-click="{{ submitDriver }}" style="{{ bigBtn }}" hint-size="100%,56px">Send for approval</x-import>
+            <sc-if value="{{ reqFromOpen }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost" size="lg" full-width="{{ true }}" on-click="{{ back }}" hint-size="100%,48px">Back to Open Trip</x-import>
+            </sc-if>
           </div>
         </div>
       </sc-if>
@@ -963,7 +1217,12 @@
         <div style="flex:1;display:flex;flex-direction:column;padding:32px 24px 40px;text-align:center">
           <div style="width:72px;height:72px;border-radius:50%;background:var(--color-hazard-soft);display:grid;place-items:center;margin:16px auto 0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7A4300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
           <h2 style="margin:20px 0 4px;font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em;color:var(--text-heading)">Sent for approval</h2>
-          <p style="margin:8px 0 0;font-size:15px">{{ rf.name }} will appear in the driver list once Head Office approves the request. You will see it here and on the home screen.</p>
+          <p style="margin:8px 0 0;font-size:15px">{{ rf.name }} will appear in the driver list once Head Office approves the request. You will also get a notification.</p>
+          <div role="status" aria-live="polite" style="margin-top:20px;padding:14px;border:1px solid var(--border-default);border-radius:var(--radius-lg);text-align:left">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Request status</span><span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-sm);background:{{ reqSent.bg }};color:{{ reqSent.fg }}">{{ reqSent.label }}</span></div>
+            <div style="margin-top:8px;font-size:14px;line-height:1.5;color:var(--text-body)">{{ reqSent.note }}</div>
+            <div style="margin-top:4px;font-size:12px;color:var(--text-muted)">{{ reqSent.when }}</div>
+          </div>
           <div style="margin-top:auto"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" full-width="{{ true }}" on-click="{{ goHome }}" style="{{ bigBtn }}" hint-size="100%,56px">Back to home</x-import></div>
         </div>
       </sc-if>
@@ -1016,6 +1275,43 @@
         </div>
       </sc-if>
 
+      <!-- DRIVER PICKER · available drivers, or request a new one -->
+      <sc-if value="{{ drvPickOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeDrvPick }}" style="position:absolute;inset:0;background:rgba(20,32,43,.6);z-index:30">
+          <!-- sticky layer the height of the phone screen, so the sheet stays in view however far the form is scrolled -->
+          <div style="position:sticky;top:0;height:874px;box-sizing:border-box;display:flex;align-items:flex-end;padding:12px 12px 28px">
+          <div role="dialog" aria-modal="true" aria-labelledby="drv-pick-title" onClick="{{ stop }}" style="width:100%;max-height:640px;display:flex;flex-direction:column;background:#fff;border-radius:var(--radius-lg);border-top:6px solid var(--color-brand);box-shadow:var(--shadow-lg);overflow:hidden">
+            <div style="flex:none;display:flex;align-items:flex-start;gap:12px;padding:18px 16px 14px;border-bottom:1px solid var(--border-default)">
+              <div style="flex:1;min-width:0">
+                <h3 id="drv-pick-title" style="margin:0;font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1.2;color:var(--text-heading)">Choose driver</h3>
+                <p style="margin:4px 0 0;font-size:13px;line-height:1.45;color:var(--text-muted)">{{ pickSub }}</p>
+              </div>
+              <button onClick="{{ closeDrvPick }}" aria-label="Close" style="all:unset;cursor:pointer;flex:none;width:44px;height:44px;margin:-8px -8px 0 0;display:grid;place-items:center;border-radius:var(--radius-md);color:var(--text-heading)" style-hover="background:var(--surface-muted)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+            </div>
+            <div role="listbox" aria-labelledby="drv-pick-title" style="flex:1;min-height:0;overflow-y:auto">
+              <sc-for list="{{ pickList }}" as="d" hint-placeholder-count="4">
+                <button role="option" aria-selected="{{ d.on }}" data-id="{{ d.id }}" onClick="{{ pickDriver }}" style="all:unset;cursor:pointer;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;border-bottom:1px solid var(--border-default);background:{{ d.bg }}">
+                  <span aria-hidden="true" style="flex:none;width:40px;height:40px;border-radius:50%;background:{{ d.avatarBg }};color:{{ d.avatarFg }};display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:14px">{{ d.initials }}</span>
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                    <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="font-weight:700;font-size:16px;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.name }}</span><sc-if value="{{ d.hasTag }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-sm);background:{{ d.tagBg }};color:{{ d.tagFg }}">{{ d.tag }}</span></sc-if></span>
+                    <span style="font-size:13px;color:var(--text-muted)">{{ d.sub }}</span>
+                  </span>
+                  <span aria-hidden="true" style="flex:none;box-sizing:border-box;width:24px;height:24px;border-radius:50%;border:2px solid {{ d.ring }};display:grid;place-items:center"><span style="width:12px;height:12px;border-radius:50%;background:{{ d.dot }}"></span></span>
+                </button>
+              </sc-for>
+              <sc-if value="{{ pickEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:28px 20px;text-align:center"><div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--text-heading)">No free drivers right now</div><p style="margin:6px 0 0;font-size:14px;color:var(--text-muted)">Every Chennai HO driver is on a trip, absent or inactive. Request a new driver below.</p></div>
+              </sc-if>
+            </div>
+            <div style="flex:none;padding:14px 16px 16px;border-top:1px solid var(--border-default);background:var(--surface-muted);display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:13px;color:var(--text-muted);text-align:center">Driver not in the list? New drivers need Head Office approval.</div>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="lg" full-width="{{ true }}" on-click="{{ goReqDriverFromOpen }}" hint-size="100%,48px">+ Request new driver</x-import>
+            </div>
+          </div>
+          </div>
+        </div>
+      </sc-if>
+
       <!-- DISCARD CONFIRM -->
       <sc-if value="{{ discardOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ cancelDiscard }}" style="position:absolute;inset:0;background:rgba(20,32,43,.6);z-index:30;display:flex;align-items:flex-end;padding:16px">
@@ -1049,12 +1345,12 @@ class Component extends DCLogic {
     ob: { phone: '', otp: ['', '', '', ''], expected: '', shared: false, requestedAt: '' }, obStatus: 'idle', obReqId: '', obShowErr: false, obOtpErr: '',
     reg: { name: '', password: '' }, regShowErr: false, regSaving: false, account: null, notifOpen: false, discardOpen: false, toast: null, saving: false,
     gpsGranted: true, unclosedFilter: 'all', forceEmpty: false,
-    form: { client: '', vehicle: '', loading: '', unloading: [], startKm: '', driver: '', type: 'Business', reason: '', remarks: '', from: '', to: '', km: '' },
-    showErrors: false,
+    form: this.blankForm(),
+    showErrors: false, drvPickOpen: false, reqFromOpen: false,
     newLoc: { open: false, name: '' }, showNewLocErr: false, addedLocations: [],
-    newDrv: { open: false, name: '', licence: '', phone: '' }, showNewDrvErr: false, addedDrivers: [],
-    cf: { invoice: '', lr: '', closeKm: '', advance: '', bunk: '', rate: '', litres: '', qtyLoad: '', qtyUnload: '' }, showCloseErrors: false,
-    rf: { name: '', licence: '', phone: '', type: 'Supporting' }, showReqErrors: false,
+    drvReqs: [], seedApprovals: {},
+    cf: this.blankClose(), showCloseErrors: false,
+    rf: this.blankRf(), showReqErrors: false,
     selected: 'T01', history: [], histSel: '', closedData: {}, forceEmptyHist: false,
     notifFilter: 'all', notifSel: '', notifRead: ['N05', 'N06'], activity: [], adminNotices: [],
     hf: { vehicle: '', from: '', to: '' }, hfDraft: { from: '', to: '' }, hfCalOpen: false, hfErr: '',
@@ -1066,6 +1362,29 @@ class Component extends DCLogic {
   BR = 'B01'; SUP = 'S01';
   // Device approval is shared with the Admin Portal through localStorage (same origin), polled once a second.
   REQ_KEY = 'kr-tms-device-approvals'; IMEI_KEY = 'kr-tms-device-imei'; NOTICE_KEY = 'kr-tms-supervisor-notices';
+  // New-driver requests go to the Admin Portal the same way; its approve/reject decisions come back on the same keys.
+  DRV_KEY = 'kr-tms-driver-requests'; DRV_APPROVAL_KEY = 'kr-tms-driver-approvals';
+  readDrvReqs() { try { return JSON.parse(localStorage.getItem(this.DRV_KEY) || '[]') || []; } catch (e) { return this.state.drvReqs; } }
+  syncDriverReqs() {
+    let list, seed;
+    try { list = JSON.parse(localStorage.getItem(this.DRV_KEY) || '[]') || []; seed = JSON.parse(localStorage.getItem(this.DRV_APPROVAL_KEY) || '{}') || {}; } catch (e) { return; }
+    const json = JSON.stringify([list, seed]);
+    if (json === this._drvJson) return;
+    this._drvJson = json;
+    const mine = list.filter(r => r.branch === this.BR);
+    // A driver already picked on the Open Trip form who is now rejected has to be replaced.
+    const f = this.state.form, gone = mine.find(r => r.id === f.driver && r.status === 'Rejected');
+    this.setState(st => ({ drvReqs: mine, seedApprovals: seed, ...(gone ? { form: { ...st.form, driver: '', driverOk: false } } : {}) }));
+    if (gone) this.toast('warning', `Driver rejected · ${gone.name}`, 'Head Office rejected this driver. Choose another driver for the trip.');
+  }
+  // Branch driver master with Head Office decisions applied, plus drivers requested from this app.
+  branchDrivers() {
+    const s = this.state, T = this.T();
+    const seed = T.drivers.filter(d => d.branch === this.BR).map(d => { const ap = s.seedApprovals[d.id]; return ap ? { ...d, approval: ap, status: ap === 'Approved' && d.status === 'Pending' ? 'Active' : ap === 'Rejected' ? 'Inactive' : d.status } : d; });
+    const req = s.drvReqs.map(r => ({ id: r.id, name: r.name, licence: r.licence, phone: this.fmtPhone(r.phone), branch: r.branch, type: 'New', status: r.status === 'Rejected' ? 'Inactive' : 'Active', approval: r.status === 'Pending' ? 'Pending approval' : r.status, requested: true }));
+    return [...seed, ...req];
+  }
+  fmtPhone(d) { d = String(d || '').replace(/\D/g, ''); return d.length === 10 ? d.slice(0, 5) + ' ' + d.slice(5) : d; }
   // Notices the Admin Portal sends (messages and admin actions) for this branch.
   syncNotices() {
     let list;
@@ -1081,9 +1400,9 @@ class Component extends DCLogic {
   // Your own actions this session, kept as read items in the Notifications page.
   logActivity(n) { this.setState(st => ({ activity: [{ id: 'ACT' + Date.now() + '-' + st.activity.length, kind: 'activity', from: 'You · R. Senthil Kumar', sort: '2026-09-14 09:41:' + String(st.activity.length).padStart(2, '0'), ...n }, ...st.activity] })); }
   componentDidMount() {
-    this.syncNotices();
-    this._poll = setInterval(() => { this.syncApproval(); this.syncNotices(); }, 1000);
-    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncApproval(); if (e.key === this.NOTICE_KEY) this.syncNotices(); };
+    this.syncNotices(); this.syncDriverReqs();
+    this._poll = setInterval(() => { this.syncApproval(); this.syncNotices(); this.syncDriverReqs(); }, 1000);
+    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncApproval(); if (e.key === this.NOTICE_KEY) this.syncNotices(); if (e.key === this.DRV_KEY || e.key === this.DRV_APPROVAL_KEY) this.syncDriverReqs(); };
     window.addEventListener('storage', this._onStorage);
     const mine = this.readReqs().find(r => r.imei === this.deviceImei() && r.status === 'Pending');
     if (mine && this.state.screen === 'approval') this.setState({ obStatus: 'waiting', obReqId: mine.id, ob: { ...this.state.ob, phone: mine.phone, requestedAt: mine.requestedAt } });
@@ -1119,7 +1438,7 @@ class Component extends DCLogic {
   set(path, v) { this.setState(s => ({ [path[0]]: { ...s[path[0]], [path[1]]: v } })); }
   toast(tone, title, message) { clearTimeout(this._tt); this.setState({ toast: { tone, title, message } }); this._tt = setTimeout(() => this.setState({ toast: null }), 3200); }
   allTrips() { const T = this.T(); return [...T.trips, ...this.state.localTrips]; }
-  drv(id) { return this.T().D[id] || this.state.addedDrivers.find(d => d.id === id) || null; }
+  drv(id) { return this.branchDrivers().find(d => d.id === id) || this.T().D[id] || null; }
   loc(id) { return this.T().L[id] || this.state.addedLocations.find(l => l.id === id) || null; }
   toggleCustomer(id) { this.setState(s => { const cur = s.form.unloading || []; return { form: { ...s.form, unloading: cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id] } }; }); }
   active() { return this.allTrips().filter(t => t.branch === this.BR && t.status === 'Enroute' && !this.state.closedIds.includes(t.id)); }
@@ -1147,7 +1466,7 @@ class Component extends DCLogic {
     const obStepIdx = { approval: 0, otp: 1, register: 2 }[s.screen] || 0;
     const otpBad = !!s.obOtpErr;
     const regBad = { name: !s.reg.name.trim() ? 'Enter your full name.' : undefined, password: s.reg.password.length < 6 ? 'Use at least 6 characters.' : undefined };
-    const titles = { home: 'Kongunadu Road Lines', open: 'Open Trip', openReview: 'Review trip', openDone: 'Trip opened', closeList: 'Close Trip', close: 'Close Trip', closeDone: 'Trip closed', unclosed: 'Unclosed Trips', history: 'Trip history', histTrip: 'Closed trip', trip: 'Trip detail', notifications: 'Notifications', notifDetail: 'Notification', attMark: 'Attendance', attendance: 'Daily attendance', attMonth: 'Monthly attendance', reqDriver: 'Request new driver', reqDone: 'Request sent', idle: 'Vehicle idle status', gpsPerm: 'Location access', offline: 'Connection lost' };
+    const titles = { home: 'Kongunadu Road Lines', open: 'Open Trip', openReview: 'Review trip', openDone: 'Trip opened', closeList: 'Close Trip', close: 'Close Trip', closeReview: 'Review close', closeDone: 'Trip closed', unclosed: 'Unclosed Trips', history: 'Trip history', histTrip: 'Closed trip', trip: 'Trip detail', notifications: 'Notifications', notifDetail: 'Notification', attMark: 'Attendance', attendance: 'Daily attendance', attMonth: 'Monthly attendance', reqDriver: 'Request new driver', reqDone: 'Request sent', idle: 'Vehicle idle status', gpsPerm: 'Location access', offline: 'Connection lost' };
     // Open trip options
     const activeVeh = new Set(this.active().map(t => t.vehicle)), activeDrv = new Set(this.active().map(t => t.driver));
     const sup = T.S[this.SUP] || {};
@@ -1162,7 +1481,7 @@ class Component extends DCLogic {
     const busyVeh = mappedVeh.filter(v => !availVeh.includes(v) && !onTripVeh.includes(v)).map(v => `${v.number} (${v.status.toLowerCase()})`);
     // Closing KM from a trip closed in this session beats the master odometer.
     const lastKm = v => Math.max(v.odometer, ...this.allTrips().filter(t => t.vehicle === v.id && s.closedData[t.id]).map(t => Number(s.closedData[t.id].closeKm) || 0));
-    const branchDrv = T.drivers.filter(d => d.branch === this.BR);
+    const allBranchDrv = this.branchDrivers(), branchDrv = allBranchDrv.filter(d => !d.requested || d.approval === 'Approved');
     const locationOptions = [...T.locations.filter(l => l.branch === this.BR && l.status === 'Active'), ...s.addedLocations]
       .map(l => ({ value: l.id, label: l.name })).concat([{ value: '__add', label: '+ Add loading location (GPS)' }]);
     const veh = T.V[f.vehicle]; const firstTrip = f.vehicle === 'V04';
@@ -1171,28 +1490,72 @@ class Component extends DCLogic {
     const picked = (f.unloading || []).filter(id => clientCust.some(u => u.id === id));
     const customerOptions = clientCust.map(u => { const r = T.R[u.route] || {}; const on = picked.includes(u.id); return { id: u.id, name: u.name, sub: `${u.city} · ${r.km ? r.km + ' km fixed route' : 'route not fixed'} · ${u.billing}`, on, bg: on ? 'var(--color-brand-tint)' : '#fff', divider: 'var(--border-default)', toggle: () => this.toggleCustomer(u.id) }; });
     const pickedCust = picked.map(id => T.U[id]).filter(Boolean);
+    const unloadMode = f.unloadMode === 'multiple' ? 'multiple' : 'single';
     const routeKm = pickedCust.reduce((a, u) => a + ((T.R[u.route] || {}).km || 0), 0);
     const routeHours = pickedCust.reduce((a, u) => a + ((T.R[u.route] || {}).hours || 0), 0);
     const routeSummary = pickedCust.length === 1 ? `${(T.R[pickedCust[0].route] || {}).name || pickedCust[0].city} · ${routeKm.toLocaleString('en-IN')} km fixed · about ${routeHours} h.` : `${pickedCust.map(u => u.city).join(' → ')} · ${routeKm.toLocaleString('en-IN')} km fixed across ${pickedCust.length} drops · about ${routeHours} h.`;
-    // Driver — branch master, plus anyone added here for approval
-    const freeDrv = branchDrv.filter(d => d.status === 'Active' && d.approval === 'Approved' && !activeDrv.has(d.id));
-    const drvList = [...freeDrv, ...s.addedDrivers];
-    const driverOptions = drvList.map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.approval === 'Approved' ? '' : ' · pending approval'}` })).concat([{ value: '__add', label: '+ Add new / acting driver' }]);
-    const mappedDrv = veh && veh.driver ? T.D[veh.driver] : null;
-    const driverVal = f.driver || (mappedDrv && drvList.some(d => d.id === mappedDrv.id) ? mappedDrv.id : '');
+    // Driver — the vehicle's mapped driver is suggested for a tick/cross confirm; the picker lists only drivers free today
+    // (active, approved, not on an open trip, not marked absent), plus anyone requested here for approval.
+    const freeDrv = branchDrv.filter(d => d.status === 'Active' && d.approval === 'Approved' && !activeDrv.has(d.id) && s.att[d.id] !== 'A');
+    const drvList = [...freeDrv, ...allBranchDrv.filter(d => d.requested && d.approval === 'Pending approval' && !activeDrv.has(d.id))];
+    const mappedDrv = veh && veh.driver ? this.drv(veh.driver) : null;
+    const driverVal = !veh ? '' : f.driver || (mappedDrv && drvList.some(d => d.id === mappedDrv.id) ? mappedDrv.id : '');
     const drvSel = drvList.find(d => d.id === driverVal);
-    const driverHint = !veh ? 'From the branch driver master. A new or acting driver needs approver permission.'
-      : drvSel && mappedDrv && drvSel.id === mappedDrv.id ? `Mapped driver for ${veh.number}. Change it if someone else is taking the trip.`
-      : drvSel ? (drvSel.approval === 'Approved' ? `${drvSel.name} is free today.` : `${drvSel.name} is pending Head Office approval. The trip still opens.`)
-      : mappedDrv ? `${mappedDrv.name} is mapped to ${veh.number} but is ${activeDrv.has(mappedDrv.id) ? 'on another trip' : mappedDrv.status === 'Inactive' ? 'inactive' : 'not approved yet'}. Pick a free driver.`
-      : `${veh.number} has no driver mapped. Pick one or add an acting driver.`;
+    const drvOk = !!drvSel && !!f.driverOk, drvPending = !!drvSel && drvSel.approval !== 'Approved';
+    const initials = n => String(n || '').replace(/[^A-Za-z ]/g, ' ').split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    const drvSub = d => `${d.type} · +91 ${d.phone}`;
+    const mappedWhy = d => activeDrv.has(d.id) ? 'on another trip' : s.att[d.id] === 'A' ? 'marked absent today' : d.status === 'Inactive' ? 'inactive' : 'not approved yet';
     const startKmLocked = !!veh && !firstTrip;
     const startKmHint = !veh ? 'Select a vehicle first.' : firstTrip ? 'First recorded trip for this vehicle. Enter the reading manually.' : `Carried from previous closing KM (${lastKm(veh).toLocaleString('en-IN')}).`;
     const startKmVal = veh ? (firstTrip ? f.startKm : String(lastKm(veh))) : '';
     const needsLoad = f.type !== 'Non-Business';
-    const openBad = needsLoad ? { client: !f.client, vehicle: !f.vehicle, loading: !f.loading, unloading: !picked.length, startKm: firstTrip && !f.startKm, driver: !driverVal }
-      : { from: !(f.from || '').trim(), to: !(f.to || '').trim(), km: !(Number(f.km) > 0), reason: !f.reason, vehicle: !f.vehicle, driver: !driverVal };
+    const openBad = needsLoad ? { client: !f.client, vehicle: !f.vehicle, loading: !f.loading, unloading: !picked.length, startKm: firstTrip && !f.startKm, driver: !drvOk }
+      : { from: !(f.from || '').trim(), to: !(f.to || '').trim(), km: !(Number(f.km) > 0), reason: !f.reason, vehicle: !f.vehicle, driver: !drvOk };
     const err = s.showErrors ? openBad : {};
+    const dcState = !veh ? 'none' : !drvSel ? 'empty' : drvOk ? 'ok' : 'ask';
+    const dc = {
+      none: dcState === 'none', ask: dcState === 'ask', ok: dcState === 'ok', empty: dcState === 'empty', has: dcState === 'ask' || dcState === 'ok',
+      tag: { none: 'Mapped per vehicle', ask: 'Confirm driver', ok: drvPending ? 'Pending approval' : 'Confirmed', empty: 'Not set' }[dcState],
+      name: drvSel ? drvSel.name : '', initials: drvSel ? initials(drvSel.name) : '', sub: drvSel ? drvSub(drvSel) : '',
+      status: dcState === 'ask' ? `Mapped to ${veh.number}` : drvPending ? 'Confirmed · pending approval' : 'Confirmed',
+      statusFg: dcState === 'ask' ? 'var(--text-muted)' : drvPending ? '#7A4300' : 'var(--kr-green-800)',
+      border: err.driver ? 'var(--status-danger)' : dcState === 'ok' ? 'var(--color-brand)' : 'var(--border-strong)',
+      bg: dcState === 'ok' ? 'var(--color-brand-tint)' : '#fff',
+      avatarBg: dcState === 'ok' ? 'var(--color-brand)' : 'var(--surface-muted)', avatarFg: dcState === 'ok' ? '#fff' : 'var(--text-heading)',
+      emptyText: !veh ? '' : mappedDrv ? `${mappedDrv.name} is mapped to ${veh.number} but is ${mappedWhy(mappedDrv)}. Choose a free driver for this trip.` : `${veh.number} has no driver mapped. Choose a free driver for this trip.`,
+      hint: dcState === 'none' ? 'From the branch driver master. A new driver needs Head Office approval.'
+        : dcState === 'ask' ? 'Tap ✓ if this driver is taking the trip, or ✕ to choose another.'
+        : dcState === 'empty' ? `${drvList.length} ${drvList.length === 1 ? 'driver is' : 'drivers are'} free today.`
+        : drvPending ? `${drvSel.name} is pending Head Office approval. The trip still opens.`
+        : mappedDrv && drvSel.id === mappedDrv.id ? `Mapped driver for ${veh.number}.` : `Assigned for this trip only. ${veh.number} stays mapped to ${mappedDrv ? mappedDrv.name : 'no driver'}.`
+    };
+    const driverErrText = !veh ? 'Select a vehicle, then confirm its driver.' : dcState === 'ask' ? 'Confirm the driver with ✓, or tap ✕ to choose another.' : 'Choose the driver taking this trip.';
+    const pickList = drvList.map(d => { const on = drvOk && d.id === driverVal, mapped = !!mappedDrv && d.id === mappedDrv.id, pending = d.approval !== 'Approved';
+      return { id: d.id, name: d.name, initials: initials(d.name), sub: drvSub(d), on: on ? 'true' : 'false', hasTag: mapped || pending, tag: pending ? 'Pending approval' : 'Mapped',
+        tagBg: pending ? 'var(--color-hazard-soft)' : 'var(--color-brand-tint)', tagFg: pending ? '#7A4300' : 'var(--kr-green-800)',
+        bg: on ? 'var(--color-brand-tint)' : '#fff', ring: on ? 'var(--color-brand)' : 'var(--border-strong)', dot: on ? 'var(--color-brand)' : 'transparent',
+        avatarBg: on ? 'var(--color-brand)' : 'var(--surface-muted)', avatarFg: on ? '#fff' : 'var(--text-heading)' }; });
+    const pickSub = `${drvList.length} ${drvList.length === 1 ? 'driver' : 'drivers'} free today${veh ? ' for ' + veh.number : ''} · not on a trip or marked absent.`;
+    // Driver request — every field is checked before it goes to Head Office
+    const rf = s.rf, digits = x => String(x || '').replace(/\D/g, '');
+    const rfBad = {
+      name: !rf.name.trim() ? 'Enter the name as on the licence.' : undefined,
+      licence: rf.licence.replace(/\s/g, '').length < 10 ? 'Enter the full licence number.' : undefined,
+      phone: digits(rf.phone).length !== 10 ? 'Enter a 10-digit mobile number.' : undefined,
+      licImg: !rf.licImg ? 'Upload a clear photo of the driving licence.' : undefined,
+      aadhaarImg: !rf.aadhaarImg ? 'Upload a clear photo of the Aadhaar card.' : undefined,
+      holder: !rf.holder.trim() ? 'Enter the account holder name.' : undefined,
+      account: !/^\d{9,18}$/.test(digits(rf.account)) ? 'Enter a 9 to 18 digit account number.' : undefined,
+      ifsc: !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(rf.ifsc) ? 'Enter a valid IFSC, e.g. SBIN0001234.' : undefined,
+      family: digits(rf.family).length !== 10 ? 'Enter a 10-digit family contact number.' : digits(rf.family) === digits(rf.phone) ? 'Use a family member’s number, not the driver’s.' : undefined
+    };
+    const rerr = s.showReqErrors ? rfBad : {};
+    const reqErrorCount = Object.values(rerr).filter(Boolean).length;
+    const uploads = [['licImg', 'Licence image', 'Front side'], ['aadhaarImg', 'Aadhaar image', 'Front side · number visible']].map(([key, label, note]) => {
+      const file = rf[key], bad = !!rerr[key];
+      return { key, label, note, empty: !file, set: !!file, name: file ? file.name : '', size: file ? file.size : '', url: file && file.url || '', noPreview: !!file && !file.url,
+        border: bad ? 'var(--status-danger)' : 'var(--border-strong)', err: bad, errText: rerr[key] || '', removeLabel: `Remove ${label.toLowerCase()}` };
+    });
     const openErrorCount = Object.values(err).filter(Boolean).length;
     const nextSerial = v => String(this.allTrips().filter(t => t.vehicle === v.id).reduce((m, t) => Math.max(m, Number(String(t.number || '').split('/')[2]) || 0), 0) + 1).padStart(3, '0');
     const tripNum = v => `${v.number.replace(/\s/g, '')}/09/${nextSerial(v)}`;
@@ -1217,6 +1580,7 @@ class Component extends DCLogic {
         advance: cd ? money(cd.advance) : (t.advance || '—'),
         bunk: (cd ? cd.bunk : t.bunk) || '—', rate, litres,
         qtyLoad: (cd ? cd.qtyLoad : t.qtyLoad) || '—', qtyUnload: (cd ? cd.qtyUnload : t.qtyUnload) || '—',
+        totalExpense: cd && cd.totalExpense ? money(cd.totalExpense) : '—', closeRemarks: (cd && cd.remarks) || '—',
         thisSession: !!cd };
     };
     // '12 Sep 2026 19:45' → '2026-09-12' so it compares with <input type="date"> values
@@ -1273,7 +1637,7 @@ class Component extends DCLogic {
           ['Diesel rate', i.rate ? '₹' + i.rate.toFixed(2) + '/L' : '—'],
           ['Diesel quantity', i.litres ? i.litres.toLocaleString('en-IN') + ' L' : '—'],
           ['Diesel amount', i.rate && i.litres ? money(Math.round(i.rate * i.litres)) : '—'],
-          ['Loading qty', i.qtyLoad], ['Unloading qty', i.qtyUnload]].map(([k, v2]) => ({ k, v: v2,
+          ['Loading qty', i.qtyLoad], ['Unloading qty', i.qtyUnload], ['Total expense', i.totalExpense], ['Close remarks', i.closeRemarks]].map(([k, v2]) => ({ k, v: v2,
             bg: k === 'Variance vs fixed' && over ? 'var(--color-hazard-soft)' : 'transparent',
             color: k === 'Variance vs fixed' && over ? '#7A4300' : 'var(--text-heading)' }))
       };
@@ -1283,19 +1647,48 @@ class Component extends DCLogic {
     const selD = this.decorate(selTrip);
     const selRows = [...(selTrip.client ? [['Client', selD.clientName], ['Customer', selTrip.unloading]] : []), ['Vehicle', selD.vehicleNumber], ...(selTrip.driver ? [['Driver', selD.driverName]] : []),['Loading location', (this.loc(selTrip.loading) || {}).name], ['Trip type', selTrip.type + (selTrip.reason ? ' · ' + selTrip.reason : '')], ['Opened', selTrip.opened], ['Supervisor', (T.S[selTrip.supervisor] || {}).name], ...(selTrip.remarks ? [['Remarks', selTrip.remarks]] : [])].map(([k, v]) => ({ k, v: v || '—' }));
     // Close form
-    const cf = s.cf; const startNum = selTrip.startKm; const closeNum = Number(cf.closeKm);
-    const cerr = s.showCloseErrors ? { invoice: !cf.invoice ? 'Required for billing.' : undefined, closeKm: !cf.closeKm ? 'Required.' : closeNum < startNum ? `Must be at least the start KM (${startNum.toLocaleString('en-IN')}).` : undefined, advance: !cf.advance ? 'Required.' : undefined, bunk: !(cf.bunk || '').trim() ? 'Enter the bunk where diesel was filled.' : undefined, rate: !cf.rate ? 'Required.' : Number(cf.rate) <= 0 ? 'Enter a valid rate.' : undefined, litres: !cf.litres ? 'Required.' : Number(cf.litres) <= 0 ? 'Enter a valid quantity.' : undefined, qtyLoad: !cf.qtyLoad ? 'Required.' : undefined, qtyUnload: !cf.qtyUnload ? 'Required.' : undefined } : {};
+    const cf = s.cf, startNum = selTrip.startKm, km = n => Number(n || 0).toLocaleString('en-IN');
+    const legs = cf.legs || [], fills = cf.fills || [];
+    const points = this.tripPoints(selTrip), pointOptions = points.map(x => ({ value: x, label: x }));
+    // Odometer — readings climb leg by leg; one leg over 2,500 km is treated as a typing mistake.
+    const LEG_MAX = 2500, legPrev = i => i > 0 ? Number(legs[i - 1].reading) : startNum;
+    const legEditing = cf.legEdit >= 0, di = legEditing ? cf.legEdit : legs.length, legEditorOpen = cf.legOpen || !legs.length;
+    const defFrom = di > 0 ? legs[di - 1].to : points[0], defTo = points[points.indexOf(defFrom) + 1] || '';
+    const ld = { ...cf.legDraft, from: cf.legDraft.from || defFrom, to: cf.legDraft.to || defTo };
+    const ldNum = Number(ld.reading), ldPrev = legPrev(di), ldNext = legEditing && di < legs.length - 1 ? Number(legs[di + 1].reading) : null;
+    const legBad = { route: !ld.from || !ld.to ? 'Select both From and To points.' : ld.from === ld.to ? 'From and To must be different points.' : undefined,
+      reading: !ld.reading ? 'Enter the odometer reading.' : !(ldNum > ldPrev) ? `Must be more than ${km(ldPrev)} km.` : ldNext != null && ldNum >= ldNext ? `Must be less than the next reading (${km(ldNext)} km).` : ldNum - ldPrev > LEG_MAX ? `That is ${km(ldNum - ldPrev)} km for one leg. Check the reading.` : undefined,
+      photo: !ld.photo ? 'Take a photo of the odometer.' : undefined };
+    const legErr = cf.legTried ? legBad : {};
+    const closeNum = legs.length ? Number(legs[legs.length - 1].reading) : 0;
+    // Diesel — one entry per bunk
     const bunkList = T.bunks.filter(b => b.branch === this.BR && b.status === 'Active');
-    const bunkQ = (cf.bunk || '').trim().toLowerCase();
-    const bunkHits = bunkQ.length >= 3 ? bunkList.filter(b => b.name.toLowerCase().includes(bunkQ)) : [];
-    const dieselRate = Number(cf.rate) || 0, dieselLitres = Number(cf.litres) || 0, dieselTotal = dieselRate * dieselLitres;
-    const bunkRef = bunkHits.length === 1 ? bunkHits[0] : null;
-    const bunkHint = bunkRef ? `Matches ${bunkRef.name} in the branch list · rate on record ₹${bunkRef.rate.toFixed(2)}/L.` : (cf.bunk || '').trim() ? 'Not in the branch list. The name is saved with the trip for the admin to review.' : 'Type the bunk name from the diesel slip.';
-    const dieselHint = bunkRef && dieselRate && Math.abs(dieselRate - bunkRef.rate) > 0.009 ? `Bunk rate on record is ₹${bunkRef.rate.toFixed(2)}/L. Your entry differs and is sent to the admin with the trip.` : dieselTotal ? `${dieselLitres} L at ₹${dieselRate.toFixed(2)}/L${(cf.bunk || '').trim() ? ' · ' + cf.bunk.trim() : ''}.` : 'Type the rate and quantity from the bunk slip.';
-    const closeKmHint = cf.closeKm && closeNum >= startNum ? `Odometer distance ${(closeNum - startNum).toLocaleString('en-IN')} km. Next trip starts at ${closeNum.toLocaleString('en-IN')}.` : `Start KM ${startNum.toLocaleString('en-IN')}. Trip distance is calculated from this reading.`;
-    const odo = closeNum && closeNum >= startNum ? closeNum - startNum : (selTrip.odoKm || 0), gps = selTrip.gpsKm || 0, fixed = selTrip.fixedKm || 0;
+    const fillEditing = cf.fillEdit >= 0, fillEditorOpen = cf.fillOpen || !fills.length, fd = cf.fillDraft;
+    const fdL = Number(fd.litres) || 0, fdR = Number(fd.rate) || 0, fdRef = bunkList.find(b => b.name.toLowerCase() === fd.bunk.trim().toLowerCase());
+    const fillBad = { bunk: !fd.bunk.trim() ? 'Enter the bunk name.' : undefined, litres: !(fdL > 0) ? 'Required.' : undefined, rate: !(fdR > 0) ? 'Required.' : undefined };
+    const fillErr = cf.fillTried ? fillBad : {};
+    const dieselLitres = fills.reduce((a, x) => a + (Number(x.litres) || 0), 0), dieselTotal = fills.reduce((a, x) => a + (Number(x.litres) || 0) * (Number(x.rate) || 0), 0);
+    const money0 = n => '₹' + Math.round(n).toLocaleString('en-IN');
+    const legDirty = legEditorOpen && !!(cf.legDraft.reading || cf.legDraft.photo), fillDirty = fillEditorOpen && !!(fd.bunk.trim() || fd.litres || fd.rate);
+    const closeBad = { invoice: !cf.invoice ? 'Required for billing.' : undefined, advance: !cf.advance ? 'Required.' : undefined,
+      legs: legDirty ? 'Tap Add reading to save the reading you entered, or cancel it.' : !legs.length ? 'Add at least one odometer reading with its photo.' : undefined,
+      fills: fillDirty ? 'Tap Add bunk to save the bunk you entered, or cancel it.' : !fills.length ? 'Add the bunk where diesel was filled.' : undefined,
+      totalExpense: !(Number(cf.totalExpense) > 0) ? 'Enter the total expense for this trip.' : undefined,
+      qtyLoad: !cf.qtyLoad ? 'Required.' : undefined, qtyUnload: !cf.qtyUnload ? 'Required.' : undefined };
+    const cerr = s.showCloseErrors ? closeBad : {};
+    const odo = closeNum > startNum ? closeNum - startNum : (selTrip.odoKm || 0), gps = selTrip.gpsKm || 0, fixed = selTrip.fixedKm || 0;
     const pct = fixed ? Math.round(Math.abs(Math.max(odo, gps) - fixed) / fixed * 1000) / 10 : 0; const flagged = fixed && pct > 5;
-    const verify = { fixed: fixed ? fixed + ' km' : '—', gps: gps ? gps + ' km' : '—', odo: odo ? odo + ' km' : '—', pct: fixed ? pct + '%' : 'n/a', label: !fixed ? 'Non-business' : flagged ? 'Flagged for review' : 'Within 5%', bg: flagged ? 'var(--color-hazard-soft)' : 'var(--color-brand-tint)', fg: flagged ? '#7A4300' : 'var(--kr-green-900)' };
+    const verify = { fixed: fixed ? km(fixed) + ' km' : '—', gps: gps ? km(gps) + ' km' : '—', odo: odo ? km(odo) + ' km' : '—', pct: fixed ? pct + '%' : 'n/a', label: !fixed ? 'Non-business' : flagged ? 'Flagged for review' : 'Within 5%', bg: flagged ? 'var(--color-hazard-soft)' : 'var(--color-brand-tint)', fg: flagged ? '#7A4300' : 'var(--kr-green-900)' };
+    // Trip closed page — everything captured, laid out like the Open Trip review
+        const sumSec = (title, rows) => ({ title, rows: rows.map(([k, v, hi]) => ({ k, v: v || '—', bg: hi ? 'var(--color-hazard-soft)' : 'transparent' })) });
+    const closeSummary = [
+      sumSec('Trip', [['Trip number', selD.number], ['Vehicle', selD.vehicleNumber], ['Driver', selD.driverName], ['Client', selD.clientName], ['Unloading', selTrip.unloading], ['Trip type', selTrip.type + (selTrip.reason ? ' · ' + selTrip.reason : '')]]),
+      sumSec('Odometer', [['Start KM', km(startNum) + ' km'], ...legs.map((l, i) => [`${i + 1}. ${l.from} → ${l.to}`, `${km(l.reading)} km · +${km(l.reading - legPrev(i))} km`]), ['Closing odometer', closeNum ? km(closeNum) + ' km' : ''], ['Trip distance', odo ? km(odo) + ' km' : ''], ['Variance vs fixed', fixed ? pct + '%' : 'Not applicable', flagged]]),
+      sumSec('Billing', [['Loading invoice', cf.invoice], ['LR number', cf.lr], ['Loading qty', cf.qtyLoad], ['Unloading qty', cf.qtyUnload]]),
+      sumSec('Diesel', [...fills.map(x => [x.bunk, `${km(x.litres)} L × ₹${Number(x.rate).toFixed(2)} = ${money0(x.litres * x.rate)}`]), ['Total diesel', dieselLitres ? `${km(dieselLitres)} L · ${money0(dieselTotal)}` : '']]),
+      sumSec('Expenses', [['Advance given', cf.advance ? money0(Number(cf.advance)) : ''], ['Total expense', cf.totalExpense ? money0(Number(cf.totalExpense)) : ''], ['Remarks', (cf.remarks || '').trim()]])
+    ];
+    const closePhotos = legs.filter(l => l.photo).map((l, i) => ({ caption: `${i + 1}. ${l.to} · ${km(l.reading)} km`, url: l.photo.url || '' }));
     // Unclosed
     const activeD = this.active().map(t => this.decorate(t));
     const unclosedList = s.forceEmpty ? [] : activeD;
@@ -1303,11 +1696,11 @@ class Component extends DCLogic {
     const attDrivers = branchDrv.filter(d => d.approval === 'Approved').map(d => { const v = s.att[d.id] || ''; const onTrip = activeDrv.has(d.id); return { id: d.id, name: d.name, sub: onTrip ? 'On trip · marked present automatically' : d.type + (d.status === 'Inactive' ? ' · inactive' : ''), pBorder: v === 'P' ? 'var(--color-brand)' : 'var(--border-strong)', pBg: v === 'P' ? 'var(--color-brand)' : '#fff', pFg: v === 'P' ? '#fff' : 'var(--text-heading)', aBorder: v === 'A' ? 'var(--kr-red-600)' : 'var(--border-strong)', aBg: v === 'A' ? 'var(--kr-red-600)' : '#fff', aFg: v === 'A' ? '#fff' : 'var(--text-heading)' }; });
     const attendanceMarked = attDrivers.filter(d => s.att[d.id]).length, attendanceTotal = attDrivers.length;
     // Attendance · mark by vehicle — vehicle and driver lists come from the admin masters
-    const am = s.am, amVeh = T.V[am.vehicle], amDrv = T.D[am.driver];
+    const am = s.am, amVeh = T.V[am.vehicle], amDrv = this.drv(am.driver);
     const amDriverList = branchDrv.filter(d => d.approval === 'Approved');
     const amVehicleOptions = branchVeh.map(v => ({ value: v.id, label: `${v.number} · ${v.type}` }));
     const amDriverOptions = amDriverList.map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.status === 'Inactive' ? ' · inactive' : ''}` }));
-    const amMappedDrv = amVeh && amVeh.driver ? T.D[amVeh.driver] : null;
+    const amMappedDrv = amVeh && amVeh.driver ? this.drv(amVeh.driver) : null;
     const amVehicleHint = amVeh ? `${amVeh.type} · ${amVeh.status === 'Running' ? 'on trip' : amVeh.status.toLowerCase()} · ${amVeh.route}.` : `${branchVeh.length} Chennai HO vehicles from the admin vehicle master.`;
     const amDriverHint = amVeh && !amDrv ? `Pick the driver for ${amVeh.number}${amMappedDrv ? ` (mapped: ${amMappedDrv.name})` : ''}. They are marked present straight away.`
       : amDrv && !amVeh ? `Pick the vehicle for ${amDrv.name} to mark them present.`
@@ -1383,13 +1776,13 @@ class Component extends DCLogic {
       { group: 'Authentication', items: [['login', 'idle', 'Login'], ['login', 'error', 'Login · error'], ['login', 'loading', 'Login · loading']] },
       { group: 'Home', items: [['home', '', 'Home · actions'], ['open', 'home', 'Open trip'], ['closeList', 'home', 'Close trip'], ['gpsPerm', '', 'GPS permission']] },
       { group: 'Notifications', items: [['notifications', '', 'All notifications'], ['notifications', 'office', 'Head Office only'], ['notifications', 'alert', 'Alerts only'], ['notifDetail', 'N01', 'Detail · admin message'], ['notifDetail', 'N02', 'Detail · admin action'], ['notifDetail', 'al-att-0914', 'Detail · system alert']] },
-      { group: 'Open trip', items: [['open', 'blank', 'Form · empty'], ['open', 'errors', 'Form · validation errors'], ['open', 'filled', 'Form · filled with remarks'], ['open', 'nonbiz', 'Non-business · errors'], ['open', 'nonbizFilled', 'Non-business · filled'], ['open', 'addloc', 'Form · add GPS loading point'], ['open', 'newdriver', 'Form · new / acting driver'], ['open', 'discard', 'Discard confirmation'], ['open', 'unclosed', 'Vehicle has unclosed trip · popup'], ['trip', 'resume', 'Close first · back to Open Trip'], ['openReview', 'filled', 'Review before save'], ['openReview', 'saving', 'Saving · loading'], ['openDone', '', 'Success · trip ID']] },
-      { group: 'Close trip', items: [['closeList', '', 'Select trip'], ['closeList', 'empty', 'Select trip · empty'], ['close', 'blank', 'Close form'], ['close', 'errors', 'Close form · errors'], ['close', 'manual', 'Manual exception (T02)'], ['closeDone', 'ok', 'Success · within 5%'], ['closeDone', 'flag', 'Success · flagged variance']] },
+      { group: 'Open trip', items: [['open', 'blank', 'Form · empty'], ['open', 'errors', 'Form · validation errors'], ['open', 'filled', 'Form · filled with remarks'], ['open', 'singleDrop', 'Form · single unloading'], ['open', 'nonbiz', 'Non-business · errors'], ['open', 'nonbizFilled', 'Non-business · filled'], ['open', 'addloc', 'Form · add GPS loading point'], ['open', 'drvConfirm', 'Driver · confirm mapped (✓ / ✕)'], ['open', 'drvPick', 'Driver · choose available popup'], ['open', 'drvNone', 'Driver · mapped driver unavailable'], ['open', 'discard', 'Discard confirmation'], ['open', 'unclosed', 'Vehicle has unclosed trip · popup'], ['trip', 'resume', 'Close first · back to Open Trip'], ['openReview', 'filled', 'Review before save'], ['openReview', 'saving', 'Saving · loading'], ['openDone', '', 'Success · trip ID']] },
+      { group: 'Close trip', items: [['closeList', '', 'Select trip'], ['closeList', 'empty', 'Select trip · empty'], ['close', 'blank', 'Close form'], ['close', 'errors', 'Close form · errors'], ['close', 'manual', 'Manual exception (T02)'], ['close', 'filled', 'Filled · readings and 2 bunks'], ['close', 'editor', 'Adding another reading / bunk'], ['closeReview', '', 'Review before closing'], ['closeDone', 'ok', 'Success · within 5%'], ['closeDone', 'flag', 'Success · flagged variance']] },
       { group: 'Unclosed trips', items: [['unclosed', '', 'List'], ['unclosed', 'empty', 'Empty state'], ['trip', 'T01', 'Detail · enroute'], ['trip', 'T03', 'Detail · long open, GPS failed']] },
       { group: 'Trip history', items: [['history', '', 'Closed trips \u00b7 list'], ['history', 'vehicle', 'Filter \u00b7 vehicle'], ['history', 'calendar', 'Filter \u00b7 date range picker'], ['history', 'both', 'Filter \u00b7 vehicle + dates'], ['history', 'nomatch', 'Filter \u00b7 no match'], ['history', 'empty', 'Closed trips \u00b7 empty'], ['histTrip', 'T06', 'Closed trip detail'], ['histTrip', 'T07', 'Closed trip \u00b7 flagged']] },
       { group: 'Vehicle idle status', items: [['idle', '', 'Idle vehicles · reasons'], ['idle', 'errors', 'Idle · reason missing'], ['idle', 'other', 'Idle · other reason note']] },
       { group: 'Attendance', items: [['attMark', '', 'Mark new · vehicle & driver'], ['attMark', 'filled', 'Mark new · list filled'], ['attMark', 'empty', 'Mark new · list empty'], ['attMark', 'marked', 'Marked · saved days'], ['attMark', 'savedToday', 'Marked · today saved'], ['attendance', '', 'Daily attendance'], ['attMonth', '', 'Monthly tracker']] },
-      { group: 'Driver request', items: [['reqDriver', '', 'Request form'], ['reqDriver', 'errors', 'Request · errors'], ['reqDone', '', 'Sent for approval']] },
+      { group: 'Driver request', items: [['reqDriver', '', 'Request form'], ['reqDriver', 'errors', 'Request · errors'], ['reqDriver', 'filled', 'Request · filled with documents'], ['reqDriver', 'open', 'Request · from Open Trip'], ['reqDone', '', 'Sent for approval']] },
       { group: 'System states', items: [['offline', '', 'Offline · queued sync'], ['home', 'toast', 'Toast · saved']] }
     ].map((g, gi) => { const items = g.items.map(([screen, variant, label]) => { const a = s.screen === screen && (s.railVariant || '') === variant; return { screen, variant, label, current: a ? 'page' : 'false', weight: a ? 700 : 500, color: a ? 'var(--text-brand)' : 'var(--text-body)', bg: a ? 'var(--color-brand-tint)' : 'transparent', bar: a ? 'var(--color-brand)' : 'transparent' }; }); return { group: g.group, items, count: items.length, divider: gi ? 'var(--border-default)' : 'transparent', labelColor: items.some(i => i.bar !== 'transparent') ? 'var(--text-brand)' : 'var(--text-muted)' }; });
     const goOpen = () => s.gpsGranted ? this.go('open', { showErrors: false, form: this.blankForm(), railVariant: '', resumeOpen: null, unclosedAlert: null }) : this.go('gpsPerm');
@@ -1480,27 +1873,33 @@ class Component extends DCLogic {
         if (l.screen) this.go(l.screen, { railVariant: '' });
       },
       // open trip
-      form: { ...f, startKm: startKmVal, driver: driverVal }, clientOptions, vehicleOptions, locationOptions, driverOptions, remarksCount: (f.remarks || '').length,
+      form: { ...f, startKm: startKmVal, driver: driverVal }, clientOptions, vehicleOptions, locationOptions, remarksCount: (f.remarks || '').length,
       clientHint: !needsLoad ? 'Non-business movement has no client, so this list is empty.' : f.client ? `${clientCust.length} predefined ${clientCust.length === 1 ? 'customer' : 'customers'} · ${mappedVeh.length} Chennai HO ${mappedVeh.length === 1 ? 'vehicle' : 'vehicles'} mapped to this client.` : `${myClients.length} clients are mapped to you. One vehicle can run for several clients.`,
       vehicleHint: veh && (s.idle[veh.id] || {}).on ? `Marked idle${s.idle[veh.id].reason ? ': ' + s.idle[veh.id].reason : ''}. Opening this trip clears the idle record.` : (f.client ? `${availVeh.length} of ${mappedVeh.length} vehicles mapped to ${(T.C[f.client] || {}).name} are idle.` : `${availVeh.length} of ${branchVeh.length} Chennai HO vehicles available.`) + (onTripVeh.length ? ` ${onTripVeh.map(v => v.number).join(', ')} ${onTripVeh.length === 1 ? 'has an unclosed trip' : 'have unclosed trips'}.` : '') + (busyVeh.length ? ` Hidden: ${busyVeh.join(', ')}.` : ''),
       loadingHint: 'Predefined points are geofenced to 100 m. Add a new point from where you are standing if it is missing.',
-      driverHint, customerOptions, hasCustomers: customerOptions.length > 0, noCustomers: !customerOptions.length,
-      unloadCountLabel: !needsLoad ? 'Not needed' : !f.client ? 'Predefined per client' : picked.length ? `${picked.length} of ${clientCust.length} selected` : `Tick one or more · ${clientCust.length} available`,
+      dc, driverErrText, pickList, pickSub, pickEmpty: !pickList.length, drvPickOpen: s.drvPickOpen, customerOptions, hasCustomers: customerOptions.length > 0, noCustomers: !customerOptions.length,
+      unloadCountLabel: !needsLoad ? 'Not needed' : !f.client ? 'Predefined per client' : unloadMode === 'single' ? `${clientCust.length} available` : picked.length ? `${picked.length} of ${clientCust.length} selected` : `Tick one or more · ${clientCust.length} available`,
       routeKnown: picked.length > 0, routeSummary, fullRow: { width: '100%' },
-      setClient: e => { const client = e.target.value; this.setState(st => ({ form: { ...st.form, client, vehicle: client && st.form.vehicle && !((T.V[st.form.vehicle] || {}).clients || []).includes(client) ? '' : st.form.vehicle, unloading: [] } })); },
-      setVehicle: e => { const vid = e.target.value, open = this.active().find(t => t.vehicle === vid); if (open) { this.setState({ unclosedAlert: { vehicle: vid, trip: open.id } }); return; } this.set(['form', 'vehicle'], vid); }, setRemarks: e => this.set(['form', 'remarks'], e.target.value.slice(0, 250)), setStartKm: e => this.set(['form', 'startKm'], e.target.value), setReason: e => this.set(['form', 'reason'], e.target.value),
+      // Unloading — Single: one customer from a dropdown. Multiple: tick several drops.
+      unloadSingle: customerOptions.length > 0 && unloadMode === 'single', unloadMulti: customerOptions.length > 0 && unloadMode === 'multiple',
+      unloadModeTabs: [['single', 'Single', 'One drop'], ['multiple', 'Multiple', 'Several drops']].map(([value, label, sub]) => { const on = unloadMode === value; return { value, label, sub, on: on ? 'true' : 'false', border: on ? 'var(--color-brand)' : 'var(--border-strong)', bg: on ? 'var(--color-brand)' : '#fff', fg: on ? '#fff' : 'var(--text-heading)' }; }),
+      setUnloadMode: e => { const mode = e.currentTarget.dataset.v; this.setState(st => ({ form: { ...st.form, unloadMode: mode, unloading: mode === 'single' ? (st.form.unloading || []).slice(0, 1) : st.form.unloading } })); },
+      singleCustOptions: customerOptions.map(c => ({ value: c.id, label: c.name })), singleCust: picked[0] || '',
+      setSingleCust: e => this.set(['form', 'unloading'], e.target.value ? [e.target.value] : []),
+      singleCustInfo: unloadMode === 'single' && picked[0] ? (customerOptions.find(c => c.id === picked[0]) || {}).sub : '',
+      unloadErrText: unloadMode === 'single' ? 'Select the unloading customer.' : 'Tick at least one unloading customer.',
+      setClient: e => { const client = e.target.value; this.setState(st => { const drop = client && st.form.vehicle && !((T.V[st.form.vehicle] || {}).clients || []).includes(client); return { form: { ...st.form, client, unloading: [], ...(drop ? { vehicle: '', driver: '', driverOk: false } : {}) } }; }); },
+      setVehicle: e => { const vid = e.target.value, open = this.active().find(t => t.vehicle === vid); if (open) { this.setState({ unclosedAlert: { vehicle: vid, trip: open.id } }); return; } this.setState(st => ({ form: { ...st.form, vehicle: vid, driver: '', driverOk: false } })); }, setRemarks: e => this.set(['form', 'remarks'], e.target.value.slice(0, 250)), setStartKm: e => this.set(['form', 'startKm'], e.target.value), setReason: e => this.set(['form', 'reason'], e.target.value),
       setLoading: e => { if (e.target.value === '__add') { this.setState({ newLoc: { open: true, name: '' }, showNewLocErr: false }); return; } this.set(['form', 'loading'], e.target.value); },
-      setDriver: e => { if (e.target.value === '__add') { this.setState({ newDrv: { open: true, name: '', licence: '', phone: '' }, showNewDrvErr: false }); return; } this.set(['form', 'driver'], e.target.value); },
+      acceptDriver: () => this.setState(st => ({ form: { ...st.form, driver: driverVal, driverOk: true } })),
+      rejectDriver: () => this.setState({ drvPickOpen: true }), openDrvPick: () => this.setState({ drvPickOpen: true }), closeDrvPick: () => this.setState({ drvPickOpen: false }),
+      pickDriver: e => { const id = e.currentTarget.dataset.id; this.setState(st => ({ drvPickOpen: false, form: { ...st.form, driver: id, driverOk: true } })); },
+      goReqDriverFromOpen: () => this.go('reqDriver', { drvPickOpen: false, reqFromOpen: true, rf: this.blankRf(), showReqErrors: false, railVariant: '' }),
       addLocOpen: s.newLoc.open, newLoc: s.newLoc, newLocErr: s.showNewLocErr && !s.newLoc.name.trim() ? 'Name the point so it can be reused.' : undefined,
       setNewLocName: e => this.set(['newLoc', 'name'], e.target.value),
       cancelNewLoc: () => this.setState({ newLoc: { open: false, name: '' }, showNewLocErr: false }),
       saveNewLoc: () => { const name = s.newLoc.name.trim(); if (!name) { this.setState({ showNewLocErr: true }); return; } const id = 'LX' + (s.addedLocations.length + 1); this.setState(st => ({ addedLocations: [...st.addedLocations, { id, name, branch: this.BR, address: 'GPS 13.0827, 80.2707', radius: 100, status: 'Active' }], form: { ...st.form, loading: id }, newLoc: { open: false, name: '' }, showNewLocErr: false })); this.toast('success', 'Loading point added', `${name} saved at 13.0827, 80.2707 with a 100 m radius.`); },
-      addDrvOpen: s.newDrv.open, newDrv: s.newDrv,
-      newDrvErr: s.showNewDrvErr ? { name: !s.newDrv.name ? 'Required.' : undefined, licence: !s.newDrv.licence ? 'Required.' : undefined, phone: !s.newDrv.phone ? 'Required.' : undefined } : {},
-      setNewDrvName: e => this.set(['newDrv', 'name'], e.target.value), setNewDrvLicence: e => this.set(['newDrv', 'licence'], e.target.value), setNewDrvPhone: e => this.set(['newDrv', 'phone'], e.target.value),
-      cancelNewDrv: () => this.setState({ newDrv: { open: false, name: '', licence: '', phone: '' }, showNewDrvErr: false }),
-      saveNewDrv: () => { const d = s.newDrv; if (!d.name || !d.licence || !d.phone) { this.setState({ showNewDrvErr: true }); return; } const id = 'DX' + (s.addedDrivers.length + 1); this.setState(st => ({ addedDrivers: [...st.addedDrivers, { id, name: d.name, licence: d.licence, phone: d.phone, branch: this.BR, type: 'Acting', status: 'Active', approval: 'Pending approval' }], form: { ...st.form, driver: id }, newDrv: { open: false, name: '', licence: '', phone: '' }, showNewDrvErr: false })); this.toast('warning', 'Sent for approval', `${d.name} can drive this trip. Head Office must approve the driver record.`); },
-      setType: e => { const type = e.currentTarget.dataset.v; this.setState(st => ({ form: type === st.form.type ? st.form : { ...this.blankForm(), type }, showErrors: false, newLoc: { open: false, name: '' }, newDrv: { open: false, name: '', licence: '', phone: '' } })); },
+      setType: e => { const type = e.currentTarget.dataset.v; this.setState(st => ({ form: type === st.form.type ? st.form : { ...this.blankForm(), type }, showErrors: false, newLoc: { open: false, name: '' }, drvPickOpen: false })); },
       tripTypeTabs: ['Business', 'Non-Business'].map(x => { const on = f.type === x; return { value: x, label: x, on: on ? 'true' : 'false', border: on ? 'var(--color-brand)' : 'var(--border-strong)', bg: on ? 'var(--color-brand)' : '#fff', fg: on ? '#fff' : 'var(--text-heading)' }; }),
       clientOptionsShown: needsLoad ? clientOptions : [], clientPlaceholder: needsLoad ? 'Select client' : 'No client · non-business',
       unloadEmptyText: needsLoad ? 'Select a client first. Only that client’s predefined customers can be unloaded on this trip.' : 'No unloading for non-business movement.',
@@ -1508,9 +1907,7 @@ class Component extends DCLogic {
       tripNumberColor: veh ? 'var(--text-heading)' : 'var(--text-muted)',
       reviewNote: needsLoad ? 'Vehicle is idle with no active trip and is mapped to this client, the driver is free, loading and unloading points are geofenced, and start KM matches the last closing reading.' : 'Vehicle is idle with no active trip and the driver is free. No billing; GPS tracks the movement against the km entered.',
       isNonBusiness: f.type === 'Non-Business', isBusiness: f.type !== 'Non-Business',
-      nbDriverOptions: drvList.map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.approval === 'Approved' ? '' : ' · pending approval'}` })),
       nbVehicleHint: veh ? `${veh.type} · last closing KM ${lastKm(veh).toLocaleString('en-IN')}.` : `${availVeh.length} of ${branchVeh.length} Chennai HO vehicles from the admin vehicle master are free.`,
-      nbDriverHint: drvSel && mappedDrv && drvSel.id === mappedDrv.id ? `Mapped driver for ${veh.number}. Change it if someone else is driving.` : `${drvList.length} free Chennai HO drivers from the admin driver master.`,
       setFrom: e => this.set(['form', 'from'], e.target.value), setTo: e => this.set(['form', 'to'], e.target.value), setKm: e => this.set(['form', 'km'], e.target.value.replace(/[^\d.]/g, '')),
       typeHint: f.type === 'Business' ? 'Billable movement. Invoice details are captured when the trip closes.' : f.type === 'Non-Business' ? 'No billing. Record where the vehicle is going and why.' : 'Every vehicle movement is recorded, billable or not.',
       reasonOptions: ['Maintenance', 'Internal Movement', 'Empty Return', 'Driver Testing'].map(x => ({ value: x, label: x })),
@@ -1522,10 +1919,53 @@ class Component extends DCLogic {
       // close
       activeTrips: activeD, noActive: !activeD.length, pickClose: e => this.go('close', { selected: e.currentTarget.dataset.id, showCloseErrors: false, cf: this.blankClose() }),
       sel: selD, selLongOpen: selD.hoursOpen > 24, selRows, gpsLog: T.gpsLog,
-      cf, setCf: this.bind('cf', Object.keys(cf)), cerr, bunkHint,
-      setBunk: e => { const name = e.target.value; const q = name.trim().toLowerCase(); const hit = q.length >= 3 ? bunkList.filter(b => b.name.toLowerCase().includes(q)) : []; this.setState(st => ({ cf: { ...st.cf, bunk: name, rate: hit.length === 1 && !st.cf.rate ? hit[0].rate.toFixed(2) : st.cf.rate } })); },
-      dieselAmount: dieselTotal ? '₹' + Math.round(dieselTotal).toLocaleString('en-IN') : '—', dieselHint, closeHasErrors: Object.values(cerr).some(Boolean), closeKmHint, closeManualException: (selTrip.flags || []).includes('GPS weak') || (selTrip.flags || []).includes('GPS failed'),
-      submitClose: () => { const bad = !cf.invoice || !cf.closeKm || closeNum < startNum || !cf.advance || !(cf.bunk || '').trim() || !(Number(cf.rate) > 0) || !(Number(cf.litres) > 0) || !cf.qtyLoad || !cf.qtyUnload; if (bad) { this.setState({ showCloseErrors: true, railVariant: 'errors' }); return; } this.setState(st => ({ closedIds: [...st.closedIds, selTrip.id], closedData: { ...st.closedData, [selTrip.id]: { ...cf, closedAt: '14 Sep 2026 09:41' } } })); const resume = s.resumeOpen && s.resumeOpen.trip === selTrip.id; if (resume) { this.setState(st => ({ screen: 'open', history: ['home'], resumeOpen: null, railVariant: '', showErrors: false, form: { ...st.form, vehicle: s.resumeOpen.vehicle, startKm: '' } })); this.toast(flagged ? 'warning' : 'success', 'Trip closed · back to Open Trip', `${selD.vehicleNumber} is free now. Finish opening the new trip.${flagged ? ` Variance ${pct}% sent to admin exceptions.` : ''}`); } else { this.go('closeDone'); this.toast(flagged ? 'warning' : 'success', flagged ? 'Closed with flag' : 'Trip closed', flagged ? `Variance ${pct}% sent to admin exceptions.` : `${selD.vehicleNumber} is available again.`); } this.logActivity({ title: `Trip closed · ${selD.number}`, body: flagged ? `Closed with a ${pct}% distance variance. It was sent to Head Office exceptions for review.` : `${selD.vehicleNumber} is available again. Distance is within the 5% limit.`, rows: [['Trip', selD.number], ['Vehicle', selD.vehicleNumber], ['Invoice', cf.invoice], ['Closing odometer', Number(cf.closeKm).toLocaleString('en-IN') + ' km'], ['Diesel', `${cf.litres} L at ₹${cf.rate}/L`], ['Variance', fixed ? pct + '%' : 'Not applicable']], link: { trip: selTrip.id }, linkLabel: 'View closed trip' }); },
+      cf: { ...cf, legDraft: ld }, setCf: this.bind('cf', ['invoice', 'lr', 'advance', 'qtyLoad', 'qtyUnload']), cerr,
+      closeHasErrors: Object.values(cerr).some(Boolean), closeManualException: (selTrip.flags || []).includes('GPS weak') || (selTrip.flags || []).includes('GPS failed'),
+      // odometer readings
+      pointOptions, legErr, legBox: { border: cerr.legs ? 'var(--status-danger)' : 'var(--border-default)' },
+      legCards: legs.map((l, i) => ({ i, title: `Reading ${i + 1}`, route: `${l.from} → ${l.to}`, reading: `${km(l.reading)} km`, km: `+${km(l.reading - legPrev(i))} km`, url: (l.photo && l.photo.url) || '', noPhoto: !(l.photo && l.photo.url), bg: legEditing && cf.legEdit === i ? 'var(--color-brand-tint)' : '#fff' })),
+      legSummary: legs.length ? { close: km(closeNum) + ' km', dist: `Trip distance ${km(closeNum - startNum)} km from start ${km(startNum)}` } : false,
+      legEditorOpen, legAddShown: !legEditorOpen, legCanCancel: legs.length > 0, legEditorTitle: legEditing ? `Edit reading ${cf.legEdit + 1}` : `Reading ${legs.length + 1}`, legSaveLabel: legEditing ? 'Save changes' : 'Add reading',
+      legPrevText: km(ldPrev), legReadingHint: ld.reading && !legBad.reading ? `+${km(ldNum - ldPrev)} km on this leg.` : `Previous reading ${km(ldPrev)} km${di === 0 ? ' (start KM)' : ''}.`,
+      legPhotoEmpty: !ld.photo, legPhotoSet: !!ld.photo, legPhoto: ld.photo || {}, legPhotoBorder: legErr.photo ? 'var(--status-danger)' : 'var(--border-strong)',
+      setLegFrom: e => this.patchCf({ legDraft: { ...ld, from: e.target.value } }), setLegTo: e => this.patchCf({ legDraft: { ...ld, to: e.target.value } }),
+      setLegReading: e => this.patchCf({ legDraft: { ...ld, reading: e.target.value.replace(/\D/g, '').slice(0, 9) } }),
+      pickLegPhoto: e => { const file = e.target.files && e.target.files[0]; e.target.value = ''; if (!file) return; if (!/^image\//.test(file.type)) { this.toast('warning', 'Not an image', 'Take a photo of the odometer.'); return; }
+        const kb = file.size / 1024, size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.max(1, Math.round(kb)) + ' KB';
+        this.shrinkImage(file).then(url => this.setState(st => ({ cf: { ...st.cf, legDraft: { ...st.cf.legDraft, from: st.cf.legDraft.from || ld.from, to: st.cf.legDraft.to || ld.to, photo: { name: file.name, size, url } } } }))); },
+      clearLegPhoto: () => this.patchCf({ legDraft: { ...ld, photo: null } }),
+      saveLeg: () => { if (Object.values(legBad).some(Boolean)) { this.patchCf({ legTried: true }); return; } const leg = { from: ld.from, to: ld.to, reading: String(ldNum), photo: ld.photo };
+        this.patchCf({ legs: legEditing ? legs.map((x, j) => j === cf.legEdit ? leg : x) : [...legs, leg], legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false }); },
+      cancelLeg: () => this.patchCf({ legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false }),
+      openLegEditor: () => this.patchCf({ legDraft: this.blankLeg(), legEdit: -1, legOpen: true, legTried: false }),
+      editLeg: e => { const i = Number(e.currentTarget.dataset.i); this.patchCf({ legDraft: { ...legs[i] }, legEdit: i, legOpen: true, legTried: false }); },
+      removeLeg: e => { const i = Number(e.currentTarget.dataset.i); this.patchCf({ legs: legs.filter((_, j) => j !== i), legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false }); },
+      // diesel bunks
+      fillErr, fillBox: { border: cerr.fills ? 'var(--status-danger)' : 'var(--border-default)' },
+      fillCards: fills.map((x, i) => ({ i, n: i + 1, bunk: x.bunk, line: `${km(x.litres)} L × ₹${Number(x.rate).toFixed(2)}/L = ${money0(x.litres * x.rate)}`, bg: fillEditing && cf.fillEdit === i ? 'var(--color-brand-tint)' : '#fff' })),
+      fillEditorOpen, fillAddShown: !fillEditorOpen, fillCanCancel: fills.length > 0, fillEditorTitle: fillEditing ? `Edit bunk ${cf.fillEdit + 1}` : `Bunk ${fills.length + 1}`, fillSaveLabel: fillEditing ? 'Save changes' : 'Add bunk',
+      fillBunkHint: fdRef ? `Branch bunk · rate on record ₹${fdRef.rate.toFixed(2)}/L.` : 'Type the bunk name from the diesel slip.',
+      fillDraftAmount: fdL && fdR ? money0(fdL * fdR) : '—',
+      setFillBunk: e => { const bunk = e.target.value, ref = bunkList.find(b => b.name.toLowerCase() === bunk.trim().toLowerCase()); this.patchCf({ fillDraft: { ...fd, bunk, rate: ref && !fd.rate ? ref.rate.toFixed(2) : fd.rate } }); },
+      setFillLitres: e => this.patchCf({ fillDraft: { ...fd, litres: e.target.value.replace(/[^\d.]/g, '') } }), setFillRate: e => this.patchCf({ fillDraft: { ...fd, rate: e.target.value.replace(/[^\d.]/g, '') } }),
+      saveFill: () => { if (Object.values(fillBad).some(Boolean)) { this.patchCf({ fillTried: true }); return; } const x = { bunk: fd.bunk.trim(), litres: String(fdL), rate: fdR.toFixed(2) };
+        this.patchCf({ fills: fillEditing ? fills.map((y, j) => j === cf.fillEdit ? x : y) : [...fills, x], fillDraft: this.blankFill(), fillEdit: -1, fillOpen: false, fillTried: false }); },
+      cancelFill: () => this.patchCf({ fillDraft: this.blankFill(), fillEdit: -1, fillOpen: false, fillTried: false }),
+      openFillEditor: () => this.patchCf({ fillDraft: this.blankFill(), fillEdit: -1, fillOpen: true, fillTried: false }),
+      editFill: e => { const i = Number(e.currentTarget.dataset.i); this.patchCf({ fillDraft: { ...fills[i] }, fillEdit: i, fillOpen: true, fillTried: false }); },
+      removeFill: e => { const i = Number(e.currentTarget.dataset.i); this.patchCf({ fills: fills.filter((_, j) => j !== i), fillDraft: this.blankFill(), fillEdit: -1, fillOpen: false, fillTried: false }); },
+      dieselAmount: dieselTotal ? money0(dieselTotal) : '—', dieselTotalLabel: fills.length > 1 ? `Diesel total · ${fills.length} bunks · ${km(dieselLitres)} L` : 'Diesel amount',
+      // expense and remarks
+      setTotalExpense: e => this.patchCf({ totalExpense: e.target.value.replace(/\D/g, '').slice(0, 8) }),
+      totalExpenseHint: `Everything spent on this trip: diesel${dieselTotal ? ' (' + money0(dieselTotal) + ')' : ''}, toll, driver bata, loading charges.`,
+      setCloseRemarks: e => this.patchCf({ remarks: e.target.value.slice(0, 250) }), closeRemarksCount: (cf.remarks || '').length,
+      closeSummary, closePhotos, hasClosePhotos: closePhotos.length > 0,
+      closeReviewHead: flagged ? `Variance ${pct}% will be flagged.` : 'Validation passed.',
+      closeReviewNote: flagged ? `The odometer distance is outside 5% of the ${km(fixed)} km fixed route, so Head Office reviews it after you close.` : fixed ? `Odometer distance is within 5% of the ${km(fixed)} km fixed route.` : 'Non-business movement. No fixed route to check against.',
+      submitClose: () => { if (Object.values(closeBad).some(Boolean)) { this.setState({ showCloseErrors: true, railVariant: 'errors' }); return; } this.go('closeReview', { railVariant: '' }); },
+      confirmClose: () => {
+        const rec = { invoice: cf.invoice, lr: cf.lr, advance: cf.advance, closeKm: String(closeNum), bunk: fills.map(x => x.bunk).join(', '), litres: String(dieselLitres), rate: dieselLitres ? (dieselTotal / dieselLitres).toFixed(2) : '', fills, legs, totalExpense: cf.totalExpense, remarks: (cf.remarks || '').trim(), qtyLoad: cf.qtyLoad, qtyUnload: cf.qtyUnload, closedAt: '14 Sep 2026 09:41' };
+        this.setState(st => ({ closedIds: [...st.closedIds, selTrip.id], closedData: { ...st.closedData, [selTrip.id]: rec } })); const resume = s.resumeOpen && s.resumeOpen.trip === selTrip.id; if (resume) { this.setState(st => ({ screen: 'open', history: ['home'], resumeOpen: null, railVariant: '', showErrors: false, form: { ...st.form, vehicle: s.resumeOpen.vehicle, startKm: '', driver: '', driverOk: false } })); this.toast(flagged ? 'warning' : 'success', 'Trip closed · back to Open Trip', `${selD.vehicleNumber} is free now. Finish opening the new trip.${flagged ? ` Variance ${pct}% sent to admin exceptions.` : ''}`); } else { this.go('closeDone'); this.toast(flagged ? 'warning' : 'success', flagged ? 'Closed with flag' : 'Trip closed', flagged ? `Variance ${pct}% sent to admin exceptions.` : `${selD.vehicleNumber} is available again.`); } this.logActivity({ title: `Trip closed · ${selD.number}`, body: flagged ? `Closed with a ${pct}% distance variance. It was sent to Head Office exceptions for review.` : `${selD.vehicleNumber} is available again. Distance is within the 5% limit.`, rows: [['Trip', selD.number], ['Vehicle', selD.vehicleNumber], ['Invoice', cf.invoice], ['Closing odometer', km(closeNum) + ' km'], ['Diesel', `${km(dieselLitres)} L · ${fills.length} ${fills.length === 1 ? 'bunk' : 'bunks'} · ${money0(dieselTotal)}`], ['Total expense', money0(Number(cf.totalExpense))], ['Variance', fixed ? pct + '%' : 'Not applicable']], link: { trip: selTrip.id }, linkLabel: 'View closed trip' }); },
       verify,
       // trip history
       histList: histShown, histCount: histShown.length, histWord: histShown.length === 1 ? 'trip' : 'trips', histEmpty: !histShown.length, hist,
@@ -1577,15 +2017,43 @@ class Component extends DCLogic {
       toggleAttDay: e => { const day = e.currentTarget.dataset.day; this.setState({ attOpenDay: openDay === day ? 'none' : day }); },
       setAmVehicle: e => this.pickAm({ vehicle: e.target.value }),
       setAmDriver: e => this.pickAm({ driver: e.target.value }),
-      removeAm: e => { const id = e.currentTarget.dataset.id, d = T.D[id], vn = (T.V[s.attVeh[id]] || {}).number; this.setState(st => { const attVeh = { ...st.attVeh }; delete attVeh[id]; return { att: { ...st.att, [id]: '' }, attVeh }; }); this.toast('warning', 'Removed', `${d ? d.name : 'Driver'}${vn ? ' · ' + vn : ''} removed from today’s attendance.`); },
+      removeAm: e => { const id = e.currentTarget.dataset.id, d = this.drv(id), vn = (T.V[s.attVeh[id]] || {}).number; this.setState(st => { const attVeh = { ...st.attVeh }; delete attVeh[id]; return { att: { ...st.att, [id]: '' }, attVeh }; }); this.toast('warning', 'Removed', `${d ? d.name : 'Driver'}${vn ? ' · ' + vn : ''} removed from today’s attendance.`); },
       saveAmEntry: () => { if (!Object.keys(todayEntries).length) { this.toast('warning', 'Nothing to save', 'Pick a vehicle and driver to mark someone present first.'); return; } this.setState(st => ({ attSaved: [{ day: TODAY_DAY, label: 'Sun, 14 Sep 2026', savedAt: '09:41', entries: todayEntries }, ...st.attSaved.filter(r => r.day !== TODAY_DAY)], attTab: 'marked', attOpenDay: TODAY_DAY, railVariant: '' })); this.toast(attendanceMarked < attendanceTotal ? 'warning' : 'success', attendanceMarked < attendanceTotal ? 'Saved · incomplete' : 'Attendance saved', `${attendanceMarked} of ${attendanceTotal} drivers marked for 14 September.`); this.logActivity({ title: 'Attendance saved · 14 Sep', body: `${attendanceMarked} of ${attendanceTotal} drivers marked${attendanceMarked < attendanceTotal ? ', some still unmarked' : ''}.`, rows: attDrivers.map(d => [d.name, s.att[d.id] === 'P' ? 'Present' + (s.attVeh[d.id] ? ' · ' + (T.V[s.attVeh[d.id]] || {}).number : '') : s.att[d.id] === 'A' ? 'Absent' : 'Not marked']), link: { screen: 'attMark' }, linkLabel: 'Open attendance' }); },
       markDriver: e => this.set(['att', e.currentTarget.dataset.id], e.currentTarget.dataset.v),
       saveAttendance: () => { this.toast(attendanceMarked < attendanceTotal ? 'warning' : 'success', attendanceMarked < attendanceTotal ? 'Saved · incomplete' : 'Attendance saved', `${attendanceMarked} of ${attendanceTotal} drivers marked for 14 September.`); this.logActivity({ title: 'Attendance saved · 14 Sep', body: `${attendanceMarked} of ${attendanceTotal} drivers marked${attendanceMarked < attendanceTotal ? ', some still unmarked' : ''}.`, rows: attDrivers.map(d => [d.name, s.att[d.id] === 'P' ? 'Present' + (s.attVeh[d.id] ? ' · ' + (T.V[s.attVeh[d.id]] || {}).number : '') : s.att[d.id] === 'A' ? 'Absent' : 'Not marked']), link: { screen: 'attMark' }, linkLabel: 'Open attendance' }); this.go('home'); },
       weekdays, monthCells, pickDay: e => { const d = Number(e.currentTarget.dataset.day); if (d && d <= 14) this.go('attendance'); },
       // driver request
-      rf: s.rf, setRf: this.bind('rf', ['name', 'licence', 'phone', 'type']), driverTypeOptions: [{ value: 'Regular', label: 'Regular driver' }, { value: 'Supporting', label: 'Supporting driver' }],
-      rerr: s.showReqErrors ? { name: !s.rf.name ? 'Required.' : undefined, licence: !s.rf.licence ? 'Required.' : undefined, phone: !s.rf.phone ? 'Required.' : undefined } : {},
-      submitDriver: () => { if (!s.rf.name || !s.rf.licence || !s.rf.phone) { this.setState({ showReqErrors: true, railVariant: 'errors' }); return; } this.go('reqDone'); this.logActivity({ title: `Driver request sent · ${s.rf.name}`, body: `${s.rf.name} was sent to Head Office for approval as a ${s.rf.type === 'Regular' ? 'regular' : 'supporting'} driver.`, rows: [['Driver', s.rf.name], ['Type', s.rf.type], ['Licence', s.rf.licence], ['Mobile', '+91 ' + s.rf.phone], ['Status', 'Pending approval']] }); },
+      reqSent: (() => { const r = s.drvReqs.find(x => x.id === s.reqSentId) || { status: 'Pending', name: rf.name }; const t = { Pending: ['Pending approval', 'var(--color-hazard-soft)', '#7A4300', 'Waiting for Head Office. This updates here as soon as they decide.'], Approved: ['Approved', 'var(--kr-green-100)', 'var(--kr-green-800)', `${r.name} is in the Chennai HO driver list and can be assigned to trips.`], Rejected: ['Rejected', 'var(--kr-red-100)', 'var(--kr-red-800)', `Head Office rejected the request${r.reason ? ': ' + r.reason : '.'}`] }[r.status] || []; return { label: t[0], bg: t[1], fg: t[2], note: t[3], when: r.decidedAt ? 'Decided ' + r.decidedAt : r.requestedAt ? 'Sent ' + r.requestedAt : 'Sent just now' }; })(),
+      rf, setRf: this.bind('rf', ['name', 'holder']), rerr, uploads, reqFromOpen: s.reqFromOpen,
+      reqHasErrors: reqErrorCount > 0, reqErrorCount, reqErrorWord: reqErrorCount === 1 ? 'field' : 'fields', refCount: (rf.reference || '').length,
+      reqIntro: s.reqFromOpen && veh ? `For ${veh.number}. The trip can open with this driver now; the driver stays Pending approval until Head Office clears the request.` : 'New drivers need Head Office approval before they join the driver master. The request goes to Head Office.',
+      setRfLicence: e => this.set(['rf', 'licence'], e.target.value.toUpperCase().slice(0, 20)),
+      setRfPhone: e => this.set(['rf', 'phone'], digits(e.target.value).slice(0, 10)), setRfFamily: e => this.set(['rf', 'family'], digits(e.target.value).slice(0, 10)),
+      setRfAccount: e => this.set(['rf', 'account'], digits(e.target.value).slice(0, 18)), setRfIfsc: e => this.set(['rf', 'ifsc'], e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11)),
+      setRfReference: e => this.set(['rf', 'reference'], e.target.value.slice(0, 250)),
+      pickUpload: e => { const key = e.currentTarget.dataset.k, file = e.target.files && e.target.files[0]; e.target.value = ''; if (!file) return;
+        if (!/^image\//.test(file.type)) { this.toast('warning', 'Not an image', 'Upload a JPG or PNG photo of the document.'); return; }
+        if (file.size > 5 * 1024 * 1024) { this.toast('warning', 'File too large', 'Keep the photo under 5 MB.'); return; }
+        const kb = file.size / 1024, size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.max(1, Math.round(kb)) + ' KB';
+        this.shrinkImage(file).then(url => this.set(['rf', key], { name: file.name, size, url })); },
+      clearUpload: e => this.set(['rf', e.currentTarget.dataset.k], null),
+      submitDriver: () => {
+        if (Object.values(rfBad).some(Boolean)) { this.setState({ showReqErrors: true, railVariant: 'errors' }); return; }
+        const name = rf.name.trim(), acct = digits(rf.account), id = 'DR' + Date.now(), vehNo = s.reqFromOpen && veh ? veh.number : '';
+        const doc = x => x ? { name: x.name, size: x.size, url: x.url || '' } : null;
+        const req = { id, status: 'Pending', branch: this.BR, supervisor: this.SUP, supervisorName: (T.S[this.SUP] || {}).name || 'Supervisor', requestedAt: this.nowText(), vehicle: vehNo,
+          name, licence: rf.licence, phone: digits(rf.phone), licImg: doc(rf.licImg), aadhaarImg: doc(rf.aadhaarImg), holder: rf.holder.trim(), account: acct, ifsc: rf.ifsc, family: digits(rf.family), reference: rf.reference.trim() };
+        const list = [req, ...this.readDrvReqs().filter(r => r.id !== id)];
+        try { localStorage.setItem(this.DRV_KEY, JSON.stringify(list)); } catch (e) {
+          // Photos can overflow storage; send the request without them rather than lose it.
+          try { localStorage.setItem(this.DRV_KEY, JSON.stringify([{ ...req, licImg: req.licImg && { ...req.licImg, url: '' }, aadhaarImg: req.aadhaarImg && { ...req.aadhaarImg, url: '' } }, ...list.slice(1)])); } catch (e2) { /* storage blocked: kept on this device only */ }
+        }
+        this.setState(st => ({ drvReqs: [req, ...st.drvReqs.filter(r => r.id !== id)], reqSentId: id }));
+        this.logActivity({ title: `Driver request sent · ${name}`, body: `${name} was sent to Head Office for approval${vehNo ? ` and assigned to the trip being opened on ${vehNo}` : ''}.`, rows: [['Driver', name], ['Licence', rf.licence], ['Mobile', '+91 ' + rf.phone], ['Documents', 'Licence and Aadhaar images attached'], ['Bank', `${rf.holder.trim()} · A/c ••••${acct.slice(-4)} · ${rf.ifsc}`], ['Family contact', '+91 ' + rf.family], ...(rf.reference.trim() ? [['Reference', rf.reference.trim()]] : []), ['Status', 'Pending approval']] });
+        if (!s.reqFromOpen) { this.go('reqDone'); return; }
+        this.setState(st => { const h = [...st.history]; const prev = h.pop() || 'open'; return { form: { ...st.form, driver: id, driverOk: true }, screen: prev, history: h, reqFromOpen: false, showReqErrors: false, railVariant: '' }; });
+        this.toast('warning', 'Sent for approval', `${name} is set as the driver. Head Office must approve the driver record.`);
+      },
       grantGps: () => { this.setState({ gpsGranted: true }); this.go('open'); },
       notifOpen: s.notifOpen, toast: s.toast, hideToast: () => this.setState({ toast: null })
     };
@@ -1593,12 +2061,22 @@ class Component extends DCLogic {
   pickAm(patch) {
     const am = { ...this.state.am, ...patch };
     if (!am.vehicle || !am.driver) { this.setState({ am }); return; }
-    const T = this.T(), d = T.D[am.driver], v = T.V[am.vehicle];
+    const T = this.T(), d = this.drv(am.driver), v = T.V[am.vehicle];
     this.setState(st => ({ att: { ...st.att, [am.driver]: 'P' }, attVeh: { ...st.attVeh, [am.driver]: am.vehicle }, am: { vehicle: '', driver: '' } }));
     this.toast('success', 'Marked present', `${d.name} · ${v.number} · 14 September.`);
   }
   bind(key, fields) { const o = {}; fields.forEach(k => o[k] = e => this.set([key, k], e.target.value)); return o; }
-  blankForm() { return { client: '', vehicle: '', loading: '', unloading: [], startKm: '', driver: '', type: 'Business', reason: '', remarks: '', from: '', to: '', km: '' }; }
+  blankForm() { return { client: '', vehicle: '', loading: '', unloading: [], unloadMode: 'single', startKm: '', driver: '', driverOk: false, type: 'Business', reason: '', remarks: '', from: '', to: '', km: '' }; }
+  // Longest side 1000 px, JPEG ~0.7: a readable document photo at roughly 100 KB, small enough for localStorage.
+  shrinkImage(file) {
+    return new Promise(done => {
+      const src = URL.createObjectURL(file), img = new Image();
+      img.onload = () => { const k = Math.min(1, 1000 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(src); done(c.toDataURL('image/jpeg', 0.7)); };
+      img.onerror = () => { URL.revokeObjectURL(src); done(''); };
+      img.src = src;
+    });
+  }
+  blankRf() { return { name: '', licence: '', phone: '', licImg: null, aadhaarImg: null, holder: '', account: '', ifsc: '', family: '', reference: '' }; }
   seedIdle() { return { V02: { on: true, reason: 'No business / no load', note: '', since: '13 Sep 18:40', hours: 15 }, V04: { on: true, reason: 'No driver assigned', note: '', since: '12 Sep 05:40', hours: 52 }, V08: { on: false, reason: '', note: '' }, V10: { on: false, reason: '', note: '' } }; }
   // Attendance already saved on earlier days (status, vehicle) per driver. Today's is added when the supervisor saves.
   seedAttSaved() {
@@ -1608,12 +2086,26 @@ class Component extends DCLogic {
       { day: '2026-09-11', label: 'Thu, 11 Sep 2026', savedAt: '18:20', entries: { D01: ['P', 'V01'], D02: ['P', 'V02'], D09: ['A', ''], D10: ['P', 'V04'], D11: ['P', 'V08'] } }
     ];
   }
-  blankClose() { return { invoice: '', lr: '', closeKm: '', advance: '', bunk: '', rate: '', litres: '', qtyLoad: '', qtyUnload: '' }; }
+  blankClose() { return { invoice: '', lr: '', advance: '', qtyLoad: '', qtyUnload: '', totalExpense: '', remarks: '',
+    legs: [], legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false,
+    fills: [], fillDraft: this.blankFill(), fillEdit: -1, fillOpen: false, fillTried: false }; }
+  blankLeg() { return { from: '', to: '', reading: '', photo: null }; }
+  blankFill() { return { bunk: '', litres: '', rate: '' }; }
+  patchCf(patch) { this.setState(st => ({ cf: { ...st.cf, ...patch } })); }
+  // Points an odometer reading can be taken between: loading point, each unloading customer, then the branch yard.
+  tripPoints(t) {
+    const T = this.T(), yard = ((T.B[t.branch] || {}).name || 'Branch') + ' yard';
+    const pts = t.type === 'Non-Business' || !t.loading ? [t.from, t.unloading] : [(this.loc(t.loading) || {}).name, ...(t.customers || []).map(id => (T.U[id] || {}).name)];
+    return [...new Set([...pts.filter(Boolean), yard])];
+  }
   jump(screen, variant) {
     const blankOb = { phone: '', otp: ['', '', '', ''], expected: '', shared: false, requestedAt: '' };
-    const base = { unclosedAlert: null, resumeOpen: null, obStatus: 'idle', obReqId: '', obShowErr: false, obOtpErr: '', regShowErr: false, regSaving: false, screen, railVariant: variant, notifOpen: false, discardOpen: false, toast: null, saving: false, loginState: 'idle', history: ['home'], forceEmpty: false, showErrors: false, showCloseErrors: false, showReqErrors: false, showIdleErrors: false, idleFilter: 'all', closedIds: this.state.closedIds, closedData: this.state.closedData, forceEmptyHist: false, newLoc: { open: false, name: '' }, showNewLocErr: false, newDrv: { open: false, name: '', licence: '', phone: '' }, showNewDrvErr: false };
-    const filled = { client: 'C02', vehicle: 'V02', loading: 'L01', unloading: ['U05', 'U06'], startKm: '', driver: 'D02', type: 'Business', reason: '', remarks: '18 kL liquid argon. Tank pressure and seals checked before dispatch.' };
-    const closeFilled = { invoice: 'SP/INV/22890', lr: 'LR-004451', closeKm: '', advance: '8000', bunk: 'IOC – Sriperumbudur Highway', rate: '94.80', litres: '320', qtyLoad: '18 kL liquid oxygen', qtyUnload: '18 kL liquid oxygen' };
+    const base = { unclosedAlert: null, resumeOpen: null, obStatus: 'idle', obReqId: '', obShowErr: false, obOtpErr: '', regShowErr: false, regSaving: false, screen, railVariant: variant, notifOpen: false, discardOpen: false, toast: null, saving: false, loginState: 'idle', history: ['home'], forceEmpty: false, showErrors: false, showCloseErrors: false, showReqErrors: false, showIdleErrors: false, idleFilter: 'all', closedIds: this.state.closedIds, closedData: this.state.closedData, forceEmptyHist: false, newLoc: { open: false, name: '' }, showNewLocErr: false, drvPickOpen: false, reqFromOpen: false, rf: this.blankRf() };
+    const filled = { client: 'C02', vehicle: 'V02', loading: 'L01', unloading: ['U05', 'U06'], unloadMode: 'multiple', startKm: '', driver: 'D02', driverOk: true, type: 'Business', reason: '', remarks: '18 kL liquid argon. Tank pressure and seals checked before dispatch.' };
+    const t01 = this.allTrips().find(t => t.id === 'T01'), p01 = t01 ? this.tripPoints(t01) : ['Loading point', 'Customer'];
+    const odoPhoto = { name: 'odometer.jpg', size: '180 KB', url: '' };
+    const closeFilled = { ...this.blankClose(), invoice: 'SP/INV/22890', lr: 'LR-004451', advance: '8000', qtyLoad: '18 kL liquid oxygen', qtyUnload: '18 kL liquid oxygen', totalExpense: '46800', remarks: 'Waited 3 h at the hospital gate for unloading slot.',
+      fills: [{ bunk: 'IOC – Sriperumbudur Highway', litres: '220', rate: '94.80' }, { bunk: 'HP – Kurnool Bypass', litres: '100', rate: '96.10' }], legs: [{ from: p01[0], to: p01[1], reading: '126090', photo: odoPhoto }] };
     switch (screen + ':' + variant) {
       case 'approval:': base.obStatus = 'idle'; base.obShowErr = false; base.ob = { ...blankOb }; break;
       case 'approval:error': base.obStatus = 'idle'; base.obShowErr = true; base.ob = { ...blankOb, phone: '98410 223' }; break;
@@ -1633,10 +2125,13 @@ class Component extends DCLogic {
       case 'open:blank': case 'open:home': base.form = this.blankForm(); break;
       case 'open:errors': base.form = this.blankForm(); base.showErrors = true; break;
       case 'open:filled': base.form = filled; break;
+      case 'open:singleDrop': base.form = { ...filled, unloadMode: 'single', unloading: ['U05'] }; break;
       case 'open:nonbiz': base.form = { ...this.blankForm(), type: 'Non-Business' }; base.showErrors = true; break;
-      case 'open:nonbizFilled': base.form = { ...this.blankForm(), type: 'Non-Business', from: 'Sriperumbudur hub', to: 'Ambattur service centre', km: '38', reason: 'Maintenance', vehicle: 'V02', driver: 'D02' }; break;
+      case 'open:nonbizFilled': base.form = { ...this.blankForm(), type: 'Non-Business', from: 'Sriperumbudur hub', to: 'Ambattur service centre', km: '38', reason: 'Maintenance', vehicle: 'V02', driver: 'D02', driverOk: true }; break;
       case 'open:addloc': base.form = { ...filled, loading: '' }; base.newLoc = { open: true, name: '' }; break;
-      case 'open:newdriver': base.form = { ...filled, driver: '' }; base.newDrv = { open: true, name: '', licence: '', phone: '' }; break;
+      case 'open:drvConfirm': base.form = { ...filled, driver: '', driverOk: false }; break;
+      case 'open:drvNone': base.form = { ...filled, vehicle: 'V10', driver: '', driverOk: false }; break;
+      case 'open:drvPick': base.form = { ...filled, driver: '', driverOk: false }; base.drvPickOpen = true; break;
       case 'open:discard': base.form = filled; base.discardOpen = true; break;
       case 'open:unclosed': base.form = { ...filled, vehicle: '' }; base.unclosedAlert = { vehicle: 'V01', trip: 'T01' }; base.closedIds = this.state.closedIds.filter(x => x !== 'T01'); break;
       case 'trip:resume': base.selected = 'T01'; base.form = { ...filled, vehicle: '' }; base.resumeOpen = { vehicle: 'V01', trip: 'T01' }; base.history = ['home', 'open']; base.closedIds = this.state.closedIds.filter(x => x !== 'T01'); break;
@@ -1647,8 +2142,11 @@ class Component extends DCLogic {
       case 'close:blank': base.selected = 'T01'; base.cf = this.blankClose(); break;
       case 'close:errors': base.selected = 'T01'; base.cf = { ...this.blankClose(), closeKm: '125000' }; base.showCloseErrors = true; break;
       case 'close:manual': base.selected = 'T02'; base.cf = this.blankClose(); break;
-      case 'closeDone:ok': base.selected = 'T01'; base.cf = { ...closeFilled, closeKm: '126090' }; break;
-      case 'closeDone:flag': base.selected = 'T01'; base.cf = { ...closeFilled, closeKm: '126160' }; break;
+      case 'close:filled': base.selected = 'T01'; base.cf = closeFilled; break;
+      case 'close:editor': base.selected = 'T01'; base.cf = { ...closeFilled, fillOpen: true, legOpen: true }; break;
+      case 'closeReview:': base.selected = 'T01'; base.cf = closeFilled; base.history = ['home', 'closeList', 'close']; break;
+      case 'closeDone:ok': base.selected = 'T01'; base.cf = closeFilled; break;
+      case 'closeDone:flag': base.selected = 'T01'; base.cf = { ...closeFilled, legs: [{ ...closeFilled.legs[0], reading: '126160' }] }; break;
       case 'history:': base.forceEmptyHist = false; base.hf = { vehicle: '', from: '', to: '' }; base.hfDraft = { from: '', to: '' }; base.hfCalOpen = false; base.hfErr = ''; break;
       case 'history:vehicle': base.hf = { vehicle: 'V02', from: '', to: '' }; base.hfDraft = { from: '', to: '' }; base.hfCalOpen = false; base.hfErr = ''; break;
       case 'history:calendar': base.hf = { vehicle: '', from: '', to: '' }; base.hfDraft = { from: '2026-09-12', to: '2026-09-13' }; base.hfCalOpen = true; base.hfErr = ''; break;
@@ -1668,8 +2166,10 @@ class Component extends DCLogic {
       case 'unclosed:empty': base.forceEmpty = true; break;
       case 'trip:T01': base.selected = 'T01'; break;
       case 'trip:T03': base.selected = 'T03'; break;
-      case 'reqDriver:errors': base.showReqErrors = true; base.rf = { name: '', licence: '', phone: '', type: 'Supporting' }; break;
-      case 'reqDone:': base.rf = { name: 'Prakash V.', licence: 'TN28 2022 0007710', phone: '90031 55012', type: 'Supporting' }; break;
+      case 'reqDriver:errors': base.showReqErrors = true; break;
+      case 'reqDriver:open': base.reqFromOpen = true; base.history = ['home', 'open']; base.form = { ...filled, driver: '', driverOk: false }; break;
+      case 'reqDriver:filled': base.rf = { name: 'Prakash V.', licence: 'TN28 2022 0007710', phone: '9003155012', licImg: { name: 'licence-front.jpg', size: '1.2 MB', url: '' }, aadhaarImg: { name: 'aadhaar-front.jpg', size: '940 KB', url: '' }, holder: 'Prakash V.', account: '50100234567891', ifsc: 'HDFC0001234', family: '9840122314', reference: 'Referred by Murugan S. · 6 years on reefer trailers with Sri Balaji Logistics.' }; break;
+      case 'reqDone:': base.rf = { ...this.blankRf(), name: 'Prakash V.' }; base.reqSentId = ''; break;
     }
     if (screen === 'closeList' && variant !== 'empty') base.closedIds = [];
     this.setState(base);

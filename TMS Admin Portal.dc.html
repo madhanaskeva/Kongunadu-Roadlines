@@ -448,6 +448,8 @@
                         active branches. Trip capture is the Phase 1 priority; exceptions below need review.</div>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap"><x-import
+                        component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost"
+                        size="sm" on-click="{{ customiseDash }}" hint-size="auto,32px">Customise</x-import><x-import
                         component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary"
                         size="sm" data-route="reports" on-click="{{ navTo }}" hint-size="auto,32px">Export
                         today</x-import><x-import
@@ -455,132 +457,158 @@
                         data-route="exceptions" on-click="{{ navTo }}" hint-size="auto,32px">Review
                         exceptions</x-import></div>
                   </div>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px">
-                    <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="6">
-                      <button data-route="{{ k.route }}" onClick="{{ navTo }}"
-                        style="all:unset;cursor:pointer;display:block;background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px 18px;border-top:4px solid {{ k.edge }};transition:box-shadow var(--dur-base),transform var(--dur-base)"
-                        style-hover="box-shadow:var(--shadow-md);transform:translateY(-2px)">
-                        <div
-                          style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">
-                          {{ k.label }}</div>
-                        <div
-                          style="font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-0.02em;color:var(--text-heading);margin-top:6px;line-height:1">
-                          {{ k.value }}</div>
-                        <div style="font-size:13px;color:{{ k.subColor }};margin-top:6px">{{ k.sub }}</div>
-                      </button>
-                    </sc-for>
-                  </div>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
-                    <section
-                      style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
-                      <div
-                        style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-default);gap:8px;flex-wrap:wrap">
-                        <h2
-                          style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
-                          Trips by branch · today</h2><span style="font-size:13px;color:var(--text-muted)">Target
-                          300–400/day</span>
-                      </div>
-                      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px">
-                        <sc-for list="{{ branchBars }}" as="b" hint-placeholder-count="5">
+                  <!-- Widgets below are picked in Settings › Dashboard layout (card, chart and list view) -->
+                  <sc-if value="{{ hasDashCards }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px">
+                      <sc-for list="{{ dashCards }}" as="k" hint-placeholder-count="6">
+                        <button data-route="{{ k.route }}" onClick="{{ navTo }}"
+                          style="all:unset;cursor:pointer;display:block;background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px 18px;border-top:4px solid {{ k.edge }};transition:box-shadow var(--dur-base),transform var(--dur-base)"
+                          style-hover="box-shadow:var(--shadow-md);transform:translateY(-2px)">
                           <div
-                            style="display:grid;grid-template-columns:110px 1fr 100px;gap:12px;align-items:center;font-size:14px">
-                            <span style="font-weight:600;color:var(--text-heading)">{{ b.name }}</span><span
-                              style="height:14px;background:var(--kr-grey-100);border-radius:2px;overflow:hidden;display:flex"><span
-                                style="width:{{ b.bizPct }};background:var(--color-brand)"></span><span
-                                style="width:{{ b.nonPct }};background:var(--kr-green-100)"></span></span><span
-                              style="text-align:right;color:var(--text-muted);white-space:nowrap"><strong
-                                style="color:var(--text-heading)">{{ b.total }}</strong> · {{ b.non }} non-biz</span>
+                            style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">
+                            {{ k.label }}</div>
+                          <div
+                            style="font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-0.02em;color:var(--text-heading);margin-top:6px;line-height:1">
+                            {{ k.value }}</div>
+                          <div style="font-size:13px;color:{{ k.subColor }};margin-top:6px">{{ k.sub }}</div>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ hasDashCharts }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
+                      <sc-for list="{{ dashCharts }}" as="c" hint-placeholder-count="2">
+                        <section
+                          style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column">
+                          <div
+                            style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-default);gap:8px;flex-wrap:wrap">
+                            <h2
+                              style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
+                              {{ c.title }}</h2><button data-route="{{ c.route }}" onClick="{{ navTo }}"
+                              style="all:unset;cursor:pointer;font-size:13px;color:var(--text-muted)"
+                              style-hover="color:var(--text-brand)">{{ c.meta }}</button>
                           </div>
-                        </sc-for>
-                        <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted);padding-top:4px"><span
-                            style="display:flex;align-items:center;gap:6px"><span
-                              style="width:10px;height:10px;background:var(--color-brand)"></span>Business</span><span
-                            style="display:flex;align-items:center;gap:6px"><span
-                              style="width:10px;height:10px;background:var(--kr-green-100)"></span>Non-business</span>
-                        </div>
-                      </div>
-                    </section>
-                    <section
-                      style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
-                      <div
-                        style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-default)">
-                        <h2
-                          style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
-                          Open exceptions</h2><button data-route="exceptions" onClick="{{ navTo }}"
-                          style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand)">All
-                          exceptions &rarr;</button>
-                      </div>
-                      <sc-for list="{{ dashExceptions }}" as="x" hint-placeholder-count="5">
-                        <button data-id="{{ x.id }}" onClick="{{ openException }}"
-                          style="all:unset;cursor:pointer;display:grid;grid-template-columns:8px 1fr auto;gap:12px;align-items:center;width:100%;box-sizing:border-box;padding:12px 18px;border-bottom:1px solid var(--border-default);text-align:left"
-                          style-hover="background:var(--surface-muted)"><span
-                            style="width:8px;height:8px;border-radius:50%;background:{{ x.dot }}"></span><span
-                            style="min-width:0"><span
-                              style="display:block;font-weight:700;font-size:14px;color:var(--text-heading)">{{ x.type
-                              }} · {{ x.vehicleNumber }}</span><span
-                              style="display:block;font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{
-                              x.detail }}</span></span><span
-                            style="font-size:12px;color:var(--text-muted);white-space:nowrap">{{ x.branchName
-                            }}</span></button>
+                          <div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;flex:1">
+                            <sc-if value="{{ c.isHbar }}" hint-placeholder-val="{{ true }}">
+                              <sc-for list="{{ c.rows }}" as="b" hint-placeholder-count="5">
+                                <div
+                                  style="display:grid;grid-template-columns:minmax(90px,150px) 1fr minmax(56px,auto);gap:12px;align-items:center;font-size:14px">
+                                  <span
+                                    style="font-weight:600;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{
+                                    b.name }}</span><span
+                                    style="height:14px;background:var(--kr-grey-100);border-radius:2px;overflow:hidden;display:flex"><sc-for
+                                      list="{{ b.segs }}" as="g" hint-placeholder-count="2"><span
+                                        style="width:{{ g.w }};background:{{ g.color }};transition:width var(--dur-base) var(--ease-out)"></span></sc-for></span><span
+                                    style="text-align:right;color:var(--text-muted);white-space:nowrap"><strong
+                                      style="color:var(--text-heading)">{{ b.value }}</strong>{{ b.rest }}</span>
+                                </div>
+                              </sc-for>
+                              <sc-if value="{{ c.hasLegend }}" hint-placeholder-val="{{ true }}">
+                                <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted);padding-top:4px">
+                                  <sc-for list="{{ c.legend }}" as="l" hint-placeholder-count="2"><span
+                                      style="display:flex;align-items:center;gap:6px"><span
+                                        style="width:10px;height:10px;background:{{ l.color }}"></span>{{ l.label
+                                      }}</span></sc-for>
+                                </div>
+                              </sc-if>
+                            </sc-if>
+                            <sc-if value="{{ c.isColumn }}" hint-placeholder-val="{{ false }}">
+                              <div
+                                style="display:flex;align-items:flex-end;gap:6px;height:160px;border-bottom:1px solid var(--border-default)">
+                                <sc-for list="{{ c.bars }}" as="b" hint-placeholder-count="14">
+                                  <div title="{{ b.title }}"
+                                    style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;min-width:0">
+                                    <span
+                                      style="font-size:12px;font-weight:700;color:var(--text-heading);text-align:center">{{
+                                      b.val }}</span>
+                                    <div style="height:{{ b.h }};background:{{ b.color }};border-radius:2px 2px 0 0"></div>
+                                  </div>
+                                </sc-for>
+                              </div>
+                              <sc-if value="{{ c.showLabels }}" hint-placeholder-val="{{ false }}">
+                                <div style="display:flex;gap:6px;font-size:12px;color:var(--text-muted)">
+                                  <sc-for list="{{ c.bars }}" as="b" hint-placeholder-count="5"><span
+                                      style="flex:1;min-width:0;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{
+                                      b.lbl }}</span></sc-for>
+                                </div>
+                              </sc-if>
+                              <sc-if value="{{ c.showAxis }}" hint-placeholder-val="{{ true }}">
+                                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)">
+                                  <span>{{ c.axisStart }}</span><span>{{ c.axisEnd }}</span>
+                                </div>
+                              </sc-if>
+                            </sc-if>
+                            <sc-if value="{{ c.isStat }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                                <sc-for list="{{ c.stats }}" as="x" hint-placeholder-count="3">
+                                  <div>
+                                    <div
+                                      style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1;color:{{ x.color }}">
+                                      {{ x.value }}</div>
+                                    <div style="font-size:13px;color:var(--text-muted)">{{ x.label }}</div>
+                                  </div>
+                                </sc-for>
+                              </div>
+                              <div style="display:flex;height:10px;border-radius:2px;overflow:hidden;gap:2px">
+                                <sc-for list="{{ c.stats }}" as="x" hint-placeholder-count="3"><span
+                                    title="{{ x.label }}" style="width:{{ x.w }};background:{{ x.color }}"></span></sc-for>
+                              </div>
+                            </sc-if>
+                            <sc-if value="{{ c.hasNote }}" hint-placeholder-val="{{ false }}">
+                              <p style="margin:0;font-size:14px">{{ c.note }}</p>
+                            </sc-if>
+                          </div>
+                        </section>
                       </sc-for>
-                    </section>
-                  </div>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
-                    <section
-                      style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
-                      <div
-                        style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-default)">
-                        <h2
-                          style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
-                          Long open trips</h2><span style="font-size:13px;color:var(--text-muted)">Over 24 h</span>
-                      </div>
-                      <sc-for list="{{ longOpen }}" as="t" hint-placeholder-count="1">
-                        <button data-id="{{ t.id }}" onClick="{{ openTrip }}"
-                          style="all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:12px;width:100%;box-sizing:border-box;padding:12px 18px;border-bottom:1px solid var(--border-default);text-align:left"
-                          style-hover="background:var(--surface-muted)"><span><span
-                              style="display:block;font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--text-heading)">{{
-                              t.number }}</span><span style="display:block;font-size:13px;color:var(--text-muted)">{{
-                              t.vehicleNumber }} · {{ t.driverName }} · {{ t.branchName }}</span></span><span
-                            style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--kr-saffron-600)">{{
-                            t.hoursOpen }} h</span></button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ hasDashLists }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
+                      <sc-for list="{{ dashLists }}" as="l" hint-placeholder-count="2">
+                        <section
+                          style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                          <div
+                            style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border-default);gap:8px">
+                            <h2
+                              style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
+                              {{ l.title }}</h2><button data-route="{{ l.route }}" onClick="{{ navTo }}"
+                              style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand);white-space:nowrap">{{
+                              l.linkLabel }}</button>
+                          </div>
+                          <sc-for list="{{ l.items }}" as="x" hint-placeholder-count="5">
+                            <button data-kind="{{ x.kind }}" data-id="{{ x.id }}" data-route="{{ x.route }}"
+                              onClick="{{ openDashItem }}"
+                              style="all:unset;cursor:pointer;display:grid;grid-template-columns:8px 1fr auto;gap:12px;align-items:center;width:100%;box-sizing:border-box;padding:12px 18px;border-bottom:1px solid var(--border-default);text-align:left"
+                              style-hover="background:var(--surface-muted)"><span
+                                style="width:8px;height:8px;border-radius:50%;background:{{ x.dot }}"></span><span
+                                style="min-width:0"><span
+                                  style="display:block;font-weight:700;font-size:14px;color:var(--text-heading);font-family:{{ x.titleFont }}">{{
+                                  x.title }}</span><span
+                                  style="display:block;font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{
+                                  x.detail }}</span></span><span
+                                style="white-space:nowrap;font-family:{{ x.metaFont }};font-size:{{ x.metaSize }};font-weight:{{ x.metaWeight }};color:{{ x.metaColor }}">{{
+                                x.meta }}</span></button>
+                          </sc-for>
+                          <sc-if value="{{ l.isEmpty }}" hint-placeholder-val="{{ false }}">
+                            <div style="padding:24px;text-align:center;color:var(--text-muted);font-size:14px">{{ l.empty }}
+                            </div>
+                          </sc-if>
+                        </section>
                       </sc-for>
-                      <sc-if value="{{ noLongOpen }}" hint-placeholder-val="{{ false }}">
-                        <div style="padding:24px;text-align:center;color:var(--text-muted);font-size:14px">No trip has
-                          been open longer than 24 hours.</div>
-                      </sc-if>
-                    </section>
-                    <section
-                      style="background:#fff;border:1px solid var(--border-default);border-top:4px solid var(--color-brand);border-radius:var(--radius-lg);padding:18px">
-                      <h2
-                        style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
-                        GPS health · fleet</h2>
-                      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px">
-                        <div>
-                          <div
-                            style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1;color:var(--text-brand)">
-                            {{ gpsOk }}</div>
-                          <div style="font-size:13px;color:var(--text-muted)">Tracking</div>
-                        </div>
-                        <div>
-                          <div
-                            style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1;color:var(--kr-saffron-600)">
-                            {{ gpsWeak }}</div>
-                          <div style="font-size:13px;color:var(--text-muted)">Weak signal</div>
-                        </div>
-                        <div>
-                          <div
-                            style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1;color:var(--kr-red-600)">
-                            {{ gpsFail }}</div>
-                          <div style="font-size:13px;color:var(--text-muted)">No fix</div>
-                        </div>
-                      </div>
-                      <p style="margin:14px 0 0;font-size:14px">When GPS fails the odometer is used; when both fail the
-                        trip closes as a manual exception and appears in your exception report.</p>
-                      <button data-route="fleet" onClick="{{ navTo }}"
-                        style="all:unset;cursor:pointer;margin-top:12px;font-size:13px;font-weight:700;color:var(--text-brand)">Open
-                        fleet monitor &rarr;</button>
-                    </section>
-                  </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ dashEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div
+                      style="background:#fff;border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:40px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
+                      <div
+                        style="font-family:var(--font-display);font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">
+                        Nothing on the dashboard</div>
+                      <div style="font-size:14px;color:var(--text-muted);max-width:420px">Every card, chart and list is
+                        switched off. Choose what to show in Settings › Dashboard layout.</div>
+                      <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="sm"
+                        on-click="{{ customiseDash }}" hint-size="auto,32px">Choose widgets</x-import>
+                    </div>
+                  </sc-if>
                 </sc-if>
 
                 <!-- TRIPS LIST -->
@@ -1208,20 +1236,36 @@
                 <!-- MASTERS -->
                 <sc-if value="{{ is.master }}" hint-placeholder-val="{{ false }}">
                   <sc-if value="{{ master.approvalQueue }}" hint-placeholder-val="{{ false }}">
-                    <div
-                      style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 18px;background:var(--color-hazard-soft);border-radius:var(--radius-lg);color:#7A4300">
-                      <div><strong
-                          style="font-family:var(--font-display);font-size:12px;letter-spacing:0.1em;text-transform:uppercase">Approval
-                          queue</strong>
-                        <div style="font-size:14px;margin-top:2px">1 supporting driver request from Chennai HO awaiting
-                          approval. Drivers cannot be assigned until approved.</div>
+                    <section aria-label="Driver approval queue"
+                      style="background:var(--color-hazard-soft);border-radius:var(--radius-lg);color:#7A4300;overflow:hidden">
+                      <div style="padding:14px 18px 12px"><strong
+                          style="font-family:var(--font-display);font-size:12px;letter-spacing:0.1em;text-transform:uppercase">{{ drvQueueLabel }}</strong>
+                        <div style="font-size:14px;margin-top:2px">Driver requests from supervisors. Drivers cannot be
+                          assigned until approved; the supervisor app updates as soon as you decide.</div>
                       </div>
-                      <div style="display:flex;gap:8px"><x-import
-                          component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="sm"
-                          on-click="{{ approveDriver }}" hint-size="auto,32px">Approve Anbu M.</x-import><x-import
-                          component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost"
-                          size="sm" on-click="{{ rejectDriver }}" hint-size="auto,32px">Reject</x-import></div>
-                    </div>
+                      <sc-for list="{{ drvQueue }}" as="q" hint-placeholder-count="2">
+                        <div
+                          style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid rgba(122,67,0,.18);background:rgba(255,255,255,.6)">
+                          <span aria-hidden="true"
+                            style="flex:none;width:40px;height:40px;border-radius:50%;background:#fff;border:2px solid var(--color-hazard);color:#7A4300;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:14px">{{ q.initials }}</span>
+                          <div style="flex:1;min-width:240px">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span
+                                style="font-weight:700;font-size:15px;color:var(--text-heading)">{{ q.name }}</span><span
+                                style="font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-sm);background:#fff;color:#7A4300">{{ q.tag }}</span><sc-if
+                                value="{{ q.hasDocs }}" hint-placeholder-val="{{ false }}"><span
+                                  style="font-size:12px;color:var(--text-muted)">&middot; {{ q.docs }}</span></sc-if></div>
+                            <div style="font-size:13px;color:var(--text-body);margin-top:2px">{{ q.sub }}</div>
+                          </div>
+                          <div style="display:flex;gap:8px;flex-wrap:wrap"><x-import
+                              component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary"
+                              size="sm" on-click="{{ q.review }}" hint-size="auto,32px">Review</x-import><x-import
+                              component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="sm"
+                              on-click="{{ q.approve }}" hint-size="auto,32px">Approve</x-import><x-import
+                              component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost"
+                              size="sm" on-click="{{ q.reject }}" hint-size="auto,32px">Reject</x-import></div>
+                        </div>
+                      </sc-for>
+                    </section>
                   </sc-if>
                   <div
                     style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
@@ -1271,7 +1315,10 @@
                                     hint-placeholder-val="{{ true }}">{{ c.v }}</sc-if>
                                 </td>
                               </sc-for>
-                              <td style="padding:8px 14px;white-space:nowrap;text-align:right"><button
+                              <td style="padding:8px 14px;white-space:nowrap;text-align:right"><sc-if
+                                  value="{{ r.review }}" hint-placeholder-val="{{ false }}"><button data-id="{{ r.id }}"
+                                    onClick="{{ reviewDriver }}"
+                                    style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:#7A4300;padding:6px 8px">Review</button></sc-if><button
                                   data-id="{{ r.id }}" onClick="{{ editRecord }}"
                                   style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand);padding:6px 8px">Edit</button><button
                                   data-id="{{ r.id }}" onClick="{{ askDeleteRecord }}"
@@ -1823,6 +1870,194 @@
 
                 <!-- SETTINGS -->
                 <sc-if value="{{ is.settings }}" hint-placeholder-val="{{ false }}">
+                  <!-- Dashboard layout: add cards, charts and lists with a form; values are fetched from live data and the dashboard updates immediately -->
+                  <section
+                    style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                    <div
+                      style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding:18px 18px 0">
+                      <div>
+                        <h2
+                          style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
+                          Dashboard layout</h2>
+                        <div style="font-size:13px;color:var(--text-muted)">Add a card, chart or list with the form. Its
+                          values are fetched automatically and it appears on the dashboard straight away.</div>
+                      </div>
+                      <div style="display:flex;gap:16px;align-items:center"><button onClick="{{ dashRestoreAll }}"
+                          style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-muted)"
+                          style-hover="color:var(--text-heading)">Restore defaults</button><button
+                          onClick="{{ viewDashboard }}"
+                          style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand)">View
+                          dashboard &rarr;</button></div>
+                    </div>
+                    <div style="padding:0 18px;overflow-x:auto">
+                      <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Tabs"
+                        items="{{ dashTabs }}" value="{{ dashTab }}" on-change="{{ setDashTab }}"
+                        hint-size="100%,44px"></x-import>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;align-items:flex-start">
+                      <!-- add form -->
+                      <div
+                        style="flex:1 1 300px;max-width:100%;box-sizing:border-box;padding:18px;display:flex;flex-direction:column;gap:14px;background:var(--surface-muted);border-right:1px solid var(--border-default);align-self:stretch">
+                        <h3
+                          style="margin:0;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-heading)">
+                          {{ dashAddTitle }}</h3>
+                        <sc-if value="{{ dashCanAdd }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                              label="{{ dashMetricLabel }}" placeholder="Choose…" options="{{ dashSrcOptions }}"
+                              value="{{ dashForm.src }}" on-change="{{ setDashForm.src }}"
+                              hint-size="100%,72px"></x-import>
+                            <sc-if value="{{ hasDashFormErr }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:13px;font-weight:600;color:var(--kr-red-700)">{{ dashFormErr }}</div>
+                            </sc-if>
+                          </div>
+                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input"
+                            label="Title" placeholder="{{ dashTitlePh }}" value="{{ dashForm.title }}"
+                            on-change="{{ setDashForm.title }}" hint="Leave blank to use the metric name."
+                            hint-size="100%,96px"></x-import>
+                          <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
+                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                              label="Accent colour" options="{{ dashColorOptions }}" value="{{ dashForm.color }}"
+                              on-change="{{ setDashForm.color }}" hint-size="100%,72px"></x-import>
+                          </sc-if>
+                          <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
+                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                              label="Chart style" options="{{ dashStyleOptions }}" value="{{ dashForm.style }}"
+                              on-change="{{ setDashForm.style }}" hint-size="100%,72px"></x-import>
+                          </sc-if>
+                          <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
+                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                              label="Rows to show" options="{{ dashRowOptions }}" value="{{ dashForm.rows }}"
+                              on-change="{{ setDashForm.rows }}" hint-size="100%,72px"></x-import>
+                          </sc-if>
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <span
+                              style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Preview
+                              · live data</span>
+                            <sc-if value="{{ dashNoPreview }}" hint-placeholder-val="{{ false }}">
+                              <div
+                                style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:22px 16px;text-align:center;font-size:13px;color:var(--text-muted);background:#fff">
+                                Choose what to show and the value is fetched here.</div>
+                            </sc-if>
+                            <sc-for list="{{ dashPreview }}" as="w" hint-placeholder-count="1">
+                              <div
+                                style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+                                <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
+                                  <span style="display:block;height:4px;width:36px;border-radius:2px;background:{{ w.edgeTop }}"></span>
+                                  <span
+                                    style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">{{
+                                    w.label }}</span>
+                                  <span
+                                    style="font-family:var(--font-display);font-weight:800;font-size:30px;letter-spacing:-0.02em;color:var(--text-heading);line-height:1">{{
+                                    w.value }}</span>
+                                  <span style="font-size:12px;color:{{ w.subColor }}">{{ w.sub }}</span>
+                                </sc-if>
+                                <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
+                                  <span
+                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                    w.title }}</span>
+                                  <span style="display:flex;align-items:flex-end;gap:3px;height:48px"><sc-for
+                                      list="{{ w.mini }}" as="m" hint-placeholder-count="8"><span
+                                        style="flex:1;height:{{ m.h }};background:var(--color-brand);border-radius:1px"></span></sc-for></span>
+                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.styleLabel }} · {{ w.desc
+                                    }}</span>
+                                </sc-if>
+                                <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
+                                  <span
+                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                    w.title }}</span>
+                                  <sc-for list="{{ w.previewItems }}" as="p" hint-placeholder-count="3"><span
+                                      style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-body);min-width:0"><span
+                                        style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ p.dot }}"></span><span
+                                        style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.title
+                                        }}</span></span></sc-for>
+                                  <sc-if value="{{ w.isEmpty }}" hint-placeholder-val="{{ false }}"><span
+                                      style="font-size:12px;color:var(--text-muted)">{{ w.empty }}</span></sc-if>
+                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.rowsText }}</span>
+                                </sc-if>
+                              </div>
+                            </sc-for>
+                          </div>
+                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
+                            on-click="{{ addDashItem }}" hint-size="100%,40px">Add to dashboard</x-import>
+                        </sc-if>
+                        <sc-if value="{{ dashAllAdded }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:20px 16px;font-size:13px;color:var(--text-muted);background:#fff">
+                            Every metric in this view is already on the dashboard. Remove one to add it again with a
+                            different title or style.</div>
+                        </sc-if>
+                      </div>
+                      <!-- what is on the dashboard now -->
+                      <div
+                        style="flex:3 1 420px;max-width:100%;box-sizing:border-box;padding:18px;display:flex;flex-direction:column;gap:14px">
+                        <div>
+                          <h3
+                            style="margin:0;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-heading)">
+                            On the dashboard</h3>
+                          <div style="font-size:13px;color:var(--text-muted)">Shown in this order. Changes apply
+                            immediately.</div>
+                        </div>
+                        <sc-if value="{{ dashBoardEmpty }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:28px 16px;text-align:center;font-size:13px;color:var(--text-muted)">
+                            Nothing here yet. Add a {{ dashNoun }} with the form.</div>
+                        </sc-if>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+                          <sc-for list="{{ dashOnBoard }}" as="w" hint-placeholder-count="6">
+                            <div
+                              style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden">
+                              <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px;flex:1">
+                                <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
+                                  <span style="display:block;height:4px;width:36px;border-radius:2px;background:{{ w.edgeTop }}"></span>
+                                  <span
+                                    style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">{{
+                                    w.label }}</span>
+                                  <span
+                                    style="font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em;color:var(--text-heading);line-height:1">{{
+                                    w.value }}</span>
+                                  <span style="font-size:12px;color:{{ w.subColor }}">{{ w.sub }}</span>
+                                </sc-if>
+                                <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
+                                  <span
+                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                    w.title }}</span>
+                                  <span style="display:flex;align-items:flex-end;gap:3px;height:34px"><sc-for
+                                      list="{{ w.mini }}" as="m" hint-placeholder-count="8"><span
+                                        style="flex:1;height:{{ m.h }};background:var(--color-brand);border-radius:1px"></span></sc-for></span>
+                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.styleLabel }}</span>
+                                </sc-if>
+                                <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
+                                  <span
+                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                    w.title }}</span>
+                                  <sc-for list="{{ w.previewItems }}" as="p" hint-placeholder-count="2"><span
+                                      style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-body);min-width:0"><span
+                                        style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ p.dot }}"></span><span
+                                        style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.title
+                                        }}</span></span></sc-for>
+                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.rowsText }}</span>
+                                </sc-if>
+                              </div>
+                              <div
+                                style="display:flex;align-items:center;gap:4px;padding:6px 8px;border-top:1px solid var(--border-default);background:var(--surface-muted)">
+                                <button data-uid="{{ w.uid }}" data-dir="-1" onClick="{{ moveDashItem }}"
+                                  aria-label="Move earlier" title="Move earlier"
+                                  style="all:unset;cursor:pointer;visibility:{{ w.upVis }};width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:15px;color:var(--text-heading)"
+                                  style-hover="background:#fff">&larr;</button><button data-uid="{{ w.uid }}"
+                                  data-dir="1" onClick="{{ moveDashItem }}" aria-label="Move later" title="Move later"
+                                  style="all:unset;cursor:pointer;visibility:{{ w.downVis }};width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:15px;color:var(--text-heading)"
+                                  style-hover="background:#fff">&rarr;</button><span style="flex:1"></span><button
+                                  data-uid="{{ w.uid }}" onClick="{{ removeDashItem }}"
+                                  style="all:unset;cursor:pointer;padding:4px 8px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;color:var(--kr-red-700)"
+                                  style-hover="background:var(--kr-red-100)">Remove</button>
+                              </div>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
                   <div
                     style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start">
                     <section
@@ -1956,6 +2191,52 @@
                     label="Resolution note" placeholder="What was found and what was done" value="{{ excNote }}"
                     on-change="{{ setExcNote }}" hint-size="100%,72px"></x-import>
                 </sc-if>
+                <sc-if value="{{ drawer.isDriverReq }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span
+                      style="display:inline-flex;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-sm);background:{{ dq.badgeBg }};color:{{ dq.badgeFg }}">{{ dq.status }}</span><span
+                      style="font-size:13px;color:var(--text-muted)">{{ dq.meta }}</span></div>
+                  <sc-if value="{{ dq.trip }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:12px 14px;background:var(--color-hazard-soft);border-radius:var(--radius-md);font-size:13px;line-height:1.5;color:#7A4300">{{ dq.trip }}</div>
+                  </sc-if>
+                  <sc-for list="{{ dq.sections }}" as="sec" hint-placeholder-count="3">
+                    <div>
+                      <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">{{ sec.title }}</div>
+                      <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                        <sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="3">
+                          <div style="display:flex;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--border-default);font-size:14px"><span
+                              style="flex:none;color:var(--text-muted)">{{ r.k }}</span><span
+                              style="font-weight:600;color:var(--text-heading);text-align:right;overflow-wrap:anywhere">{{ r.v }}</span></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-for>
+                  <sc-if value="{{ dq.hasDocs }}" hint-placeholder-val="{{ false }}">
+                    <div>
+                      <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px">Documents</div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <sc-for list="{{ dq.docs }}" as="doc" hint-placeholder-count="2">
+                          <figure style="margin:0;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                            <sc-if value="{{ doc.has }}" hint-placeholder-val="{{ true }}"><img src="{{ doc.url }}" alt="{{ doc.label }}"
+                                style="display:block;width:100%;height:140px;object-fit:contain;background:var(--kr-grey-100)"></sc-if>
+                            <sc-if value="{{ doc.missing }}" hint-placeholder-val="{{ false }}"><div
+                                style="height:140px;display:grid;place-items:center;padding:12px;box-sizing:border-box;text-align:center;background:var(--surface-muted);font-size:12px;color:var(--text-muted)">{{ doc.note }}</div></sc-if>
+                            <figcaption style="padding:8px 10px;border-top:1px solid var(--border-default)"><div
+                                style="font-size:13px;font-weight:700;color:var(--text-heading)">{{ doc.label }}</div><div
+                                style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ doc.name }}</div></figcaption>
+                          </figure>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ dq.pending }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Reason if rejecting"
+                      placeholder="Optional · sent to the supervisor" value="{{ rejectReason }}" on-change="{{ setRejectReason }}"
+                      hint-size="100%,72px"></x-import>
+                  </sc-if>
+                  <sc-if value="{{ dq.decidedNote }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:12px 14px;background:var(--surface-muted);border-radius:var(--radius-md);font-size:13px;color:var(--text-body)">{{ dq.decidedNote }}</div>
+                  </sc-if>
+                </sc-if>
                 <sc-if value="{{ drawer.isForm }}" hint-placeholder-val="{{ false }}">
                   <sc-if value="{{ formError }}" hint-placeholder-val="{{ false }}">
                     <div role="alert"
@@ -1963,20 +2244,85 @@
                       {{ formError }}</div>
                   </sc-if>
                   <sc-for list="{{ formFields }}" as="f" hint-placeholder-count="5">
-                    <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}"><x-import
+                    <sc-if value="{{ f.isSection }}" hint-placeholder-val="{{ false }}">
+                      <div
+                        style="display:flex;align-items:center;gap:10px;padding-top:10px;margin-top:4px;border-top:1px solid var(--border-default)">
+                        <span aria-hidden="true"
+                          style="width:26px;height:26px;border-radius:50%;background:var(--color-brand);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:13px">{{
+                          f.sectionNo }}</span>
+                        <h3
+                          style="margin:0;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">
+                          {{ f.label }}</h3>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}"><div
+                        style="display:flex;flex-direction:column;gap:4px"><x-import
                         component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="{{ f.label }}"
                         placeholder="Select" options="{{ f.options }}" value="{{ f.value }}" on-change="{{ f.set }}"
-                        hint-size="100%,72px"></x-import></sc-if>
+                        hint-size="100%,72px"></x-import><sc-if value="{{ f.hasError }}" hint-placeholder-val="{{ false }}"><span
+                          style="font-size:13px;font-weight:600;color:var(--status-danger)">{{ f.error }}</span></sc-if></div></sc-if>
                     <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><x-import
                         component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="{{ f.label }}"
-                        placeholder="{{ f.placeholder }}" value="{{ f.value }}" on-change="{{ f.set }}"
+                        placeholder="{{ f.placeholder }}" prefix="{{ f.prefix }}" input-mode="{{ f.inputMode }}"
+                        value="{{ f.value }}" on-change="{{ f.set }}"
                         error="{{ f.error }}" hint="{{ f.hint }}" hint-size="100%,72px"></x-import></sc-if>
+                    <sc-if value="{{ f.isUpload }}" hint-placeholder-val="{{ false }}">
+                      <div>
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                          <span
+                            style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">{{
+                            f.label }}</span>
+                          <span style="font-size:12px;color:var(--text-muted)">{{ f.note }}</span>
+                        </div>
+                        <sc-if value="{{ f.upEmpty }}" hint-placeholder-val="{{ true }}">
+                          <label
+                            style="margin-top:8px;position:relative;box-sizing:border-box;display:flex;align-items:center;gap:14px;min-height:72px;padding:12px 14px;border:2px dashed {{ f.upBorder }};border-radius:var(--radius-md);background:var(--surface-muted);cursor:pointer"
+                            style-hover="border-color:var(--color-brand)">
+                            <input type="file" accept="image/*" aria-label="{{ f.label }}" data-k="{{ f.key }}"
+                              onChange="{{ pickFormUpload }}"
+                              style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer">
+                            <span aria-hidden="true"
+                              style="flex:none;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center"><svg
+                                width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                              </svg></span>
+                            <span style="display:flex;flex-direction:column;gap:2px"><span
+                                style="font-weight:700;font-size:15px;color:var(--text-heading)">Upload photo</span><span
+                                style="font-size:13px;color:var(--text-muted)">JPG or PNG &middot; up to 5 MB</span></span>
+                          </label>
+                        </sc-if>
+                        <sc-if value="{{ f.upSet }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="margin-top:8px;display:flex;align-items:center;gap:12px;padding:10px;border:2px solid var(--color-brand);border-radius:var(--radius-md);background:var(--color-brand-tint)">
+                            <div aria-hidden="true"
+                              style="flex:none;box-sizing:border-box;width:72px;height:52px;border-radius:var(--radius-sm);background:#fff;border:1px solid var(--border-default);display:grid;place-items:center;overflow:hidden;color:var(--text-muted);font-size:11px">
+                              <sc-if value="{{ f.upUrl }}" hint-placeholder-val="{{ false }}"><img src="{{ f.upUrl }}" alt=""
+                                  style="display:block;width:100%;height:100%;object-fit:cover"></sc-if><sc-if
+                                value="{{ f.upNoUrl }}" hint-placeholder-val="{{ false }}">Photo</sc-if></div>
+                            <div style="flex:1;min-width:0">
+                              <div
+                                style="font-weight:700;font-size:14px;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+                                {{ f.upName }}</div>
+                              <div style="font-size:12px;color:var(--kr-green-800)">{{ f.upSize }} &middot; attached</div>
+                            </div>
+                            <button data-k="{{ f.key }}" onClick="{{ clearFormUpload }}" aria-label="Remove {{ f.label }}"
+                              style="all:unset;cursor:pointer;flex:none;padding:6px 10px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;color:var(--kr-red-700)"
+                              style-hover="background:#fff">Remove</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ f.hasError }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:4px;font-size:13px;color:var(--status-danger);font-weight:600">{{ f.error }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-if>
                     <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}"><label
                         style="display:flex;flex-direction:column;gap:6px"><span
                           style="display:flex;justify-content:space-between;align-items:baseline"><span
                             style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">{{
-                            f.label }}</span><span style="font-size:12px;color:var(--text-muted)">{{ f.count }}/500</span></span><textarea
-                          value="{{ f.value }}" onChange="{{ f.set }}" rows="6" maxlength="500" placeholder="{{ f.placeholder }}"
+                            f.label }}</span><span style="font-size:12px;color:var(--text-muted)">{{ f.countText }}</span></span><textarea
+                          value="{{ f.value }}" onChange="{{ f.set }}" rows="6" maxlength="{{ f.max }}" placeholder="{{ f.placeholder }}"
                           style="box-sizing:border-box;width:100%;padding:10px 12px;font-family:inherit;font-size:15px;line-height:1.45;color:var(--text-heading);background:#fff;border:2px solid {{ f.areaBorder }};border-radius:var(--radius-md);outline:0;resize:vertical"
                           style-focus="border-color:var(--color-brand);box-shadow:var(--focus-ring)"></textarea><sc-if value="{{ f.error }}"
                           hint-placeholder-val="{{ false }}"><span
@@ -2004,6 +2350,11 @@
                     on-click="{{ excUnderReview }}" hint-size="auto,40px">Mark under review</x-import><x-import
                     component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
                     on-click="{{ excResolve }}" hint-size="auto,40px">Resolve</x-import></sc-if>
+                <sc-if value="{{ dq.pending }}" hint-placeholder-val="{{ false }}"><x-import
+                    component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary"
+                    on-click="{{ rejectDq }}" hint-size="auto,40px">Reject</x-import><x-import
+                    component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
+                    on-click="{{ approveDq }}" hint-size="auto,40px">Approve driver</x-import></sc-if>
                 <sc-if value="{{ drawer.isForm }}" hint-placeholder-val="{{ false }}"><x-import
                     component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" on-click="{{ saveForm }}"
                     hint-size="auto,40px">{{ drawer.saveLabel }}</x-import></sc-if>
@@ -2037,16 +2388,42 @@ class Component extends DCLogic {
     fleetFilter: 'all', masterQ: '', masterKey: 'vehicles', attBranch: '', anTab: 'trips', range: '30d', userTab: 'users', distQ: '', distReview: {},
     drawer: null, form: {}, formError: '', confirm: null,
     st: { variance: '5', radius: '100', longOpen: '8', idle: '15', gpsFail: '30', serial: 'monthly', reasons: 'Maintenance, Internal Movement, Empty Return, Driver Testing', session: '12', attReminder: true, excEmail: true },
-    approvals: {}, driverApprovalFilter: '', deleted: [],
-    devReqs: [], devFilter: 'all', adminNotifOpen: false
+    approvals: {}, driverApprovalFilter: '', deleted: [], drvReqs: [], rejectReason: '',
+    devReqs: [], devFilter: 'all', adminNotifOpen: false,
+    // Dashboard layout: dashCfg lists the widgets on the dashboard; dashForm is the Settings "add" form for the open tab
+    dashTab: 'cards', dashCfg: null, dashForm: { src: '', title: '', color: '', style: '', rows: '5' }, dashFormErr: ''
   };
+  // Metrics a dashboard widget can be built from. Every one starts on the dashboard; Settings › Dashboard layout adds and removes them.
+  DASH_KEY = 'kr-tms-dash-layout-v2';
+  DASH_ALL = {
+    cards: ['trips', 'enroute', 'exceptions', 'hiddenKm', 'nonBiz', 'attendance', 'longOpen', 'gpsNoFix', 'distance', 'diversions', 'radius', 'fleetRunning', 'driverApprovals', 'deviceApprovals'],
+    charts: ['branchTrips', 'tripsTrend', 'gpsHealth', 'excByType', 'vehStatus', 'distVariance'],
+    lists: ['openExceptions', 'longOpenTrips', 'distAlerts', 'driverQueue', 'deviceRequests', 'recentTrips']
+  };
+  DASH_BLANK_FORM = { src: '', title: '', color: '', style: '', rows: '5' };
+  // One widget = { uid, src, title } plus colour (cards), style (charts) or rows (lists). Empty title/colour/style = the metric's own.
+  dashItem(group, src, f = {}) {
+    const base = { uid: src + '-' + Math.random().toString(36).slice(2, 7), src, title: f.title || '' };
+    return group === 'cards' ? { ...base, color: f.color || '' } : group === 'charts' ? { ...base, style: f.style || '' } : { ...base, rows: Number(f.rows) || 5 };
+  }
+  dashDefault() { return Object.fromEntries(Object.keys(this.DASH_ALL).map(g => [g, this.DASH_ALL[g].map(src => ({ ...this.dashItem(g, src), uid: src }))])); }
+  loadDash() {
+    let cfg = this.dashDefault();
+    try { const saved = JSON.parse(localStorage.getItem(this.DASH_KEY) || 'null'); if (saved && typeof saved === 'object') cfg = Object.fromEntries(Object.keys(this.DASH_ALL).map(g => [g, Array.isArray(saved[g]) ? saved[g].filter(i => i && this.DASH_ALL[g].includes(i.src)) : cfg[g]])); } catch (e) { /* storage blocked: default layout */ }
+    this.setState({ dashCfg: cfg });
+  }
+  saveDash(cfg) {
+    try { localStorage.setItem(this.DASH_KEY, JSON.stringify(cfg)); } catch (e) { /* storage blocked: layout lasts for this tab */ }
+    this.setState({ dashCfg: cfg });
+  }
   T() { return window.TMS; }
   componentDidMount() {
     this._r = () => this.setState({ width: window.innerWidth }); this._r(); window.addEventListener('resize', this._r);
     // Device approval requests come from the Supervisor App through localStorage (same origin).
-    this.syncDevReqs(true);
-    this._devPoll = setInterval(() => this.syncDevReqs(false), 1000);
-    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncDevReqs(false); };
+    this.syncDevReqs(true); this.syncDrvReqs(true); this.loadDash();
+    try { const ap = JSON.parse(localStorage.getItem(this.DRV_APPROVAL_KEY) || '{}'); if (ap && typeof ap === 'object') this.setState({ approvals: ap }); } catch (e) { /* storage blocked: decisions stay in this tab */ }
+    this._devPoll = setInterval(() => { this.syncDevReqs(false); this.syncDrvReqs(false); }, 1000);
+    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncDevReqs(false); if (e.key === this.DRV_KEY) this.syncDrvReqs(false); };
     window.addEventListener('storage', this._onStorage);
     if (/device-approvals/.test(window.location.hash)) this.nav('deviceApprovals');
   }
@@ -2063,6 +2440,39 @@ class Component extends DCLogic {
     this._devSeen = new Set(list.map(r => r.id));
     this.setState({ devReqs: list });
     if (fresh.length) { const r = fresh[0]; this.toast('info', 'New approval requested', `+91 ${this.fmtPhone(r.phone)} · IMEI ${this.fmtImei(r.imei)}`); }
+  }
+  // New-driver requests from the Supervisor App (same origin, localStorage). Decisions are written back to the
+  // request, and decisions on drivers already in the master go to DRV_APPROVAL_KEY, so the app reacts to both.
+  DRV_KEY = 'kr-tms-driver-requests'; DRV_APPROVAL_KEY = 'kr-tms-driver-approvals';
+  readDrvReqs() { try { return JSON.parse(localStorage.getItem(this.DRV_KEY) || '[]') || []; } catch (e) { return this.state.drvReqs; } }
+  writeDrvReqs(list) { try { localStorage.setItem(this.DRV_KEY, JSON.stringify(list)); } catch (e) { /* storage blocked: keep in memory */ } this.setState({ drvReqs: list }); this._drvJson = JSON.stringify(list); }
+  syncDrvReqs(first) {
+    const list = this.readDrvReqs(), json = JSON.stringify(list);
+    if (json === this._drvJson) return;
+    this._drvJson = json;
+    const seen = this._drvSeen || new Set();
+    const fresh = first ? [] : list.filter(r => r.status === 'Pending' && !seen.has(r.id));
+    this._drvSeen = new Set(list.map(r => r.id));
+    this.setState({ drvReqs: list });
+    if (fresh.length) { const r = fresh[0]; this.toast('info', 'New driver request', `${r.name} · ${(this.T().B[r.branch] || {}).name || r.branch} · from ${r.supervisorName}`); }
+  }
+  setSeedApproval(id, approval) {
+    const approvals = { ...this.state.approvals, [id]: approval };
+    this.setState({ approvals });
+    try { localStorage.setItem(this.DRV_APPROVAL_KEY, JSON.stringify(approvals)); } catch (e) { /* storage blocked: the app will not see it */ }
+  }
+  // Approve or reject a driver: a request from the app, or a pending driver already in the master.
+  decideDriver(id, approval, reason = '') {
+    const T = this.T(), req = this.state.drvReqs.find(r => r.id === id), d = req || T.drivers.find(x => x.id === id);
+    if (!d) return;
+    const ok = approval === 'Approved', bname = (T.B[d.branch] || {}).name || 'branch';
+    if (req) this.writeDrvReqs(this.readDrvReqs().map(r => r.id === id ? { ...r, status: ok ? 'Approved' : 'Rejected', decidedAt: this.stampNow(), reason } : r));
+    else this.setSeedApproval(id, approval);
+    this.setState({ drawer: null, rejectReason: '' });
+    this.toast(ok ? 'success' : 'warning', ok ? 'Driver approved' : 'Request rejected', ok ? `${d.name} is now available to ${bname} supervisors.` : `${bname} supervisors have been notified.`);
+    this.pushNotice({ kind: 'action', branch: d.branch, title: ok ? `Driver approved · ${d.name}` : `Driver request rejected · ${d.name}`,
+      body: ok ? `Your request to add ${d.name} is approved. The driver is in the driver list and can be assigned to trips.` : `Head Office rejected the request to add ${d.name}.${reason ? ' Reason: ' + reason + '.' : ''} The driver cannot be assigned to trips.`,
+      rows: [['Driver', d.name], ['Licence', d.licence], ['Mobile', '+91 ' + this.fmtPhone(d.phone)], ['Action taken', ok ? 'Approved' : 'Rejected'], ...(reason ? [['Reason', reason]] : [])] });
   }
   fmtPhone(d) { d = String(d || ''); return d.length === 10 ? d.slice(0, 5) + ' ' + d.slice(5) : d; }
   fmtImei(d) { d = String(d || ''); return d.length === 15 ? `${d.slice(0, 2)} ${d.slice(2, 8)} ${d.slice(8, 14)} ${d.slice(14)}` : d; }
@@ -2083,6 +2493,15 @@ class Component extends DCLogic {
     const showLoading = route === 'trips' && this.state.route !== 'trips';
     this.setState({ route, navOpen: false, globalQ: '', drawer: null, loading: showLoading, ...extra });
     if (showLoading) setTimeout(() => this.setState({ loading: false }), 700);
+  }
+  // Resize a photo to at most 1000 px and return it as a JPEG data URL (same as the Supervisor App).
+  shrinkImage(file) {
+    return new Promise(done => {
+      const src = URL.createObjectURL(file), img = new Image();
+      img.onload = () => { const k = Math.min(1, 1000 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(src); done(c.toDataURL('image/jpeg', 0.7)); };
+      img.onerror = () => { URL.revokeObjectURL(src); done(''); };
+      img.src = src;
+    });
   }
   bind(key, fields) { const o = {}; fields.forEach(k => o[k] = e => this.setState(s => ({ [key]: { ...s[key], [k]: e && e.target ? e.target.value : e } }))); return o; }
   // Badge colours per status label → [background, text, edge], from the --st-* palette in <helmet>.
@@ -2111,7 +2530,38 @@ class Component extends DCLogic {
       branches: { title: 'Branch Master', singular: 'branch', plural: 'branches', addLabel: 'Add branch', searchPh: 'Search branch or state', data: T.branches, cols: [['Code', 'code'], ['Branch', 'name'], ['State', 'state'], ['Vehicles', 'vehicles'], ['Supervisors', 'supervisors'], ['Status', 'status']], cells: b => [txt(b.code, { strong: true }), txt(b.name, { strong: true }), txt(b.state), txt(b.vehicles), txt(b.supervisors), status(b.status)], fields: [['code', 'Branch code'], ['name', 'Branch name'], ['state', 'State'], ['status', 'Status', ['Active', 'Inactive']]] },
       supervisors: { title: 'Supervisor Master', singular: 'supervisor', plural: 'supervisors', addLabel: 'Add supervisor', searchPh: 'Search name or phone', data: T.supervisors, cols: [['Name', 'name'], ['Phone', 'phone'], ['Branch', 'branch'], ['Clients handled', 'clients'], ['Last login', 'lastLogin'], ['Status', 'status']], cells: s => [txt(s.name, { strong: true }), txt(s.phone), txt(bn(s.branch)), txt(s.clients), txt(s.lastLogin), status(s.status)], fields: [['name', 'Full name'], ['phone', 'Mobile number'], ['branch', 'Branch', branchOpts], ['clients', 'Clients handled', null, 'Comma separated'], ['status', 'Status', ['Active', 'Suspended']]] },
       vehicles: { title: 'Vehicle Master', singular: 'vehicle', plural: 'vehicles', addLabel: 'Add vehicle', searchPh: 'Search registration', data: T.vehicles, cols: [['Registration', 'number'], ['Type', 'type'], ['Branch', 'branch'], ['Odometer', 'odometer'], ['GPS', 'gps'], ['Status', 'status']], cells: v => [txt(v.number, { strong: true }), txt(v.type), txt(bn(v.branch)), txt(v.odometer.toLocaleString('en-IN') + ' km'), txt(v.gps), status(v.status === 'Idle' || v.status === 'Running' ? 'Active' : v.status)], fields: [['number', 'Registration number', null, 'TN 28 AQ 4521'], ['type', 'Vehicle type', ['Reefer container 20ft', 'Reefer trailer 32ft', 'Closed body 19ft', 'Closed body 24ft']], ['branch', 'Branch', branchOpts], ['odometer', 'Current odometer (km)'], ['status', 'Status', ['Idle', 'Maintenance', 'Inactive']]] },
-      drivers: { title: 'Driver Master', singular: 'driver', plural: 'drivers', addLabel: 'Add driver', searchPh: 'Search name or licence', data: T.drivers, approval: true, cols: [['Name', 'name'], ['Licence', 'licence'], ['Phone', 'phone'], ['Branch', 'branch'], ['Type', 'type'], ['Approval', 'approval'], ['Status', 'status']], cells: d => { const ap = this.state.approvals[d.id] || d.approval; return [txt(d.name, { strong: true }), txt(d.licence), txt(d.phone), txt(bn(d.branch)), txt(d.type), status(ap), status(ap === 'Approved' ? d.status : ap === 'Rejected' ? 'Inactive' : 'Pending')]; }, fields: [['name', 'Driver name'], ['licence', 'Licence number'], ['phone', 'Mobile number'], ['branch', 'Branch', branchOpts], ['type', 'Driver type', ['Regular', 'Supporting']], ['status', 'Status', ['Active', 'Inactive']]] },
+      drivers: { title: 'Driver Master', singular: 'driver', plural: 'drivers', addLabel: 'Add driver', searchPh: 'Search name or licence', data: [...this.state.drvReqs.map(r => ({ id: r.id, name: r.name, licence: r.licence, phone: this.fmtPhone(r.phone), branch: r.branch, type: 'New', status: 'Active', approval: r.status === 'Pending' ? 'Pending approval' : r.status })), ...T.drivers], approval: true, cols: [['Name', 'name'], ['Licence', 'licence'], ['Phone', 'phone'], ['Branch', 'branch'], ['Type', 'type'], ['Approval', 'approval'], ['Status', 'status']], cells: d => { const ap = this.state.approvals[d.id] || d.approval; return [txt(d.name, { strong: true }), txt(d.licence), txt(d.phone), txt(bn(d.branch)), txt(d.type), status(ap), status(ap === 'Approved' ? d.status : ap === 'Rejected' ? 'Inactive' : 'Pending')]; }, fields: [
+        ['s1', 'Driver details', 'section'],
+        ['name', 'Driver name', null, 'Full name as on licence'],
+        ['licence', 'Licence number', null, 'TN28 2019 0004521', { clean: 'licence' }],
+        ['phone', 'Mobile number', null, '90031 55012', { prefix: '+91', clean: 'phone' }],
+        ['s2', 'Branch and status', 'section'],
+        ['branch', 'Branch', branchOpts], ['type', 'Driver type', ['Regular', 'Supporting']], ['status', 'Status', ['Active', 'Inactive']],
+        ['s3', 'Documents', 'section'],
+        ['licImg', 'Licence image', 'upload', 'Front side'],
+        ['aadhaarImg', 'Aadhaar image', 'upload', 'Front side · number visible'],
+        ['s4', 'Bank details', 'section'],
+        ['holder', 'Account holder name', null, 'As in bank passbook'],
+        ['account', 'Account number', null, '9 to 18 digits', { clean: 'account' }],
+        ['ifsc', 'IFSC code', null, 'SBIN0001234', { clean: 'ifsc', hint: '11 characters, printed on the passbook or cheque leaf.' }],
+        ['s5', 'Family and reference', 'section'],
+        ['family', 'Family contact number', null, 'Emergency contact', { prefix: '+91', clean: 'phone' }],
+        ['reference', 'Reference', 'textarea', 'Who referred this driver, previous employer, years of experience', { max: 250, optional: true }]
+      ],
+      // Same checks as the Supervisor App request. A new driver needs everything; an existing driver may not have documents or bank details on file yet.
+      validate: (f, isNew) => { const dg = x => String(x || '').replace(/\D/g, ''), has = x => !!String(x || '').trim(), need = isNew;
+        return {
+          name: !has(f.name) ? 'Enter the name as on the licence.' : undefined,
+          licence: String(f.licence || '').replace(/\s/g, '').length < 10 ? 'Enter the full licence number.' : undefined,
+          phone: dg(f.phone).length !== 10 ? 'Enter a 10-digit mobile number.' : undefined,
+          branch: !f.branch ? 'Choose the branch.' : undefined,
+          licImg: need && !f.licImg ? 'Upload a clear photo of the driving licence.' : undefined,
+          aadhaarImg: need && !f.aadhaarImg ? 'Upload a clear photo of the Aadhaar card.' : undefined,
+          holder: need && !has(f.holder) ? 'Enter the account holder name.' : undefined,
+          account: (need || has(f.account)) && !/^\d{9,18}$/.test(dg(f.account)) ? 'Enter a 9 to 18 digit account number.' : undefined,
+          ifsc: (need || has(f.ifsc)) && !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(f.ifsc || '') ? 'Enter a valid IFSC, e.g. SBIN0001234.' : undefined,
+          family: (need || has(f.family)) && dg(f.family).length !== 10 ? 'Enter a 10-digit family contact number.' : has(f.family) && dg(f.family) === dg(f.phone) ? 'Use a family member’s number, not the driver’s.' : undefined
+        }; } },
       clients: { title: 'Client Master', singular: 'client', plural: 'clients', addLabel: 'Add client', searchPh: 'Search client or GST', data: T.clients, cols: [['Client', 'name'], ['GSTIN', 'gst'], ['Branch', 'branch'], ['Customers', 'customers'], ['Contact', 'contact']], cells: c => [txt(c.name, { strong: true }), txt(c.gst), txt(bn(c.branch)), txt(c.customers), txt(c.contact)], fields: [['name', 'Client name'], ['gst', 'GSTIN'], ['branch', 'Branch', branchOpts], ['contact', 'Contact'], ['status', 'Status', ['Active', 'On hold']]] },
       locations: { title: 'Loading Location Master', singular: 'loading location', plural: 'loading locations', addLabel: 'Add location', searchPh: 'Search location', data: T.locations, cols: [['Location', 'name'], ['Branch', 'branch'], ['Address', 'address'], ['Safe radius', 'radius'], ['Coordinates', 'lat']], cells: l => [txt(l.name, { strong: true }), txt(bn(l.branch)), txt(l.address), txt(l.radius + ' m'), txt(l.lat + ', ' + l.lng)], fields: [['name', 'Location name'], ['branch', 'Branch', branchOpts], ['address', 'Address'], ['radius', 'Safe radius (m)', null, '100'], ['lat', 'Latitude'], ['lng', 'Longitude'], ['status', 'Status', ['Active', 'Inactive']]] },
       routes: { title: 'Route Master', singular: 'route', plural: 'routes', addLabel: 'Add route', searchPh: 'Search route', data: T.routes, cols: [['Route', 'name'], ['From', 'from'], ['To', 'to'], ['Fixed KM', 'km'], ['Duration', 'hours'], ['Toll', 'toll']], cells: r => [txt(r.name, { strong: true }), txt((T.L[r.from] || {}).name), txt(r.to), txt(r.km + ' km'), txt(r.hours + ' h'), txt(r.toll)], fields: [['from', 'Loading location', T.locations.map(l => ({ value: l.id, label: l.name }))], ['to', 'Destination'], ['km', 'Fixed distance (km)', null, 'Billing reference'], ['hours', 'Expected duration (h)'], ['toll', 'Toll estimate'], ['status', 'Status', ['Active', 'Under review']]] }
@@ -2125,7 +2575,15 @@ class Component extends DCLogic {
     const trips = T.trips.filter(t => !s.deleted.includes(t.id)).map(t => this.decorate(t));
     const exceptions = T.exceptions.map(x => { const o = s.excOverrides[x.id] || {}; const xx = { ...x, ...o }; const v = T.V[xx.vehicle], tr = T.T[xx.trip]; const [sevBg, sevFg, dot] = this.sev(xx); return { ...xx, vehicleNumber: v ? v.number : '—', tripNumber: tr ? tr.number : '—', tripId: xx.trip, branchName: (T.B[xx.branch] || {}).name, sevBg, sevFg, dot }; }).sort((a, b) => this.stamp(b.raised) - this.stamp(a.raised));
     const openExc = exceptions.filter(x => x.status !== 'Resolved');
-    const pendingDrivers = T.drivers.filter(d => (s.approvals[d.id] || d.approval) === 'Pending approval').length;
+    // Driver approval queue — requests from the Supervisor App first, then pending drivers already in the master
+    const initials = n => String(n || '').replace(/[^A-Za-z ]/g, ' ').split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    const queueSrc = [...s.drvReqs.filter(r => r.status === 'Pending').map(r => ({ ...r, req: true })), ...T.drivers.filter(d => (s.approvals[d.id] || d.approval) === 'Pending approval').map(d => ({ ...d, req: false }))];
+    const drvQueue = queueSrc.map(d => ({ id: d.id, name: d.name, initials: initials(d.name), tag: d.req ? 'New driver' : d.type,
+      sub: d.req ? `${(T.B[d.branch] || {}).name} · requested by ${d.supervisorName} · ${d.requestedAt}${d.vehicle ? ' · for ' + d.vehicle : ''}` : `${(T.B[d.branch] || {}).name} · licence ${d.licence} · already in the driver master`,
+      docs: d.req ? [d.licImg && 'Licence', d.aadhaarImg && 'Aadhaar'].filter(Boolean).join(' + ') + ' attached' : '', hasDocs: !!d.req,
+      review: () => this.setState({ drawer: { isDriverReq: true, reqId: d.id, kicker: d.req ? 'New driver request' : 'Pending driver', title: d.name }, rejectReason: '' }),
+      approve: () => this.decideDriver(d.id, 'Approved'), reject: () => this.decideDriver(d.id, 'Rejected') }));
+    const pendingDrivers = drvQueue.length;
     // distance variation
     const distThr = Number(s.st.variance) || 5;
     const kmTxt = n => n == null ? '—' : n.toLocaleString('en-IN') + ' km';
@@ -2167,15 +2625,14 @@ class Component extends DCLogic {
     // dashboard
     const enroute = trips.filter(t => t.status === 'Enroute'); const nonBiz = trips.filter(t => t.type === 'Non-Business');
     const kpis = [
-      { label: 'Trips today', value: 312, sub: '+18 vs yesterday · 300–400 target', subColor: 'var(--kr-green-700)', edge: 'var(--color-brand)', route: 'trips' },
-      { label: 'Enroute now', value: enroute.length * 47, sub: enroute.filter(t => t.hoursOpen > 24).length + ' open over 24 h', subColor: '#7A4300', edge: 'var(--color-brand)', route: 'trips' },
-      { label: 'Open exceptions', value: openExc.length, sub: openExc.filter(x => x.severity === 'High').length + ' high severity', subColor: 'var(--kr-red-700)', edge: 'var(--kr-red-600)', route: 'exceptions' },
-      { label: 'Hidden km · month', value: '412', sub: '6 unaccounted distance alerts', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'exceptions' },
-      { label: 'Non-business', value: Math.round(nonBiz.length / trips.length * 100) + '%', sub: 'of movements · all recorded', subColor: 'var(--text-muted)', edge: 'var(--kr-green-100)', route: 'analytics' },
-      { label: 'Attendance', value: '86%', sub: '3 branches incomplete today', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'attendance' }
+      { id: 'trips', label: 'Trips today', value: 312, sub: '+18 vs yesterday · 300–400 target', subColor: 'var(--kr-green-700)', edge: 'var(--color-brand)', route: 'trips' },
+      { id: 'enroute', label: 'Enroute now', value: enroute.length * 47, sub: enroute.filter(t => t.hoursOpen > 24).length + ' open over 24 h', subColor: '#7A4300', edge: 'var(--color-brand)', route: 'trips' },
+      { id: 'exceptions', label: 'Open exceptions', value: openExc.length, sub: openExc.filter(x => x.severity === 'High').length + ' high severity', subColor: 'var(--kr-red-700)', edge: 'var(--kr-red-600)', route: 'exceptions' },
+      { id: 'hiddenKm', label: 'Hidden km · month', value: '412', sub: '6 unaccounted distance alerts', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'exceptions' },
+      { id: 'nonBiz', label: 'Non-business', value: Math.round(nonBiz.length / trips.length * 100) + '%', sub: 'of movements · all recorded', subColor: 'var(--text-muted)', edge: 'var(--kr-green-100)', route: 'analytics' },
+      { id: 'attendance', label: 'Attendance', value: '86%', sub: '3 branches incomplete today', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'attendance' }
     ];
     const bb = [['Chennai HO', 118, 14], ['Namakkal', 84, 9], ['Hyderabad', 52, 6], ['Bengaluru', 36, 3], ['Mumbai', 22, 2]];
-    const branchBars = bb.map(([name, biz, non]) => ({ name, total: biz + non, non, bizPct: Math.round(biz / 132 * 100) + '%', nonPct: Math.round(non / 132 * 100) + '%' }));
     const longOpen = enroute.filter(t => t.hoursOpen > 24);
     const gpsOk = T.vehicles.filter(v => v.gps === 'OK').length * 68, gpsWeak = T.vehicles.filter(v => v.gps === 'Weak').length * 9, gpsFail = T.vehicles.filter(v => v.gps === 'Failed').length * 4;
     // trips list
@@ -2245,7 +2702,7 @@ class Component extends DCLogic {
     const fallbackRows = [{ o: 'Working', g: 'Working', a: 'Normal · sources merged', color: 'var(--kr-green-700)' }, { o: 'Working', g: 'Failed', a: 'Use odometer', color: '#7A4300' }, { o: 'Failed', g: 'Working', a: 'Use GPS', color: '#7A4300' }, { o: 'Failed', g: 'Failed', a: 'Manual exception · admin report', color: 'var(--kr-red-700)' }];
     // master
     let master = { count: 0, rows: [], cols: [] };
-    if (is.master) { const m = M[s.route]; const mq = s.masterQ.toLowerCase(); const rows = m.data.filter(r => !s.deleted.includes(r.id) && (!mq || Object.values(r).join(' ').toLowerCase().includes(mq)) && (s.route !== 'drivers' || !s.driverApprovalFilter || (s.approvals[r.id] || r.approval) === s.driverApprovalFilter)); master = { ...m, count: rows.length, cols: m.cols.map(([label]) => ({ label })), rows: rows.map(r => ({ id: r.id, cells: m.cells(r) })), empty: !rows.length, approvalQueue: m.approval && pendingDrivers ? pendingDrivers : false }; }
+    if (is.master) { const m = M[s.route]; const mq = s.masterQ.toLowerCase(); const rows = m.data.filter(r => !s.deleted.includes(r.id) && (!mq || Object.values(r).join(' ').toLowerCase().includes(mq)) && (s.route !== 'drivers' || !s.driverApprovalFilter || (s.approvals[r.id] || r.approval) === s.driverApprovalFilter)); master = { ...m, count: rows.length, cols: m.cols.map(([label]) => ({ label })), rows: rows.map(r => ({ id: r.id, cells: m.cells(r), review: s.route === 'drivers' && (s.approvals[r.id] || r.approval) === 'Pending approval' })), empty: !rows.length, approvalQueue: m.approval && pendingDrivers ? pendingDrivers : false }; }
     // attendance
     const attBranches = T.branches.map(b => { const inactive = b.status !== 'Active'; const missing = { B01: [], B02: [7], B03: [2, 9], B04: [2, 7, 9], B05: [] }[b.id] || []; const days = Array.from({ length: 14 }, (_, i) => { const d = i + 1; return { title: b.name + ' · ' + d + ' Sep', bg: inactive ? 'var(--kr-grey-200)' : missing.includes(d) ? 'var(--kr-saffron-500)' : 'var(--color-brand)' }; }); return { name: b.name, days, summary: inactive ? 'Inactive' : missing.length ? missing.length + ' missing' : 'Complete', color: inactive ? 'var(--text-muted)' : missing.length ? '#7A4300' : 'var(--kr-green-700)' }; });
     const vehStatusBars = [['Running · trip assigned', 281, 'var(--color-brand)'], ['Idle · no business', 296, 'var(--kr-green-100)'], ['Idle · no driver', 88, 'var(--kr-saffron-500)'], ['Maintenance · service', 57, 'var(--kr-grey-300)']].map(([label, count, color]) => ({ label, count, color, pct: Math.round(count / 296 * 100) + '%' }));
@@ -2271,10 +2728,101 @@ class Component extends DCLogic {
     const searchResults = searching ? [...trips.filter(t => [t.number, t.vehicleNumber, t.driverName].join(' ').toLowerCase().includes(gq)).map(t => ({ kind: 'Trip', title: t.number, sub: t.vehicleNumber + ' · ' + t.driverName + ' · ' + t.status, route: 'trip', id: t.id })), ...T.vehicles.filter(v => v.number.toLowerCase().includes(gq)).map(v => ({ kind: 'Vehicle', title: v.number, sub: v.type + ' · ' + (T.B[v.branch] || {}).name, route: 'vehicles', id: v.id })), ...T.drivers.filter(d => d.name.toLowerCase().includes(gq)).map(d => ({ kind: 'Driver', title: d.name, sub: (T.B[d.branch] || {}).name + ' · ' + d.type, route: 'drivers', id: d.id })), ...T.clients.filter(c => c.name.toLowerCase().includes(gq)).map(c => ({ kind: 'Client', title: c.name, sub: c.customers + ' customers', route: 'clients', id: c.id }))] : [];
     // drawer form
     const d = s.drawer; let formFields = [];
-    if (d && d.isForm) { formFields = d.fields.map(([key, label, opts, hint]) => { const isArea = opts === 'textarea', isSelect = !!opts && !isArea; const options = isSelect ? (typeof opts[0] === 'string' ? opts.map(o => ({ value: o, label: o })) : opts) : null; const missing = s.formError && !s.form[key] && d.required.includes(key); return { key, label, isSelect, isArea, isText: !isSelect && !isArea, count: String(s.form[key] || '').length, areaBorder: missing ? 'var(--status-danger)' : 'var(--border-strong)', options, value: s.form[key] == null ? '' : String(s.form[key]), placeholder: hint || '', hint: '', error: s.formError && !s.form[key] && d.required.includes(key) ? 'Required' : undefined, set: e => this.setState(st => ({ form: { ...st.form, [key]: e.target.value } })) }; }); }
+    if (d && d.isForm) {
+      const errs = s.formError && d.validate ? d.validate(s.form) : {}; let sectionNo = 0;
+      const dg = x => String(x || '').replace(/\D/g, '');
+      const clean = { phone: v => dg(v).slice(0, 10), account: v => dg(v).slice(0, 18), licence: v => v.toUpperCase().slice(0, 20), ifsc: v => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) };
+      formFields = d.fields.map(([key, label, opts, hint, x = {}]) => {
+        const isSection = opts === 'section', isUpload = opts === 'upload', isArea = opts === 'textarea', isSelect = Array.isArray(opts);
+        const options = isSelect ? (typeof opts[0] === 'string' ? opts.map(o => ({ value: o, label: o })) : opts) : null;
+        const raw = s.form[key], file = isUpload && raw && typeof raw === 'object' ? raw : null, max = x.max || 500;
+        const error = errs[key] || (s.formError && !raw && (d.required || []).includes(key) ? 'Required' : undefined);
+        return { key, label, isSection, isUpload, isSelect, isArea, isText: !isSection && !isUpload && !isSelect && !isArea, sectionNo: isSection ? ++sectionNo : '',
+          count: String(raw || '').length, countText: (x.optional ? 'Optional · ' : '') + String(raw || '').length + '/' + max, max,
+          areaBorder: error ? 'var(--status-danger)' : 'var(--border-strong)', options, value: raw == null || file ? '' : String(raw), placeholder: isUpload ? '' : hint || '', hint: x.hint || '', note: isUpload ? hint || '' : '',
+          prefix: x.prefix || undefined, inputMode: x.prefix || x.clean === 'account' ? 'numeric' : undefined, error, hasError: !!error,
+          upEmpty: isUpload && !file, upSet: !!file, upName: file ? file.name : '', upSize: file ? file.size : '', upUrl: file && file.url || '', upNoUrl: !!file && !file.url, upBorder: error ? 'var(--status-danger)' : 'var(--border-strong)',
+          set: e => { const v = e.target.value; this.setState(st => ({ form: { ...st.form, [key]: clean[x.clean] ? clean[x.clean](v) : v.slice(0, isArea ? max : undefined) } })); } };
+      });
+    }
     const confirm = s.confirm || { title: '', body: '' };
     const confirmActions = s.confirm ? [React.createElement(window.KongunaduRoadlinesDesignSystem_369b05.Button, { key: 'c', variant: 'ghost', onClick: () => this.setState({ confirm: null }) }, 'Cancel'), React.createElement(window.KongunaduRoadlinesDesignSystem_369b05.Button, { key: 'ok', variant: s.confirm.danger ? 'accent' : 'primary', onClick: s.confirm.onOk }, s.confirm.okLabel)] : null;
     const branchOptions = T.branches.map(b => ({ value: b.id, label: b.name }));
+    // dashboard widgets — the catalog Settings › Dashboard layout picks from
+    const openExcById = id => { const x = exceptions.find(z => z.id === id); if (!x) return; this.setState({ excSel: id, excAssignee: x.assignee === 'Unassigned' ? '' : x.assignee, excNote: '', drawer: { isException: true, kicker: 'Exception ' + id, title: x.type } }); };
+    const hbar = (rows, max) => rows.map(([name, segs, value, rest]) => ({ name, value, rest: rest || '', segs: segs.map(([n, color]) => ({ w: Math.min(100, Math.round(n / (max || 1) * 100)) + '%', color })) }));
+    const excByType = types.map(t => [t, openExc.filter(x => x.type === t).length]).filter(([, n]) => n).sort((a, b) => b[1] - a[1]);
+    const worstDist = [...distAll].sort((a, b) => b.pct - a.pct).slice(0, 5);
+    const trend = anDefs.trips.series, trendMax = Math.max(...trend);
+    const gpsTotal = gpsOk + gpsWeak + gpsFail || 1;
+    const dashCatalog = {
+      cards: [...kpis,
+        { id: 'longOpen', label: 'Long open trips', value: longOpen.length, sub: 'Enroute for more than 24 h', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'trips' },
+        { id: 'gpsNoFix', label: 'GPS · no fix', value: gpsFail, sub: gpsWeak + ' weak signal · ' + gpsOk + ' tracking', subColor: 'var(--kr-red-700)', edge: 'var(--kr-red-600)', route: 'fleet' },
+        { id: 'distance', label: 'Distance over ' + distThr + '%', value: distFlagged, sub: distOpenCount + ' open for review', subColor: 'var(--kr-red-700)', edge: 'var(--kr-red-600)', route: 'distance' },
+        { id: 'diversions', label: 'Route diversions', value: divSummary.count, sub: divSummary.live + ' off route now', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'fleet' },
+        { id: 'radius', label: 'Radius alerts', value: rbCards.length, sub: 'Left a safe zone without a trip', subColor: 'var(--kr-red-700)', edge: 'var(--kr-red-600)', route: 'fleet' },
+        { id: 'fleetRunning', label: 'Fleet running', value: 281, sub: 'of 722 vehicles · 88 idle, no driver', subColor: 'var(--text-muted)', edge: 'var(--color-brand)', route: 'fleet' },
+        { id: 'driverApprovals', label: 'Driver approvals', value: pendingDrivers, sub: 'Waiting for your decision', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'drivers' },
+        { id: 'deviceApprovals', label: 'Device approvals', value: devPending.length, sub: 'Supervisor phones pending', subColor: '#7A4300', edge: 'var(--kr-saffron-500)', route: 'deviceApprovals' }
+      ].map(k => ({ ...k, title: k.label, desc: k.sub })),
+      // each chart carries a series (label, value, text) so it can be drawn as its default, as bars or as columns
+      charts: [
+        { id: 'branchTrips', title: 'Trips by branch · today', meta: 'Target 300–400/day', desc: 'Business and non-business trips per branch', kindLabel: 'Stacked bars', isHbar: true, rows: hbar(bb.map(([name, biz, non]) => [name, [[biz, 'var(--color-brand)'], [non, 'var(--kr-green-100)']], biz + non, ' · ' + non + ' non-biz']), 132), legend: [{ label: 'Business', color: 'var(--color-brand)' }, { label: 'Non-business', color: 'var(--kr-green-100)' }], route: 'analytics',
+          series: bb.map(([name, biz, non]) => ({ label: name, value: biz + non, text: biz + non })) },
+        { id: 'tripsTrend', title: 'Trips per day', meta: 'Last 14 days', desc: 'Daily trip volume across all branches', kindLabel: 'Columns', isColumn: true, route: 'analytics',
+          series: trend.map((v, i) => ({ label: (i + 1) + ' Sep', value: v, text: v, color: i === trend.length - 1 ? 'var(--kr-green-800)' : '' })) },
+        { id: 'gpsHealth', title: 'GPS health · fleet', meta: 'Live', desc: 'Tracking, weak signal and no fix across the fleet', kindLabel: 'Summary', isStat: true, stats: [[gpsOk, 'Tracking', 'var(--color-brand)'], [gpsWeak, 'Weak signal', 'var(--kr-saffron-600)'], [gpsFail, 'No fix', 'var(--kr-red-600)']].map(([value, label, color]) => ({ value, label, color, w: Math.max(1, Math.round(value / gpsTotal * 100)) + '%' })), note: 'When GPS fails the odometer is used; when both fail the trip closes as a manual exception.', route: 'fleet',
+          series: [[gpsOk, 'Tracking', 'var(--color-brand)'], [gpsWeak, 'Weak signal', 'var(--kr-saffron-600)'], [gpsFail, 'No fix', 'var(--kr-red-600)']].map(([value, label, color]) => ({ label, value, text: value, color })) },
+        { id: 'excByType', title: 'Open exceptions by type', meta: openExc.length + ' open', desc: 'Where the open exceptions come from', kindLabel: 'Bars', isHbar: true, route: 'exceptions',
+          series: excByType.map(([t, n]) => ({ label: t, value: n, text: n, color: 'var(--kr-red-600)' })) },
+        { id: 'vehStatus', title: 'Vehicle status · today', meta: '722 vehicles', desc: 'Running, idle by cause, and in maintenance', kindLabel: 'Bars', isHbar: true, route: 'attendance',
+          series: vehStatusBars.map(v => ({ label: v.label, value: v.count, text: v.count, color: v.color })) },
+        { id: 'distVariance', title: 'Distance variance · worst trips', meta: 'Flag above ' + distThr + '%', desc: 'Furthest source vs fixed km, closed trips', kindLabel: 'Bars', isHbar: true, route: 'distance',
+          series: worstDist.map(d => ({ label: d.vehicleNumber, value: d.pct, text: d.pctText, color: d.flagged ? 'var(--kr-red-600)' : 'var(--color-brand)' })) }
+      ].map(c => ({ isHbar: false, isColumn: false, isStat: false, stats: [], legend: [], note: '', ...c, series: c.series.map(x => ({ ...x, color: x.color || 'var(--color-brand)' })) })),
+      lists: [
+        { id: 'openExceptions', title: 'Open exceptions', desc: 'Newest open exceptions with branch', linkLabel: 'All exceptions →', route: 'exceptions', empty: 'No open exceptions.',
+          items: openExc.slice(0, 5).map(x => ({ kind: 'exc', id: x.id, dot: x.dot, title: x.type + ' · ' + x.vehicleNumber, detail: x.detail, meta: x.branchName })) },
+        { id: 'longOpenTrips', title: 'Long open trips', desc: 'Enroute for more than 24 hours', linkLabel: 'Over 24 h', route: 'trips', empty: 'No trip has been open longer than 24 hours.',
+          items: longOpen.map(t => ({ kind: 'trip', id: t.id, dot: 'var(--kr-saffron-500)', title: t.number, mono: true, detail: t.vehicleNumber + ' · ' + t.driverName + ' · ' + t.branchName, meta: t.hoursOpen + ' h', big: true, metaColor: 'var(--kr-saffron-600)' })) },
+        { id: 'distAlerts', title: 'Distance variance alerts', desc: 'Flagged trips waiting for review', linkLabel: 'Distance variation →', route: 'distance', empty: 'No trip is over the variance threshold.',
+          items: distAlerts.slice(0, 5).map(d => ({ kind: d.hasTrip ? 'trip' : 'route', id: d.trip, route: 'distance', dot: d.edge, title: d.vehicleNumber + ' · ' + d.pctText, detail: d.diffText + (d.route ? ' · ' + d.route : ''), meta: d.review, metaColor: d.statusFg })) },
+        { id: 'driverQueue', title: 'Driver approvals', desc: 'New and pending drivers to approve', linkLabel: 'Driver master →', route: 'drivers', empty: 'No driver is waiting for approval.',
+          items: drvQueue.slice(0, 5).map(q => ({ kind: 'drv', id: q.id, dot: 'var(--kr-saffron-500)', title: q.name + ' · ' + q.tag, detail: q.sub, meta: 'Review', metaColor: 'var(--text-brand)' })) },
+        { id: 'deviceRequests', title: 'Device approvals', desc: 'Supervisor phones asking to register', linkLabel: 'Device approvals →', route: 'deviceApprovals', empty: 'No device is waiting for approval.',
+          items: devPending.slice(0, 5).map(r => ({ kind: 'route', route: 'deviceApprovals', id: r.id, dot: 'var(--kr-saffron-500)', title: '+91 ' + this.fmtPhone(r.phone), detail: 'IMEI ' + this.fmtImei(r.imei) + ' · ' + (r.device || 'Android phone'), meta: r.requestedAt || 'Pending' })) },
+        { id: 'recentTrips', title: 'Recently closed trips', desc: 'Latest trips closed by supervisors', linkLabel: 'All trips →', route: 'trips', empty: 'No closed trips yet.',
+          items: trips.filter(t => t.status === 'Closed').slice(0, 5).map(t => ({ kind: 'trip', id: t.id, dot: t.hasFlags ? 'var(--st-flagged-edge)' : 'var(--st-closed-edge)', title: t.number, mono: true, detail: t.vehicleNumber + ' · ' + t.driverName + ' · ' + t.clientName, meta: t.badge, metaColor: t.badgeFg })) }
+      ].map(l => ({ ...l, count: l.items.length, rowsText: l.items.length + (l.items.length === 1 ? ' row' : ' rows') + ' now', isEmpty: !l.items.length, items: l.items.map(i => ({ route: '', mono: false, big: false, metaColor: 'var(--text-muted)', ...i, titleFont: i.mono ? 'var(--font-mono)' : 'inherit', metaFont: i.big ? 'var(--font-display)' : 'inherit', metaSize: i.big ? '20px' : '12px', metaWeight: i.big ? 800 : 400 })) }))
+    };
+    // shape a chart as its default, as horizontal bars or as columns
+    const shapeChart = (c, style) => {
+      const sMax = Math.max(1, ...c.series.map(x => x.value)), few = c.series.length <= 8;
+      const asRows = () => hbar(c.series.map(x => [x.label, [[x.value, x.color]], x.text]), sMax);
+      const out = style === 'bars' ? { ...c, isHbar: true, isColumn: false, isStat: false, legend: [], rows: asRows() }
+        : style === 'columns' || c.isColumn ? { ...c, isHbar: false, isColumn: true, isStat: false, legend: [] } : { ...c };
+      if (out.isHbar && !out.rows) out.rows = asRows();
+      if (out.isColumn) Object.assign(out, { bars: c.series.map(x => ({ h: Math.max(2, Math.round(x.value / sMax * 100)) + '%', color: x.color, title: x.label + ' · ' + x.text, lbl: few ? x.label : '', val: few ? x.text : '' })), showLabels: few, showAxis: !few, axisStart: c.series.length ? c.series[0].label : '', axisEnd: c.series.length ? c.series[c.series.length - 1].label : '' });
+      return { rows: [], bars: [], showLabels: false, showAxis: false, axisStart: '', axisEnd: '', ...out, hasLegend: !!(out.legend && out.legend.length), hasNote: !!out.note && !!out.isStat };
+    };
+    const miniOf = c => { const a = c.series.slice(-10), m = Math.max(1, ...a.map(y => y.value)); return a.map(x => ({ h: Math.max(8, Math.round(x.value / m * 100)) + '%' })); };
+    const dashColors = { green: 'var(--color-brand)', red: 'var(--kr-red-600)', saffron: 'var(--kr-saffron-500)', grey: 'var(--kr-grey-300)' };
+    const styleName = { bars: 'Horizontal bars', columns: 'Columns' };
+    const cat = Object.fromEntries(Object.keys(dashCatalog).map(g => [g, Object.fromEntries(dashCatalog[g].map(w => [w.id, w]))]));
+    // build a configured widget from its metric; values always come from live data
+    const build = {
+      cards: it => { const w = cat.cards[it.src]; return { ...w, uid: it.uid, label: it.title || w.label, edge: dashColors[it.color] || w.edge }; },
+      charts: it => { const w = cat.charts[it.src]; return { ...shapeChart(w, it.style), uid: it.uid, title: it.title || w.title, styleLabel: styleName[it.style] || w.kindLabel, mini: miniOf(w) }; },
+      lists: it => { const w = cat.lists[it.src], n = Number(it.rows) || 5, items = w.items.slice(0, n); return { ...w, uid: it.uid, title: it.title || w.title, items, isEmpty: !items.length, rowsText: 'Up to ' + n + ' rows' }; }
+    };
+    const dashCfg = s.dashCfg || this.dashDefault();
+    const dashCards = dashCfg.cards.map(build.cards), dashCharts = dashCfg.charts.map(build.charts), dashLists = dashCfg.lists.map(build.lists);
+    const dt = s.dashTab, df = s.dashForm, dtItems = dashCfg[dt];
+    const dashNoun = { cards: 'card', charts: 'chart', lists: 'list' }[dt];
+    const srcOptions = dashCatalog[dt].filter(w => !dtItems.some(i => i.src === w.id)).map(w => ({ value: w.id, label: w.title }));
+    // live preview in the form: what the widget will show once added
+    const formItem = srcOptions.some(o => o.value === df.src) ? build[dt](this.dashItem(dt, df.src, df)) : null;
     return {
       isLogin, isApp: !isLogin, is, nav, navTo: e => this.nav(e.currentTarget.dataset.route), pageTitle, crumb,
       loginError: s.loginState === 'error', loginLoading: s.loginState === 'loading', loginIdle: s.loginState !== 'loading',
@@ -2283,7 +2831,37 @@ class Component extends DCLogic {
       globalQ: s.globalQ, setGlobalQ: e => this.setState({ globalQ: e.target.value }), searching, notSearching: !searching, searchResults, searchCount: searchResults.length, searchEmpty: !searchResults.length,
       openResult: e => { const { route, id } = e.currentTarget.dataset; if (route === 'trip') this.nav('trip', { selectedTrip: id }); else this.nav(route, { masterQ: '' }); },
       loading: s.loading, w180: { width: 180 }, w160: { width: 160 }, w240: { width: 240 }, grow: { flex: 1, minWidth: 200 },
-      branchActiveCount: T.branches.filter(b => b.status === 'Active').length, kpis, branchBars, dashExceptions: openExc.slice(0, 5), longOpen, noLongOpen: !longOpen.length, gpsOk, gpsWeak, gpsFail,
+      branchActiveCount: T.branches.filter(b => b.status === 'Active').length,
+      // dashboard — only the widgets chosen in Settings › Dashboard layout
+      dashCards, dashCharts, dashLists, hasDashCards: !!dashCards.length, hasDashCharts: !!dashCharts.length, hasDashLists: !!dashLists.length,
+      dashEmpty: !dashCards.length && !dashCharts.length && !dashLists.length,
+      customiseDash: () => this.nav('settings'),
+      openDashItem: e => { const { kind, id, route } = e.currentTarget.dataset; if (kind === 'exc') openExcById(id); else if (kind === 'trip' && id) this.nav('trip', { selectedTrip: id }); else if (kind === 'drv') { const q = drvQueue.find(z => z.id === id); if (q) q.review(); } else if (route) this.nav(route); },
+      // settings › dashboard layout — add with the form, remove or reorder on the right; each change goes straight to the dashboard
+      dashTabs: [['cards', 'Card view'], ['charts', 'Chart view'], ['lists', 'List view']].map(([value, label]) => ({ value, label })), dashTab: dt,
+      setDashTab: v => this.setState({ dashTab: v, dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' }),
+      dashIsCards: dt === 'cards', dashIsCharts: dt === 'charts', dashIsLists: dt === 'lists', dashNoun,
+      dashAddTitle: 'Add a ' + dashNoun,
+      dashMetricLabel: { cards: 'Metric', charts: 'Chart data', lists: 'List data' }[dt],
+      dashForm: df, setDashForm: this.bind('dashForm', ['src', 'title', 'color', 'style', 'rows']),
+      dashSrcOptions: srcOptions, dashCanAdd: !!srcOptions.length, dashAllAdded: !srcOptions.length, dashFormErr: s.dashFormErr, hasDashFormErr: !!s.dashFormErr,
+      dashTitlePh: formItem ? (formItem.label || formItem.title) : 'Uses the metric name',
+      dashColorOptions: [{ value: '', label: 'Match the metric' }, { value: 'green', label: 'Green' }, { value: 'red', label: 'Red' }, { value: 'saffron', label: 'Saffron' }, { value: 'grey', label: 'Grey' }],
+      dashStyleOptions: [{ value: '', label: formItem && dt === 'charts' ? 'Default · ' + cat.charts[df.src].kindLabel : 'Default' }, { value: 'bars', label: 'Horizontal bars' }, { value: 'columns', label: 'Columns' }],
+      dashRowOptions: ['3', '5', '10'].map(v => ({ value: v, label: v + ' rows' })),
+      dashPreview: formItem ? [{ ...formItem, edgeTop: formItem.edge || 'var(--color-brand)', previewItems: (formItem.items || []).slice(0, 3) }] : [], dashNoPreview: !formItem,
+      addDashItem: () => {
+        if (!df.src) { this.setState({ dashFormErr: 'Choose what this ' + dashNoun + ' should show.' }); return; }
+        const item = this.dashItem(dt, df.src, { ...df, title: df.title.trim() }), name = item.title || cat[dt][df.src].title;
+        this.saveDash({ ...dashCfg, [dt]: [...dtItems, item] }); this.setState({ dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' });
+        this.toast('success', 'Added to dashboard', name + ' · values fill in automatically.');
+      },
+      dashOnBoard: dtItems.map((it, i) => { const w = build[dt](it); return { ...w, name: w.label || w.title, edgeTop: w.edge || 'var(--color-brand)', previewItems: (w.items || []).slice(0, 2), upVis: i ? 'visible' : 'hidden', downVis: i < dtItems.length - 1 ? 'visible' : 'hidden' }; }),
+      dashBoardEmpty: !dtItems.length,
+      removeDashItem: e => { const uid = e.currentTarget.dataset.uid, it = dtItems.find(x => x.uid === uid); this.saveDash({ ...dashCfg, [dt]: dtItems.filter(x => x.uid !== uid) }); if (it) this.toast('info', 'Removed from dashboard', it.title || cat[dt][it.src].title); },
+      moveDashItem: e => { const { uid, dir } = e.currentTarget.dataset, i = dtItems.findIndex(x => x.uid === uid), j = i + Number(dir); if (i < 0 || j < 0 || j >= dtItems.length) return; const next = [...dtItems]; [next[i], next[j]] = [next[j], next[i]]; this.saveDash({ ...dashCfg, [dt]: next }); },
+      dashRestoreAll: () => { this.saveDash(this.dashDefault()); this.setState({ dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' }); this.toast('info', 'Dashboard restored', 'Every metric is back on the dashboard.'); },
+      viewDashboard: () => this.nav('dashboard'),
       branchOptions, statusOptions: [{ value: 'Enroute', label: 'Enroute' }, { value: 'Closed', label: 'Closed' }], typeOptions: [{ value: 'Business', label: 'Business' }, { value: 'Non-Business', label: 'Non-Business' }], flagOptions: [{ value: 'flagged', label: 'Flagged only' }, { value: 'clean', label: 'No flags' }],
       statusToggles, toggleStatus: e => { const v = e.currentTarget.dataset.status; this.setState(st => ({ tf: { ...st.tf, status: st.tf.status === v ? '' : v } })); },
       tf, setTf: this.bind('tf', ['branch', 'status', 'type', 'flag', 'q']), clearTf: () => this.setState({ tf: { branch: '', status: '', type: '', flag: '', q: '' } }),
@@ -2293,7 +2871,7 @@ class Component extends DCLogic {
       editTrip: () => this.setState({ drawer: { isForm: true, isTripEdit: true, kicker: 'Edit trip record', title: tr.number, saveLabel: 'Save changes', required: ['startKm'], fields: [['invoice', 'Loading invoice number'], ['lr', 'LR number'], ['startKm', 'Start KM'], ['closeKm', 'Closing odometer'], ['advance', 'Advance given'], ['diesel', 'Diesel given'], ['type', 'Trip type', ['Business', 'Non-Business']], ['reason', 'Non-business reason', ['', 'Maintenance', 'Internal Movement', 'Empty Return', 'Driver Testing']]] }, form: { invoice: tr.invoice || '', lr: tr.lr || '', startKm: tr.startKm, closeKm: tr.closeKm || '', advance: (tr.advance || '').replace('₹', ''), diesel: (tr.diesel || '').replace(' L', ''), type: tr.type, reason: tr.reason || '' }, formError: '' }),
       askDeleteTrip: () => this.setState({ confirm: { title: 'Delete trip ' + tr.number + '?', body: 'The record is removed from billing and analytics. Deletion is logged with your user and the vehicle movement remains in the GPS audit log, so no movement disappears.', okLabel: 'Delete trip', danger: true, onOk: () => { this.setState(st => ({ deleted: [...st.deleted, tr.id], confirm: null })); this.nav('trips'); this.toast('danger', 'Trip deleted', tr.number + ' removed. Logged in the audit trail.'); } } }),
       excTiles, excTileCols: `repeat(${narrow ? 2 : 5},minmax(0,1fr))`, setExcType: e => this.setState({ excType: e.currentTarget.dataset.type }), excTabs, excStatus: s.excStatus, setExcStatus: v => this.setState({ excStatus: v }), excCols: ['Severity', 'Type', 'Vehicle / trip', 'Detail', 'Branch', 'Raised', 'Assignee'], excRows, excEmpty: !excRows.length, excStatusLabel: s.excStatus === 'all' ? '' : statusMap[s.excStatus].toLowerCase(),
-      openException: e => { const id = e.currentTarget.dataset.id; const x = exceptions.find(z => z.id === id); this.setState({ excSel: id, excAssignee: x.assignee === 'Unassigned' ? '' : x.assignee, excNote: '', drawer: { isException: true, kicker: 'Exception ' + id, title: x.type } }); },
+      openException: e => openExcById(e.currentTarget.dataset.id),
       exc: excD, assigneeOptions: [{ value: 'Head Office Admin', label: 'Head Office Admin' }, ...T.supervisors.map(x => ({ value: x.name, label: x.name + ' · ' + (T.B[x.branch] || {}).name }))], excAssignee: s.excAssignee, setExcAssignee: e => this.setState({ excAssignee: e.target.value }), excNote: s.excNote, setExcNote: e => this.setState({ excNote: e.target.value }),
       excUnderReview: () => { this.setState(st => ({ excOverrides: { ...st.excOverrides, [exc.id]: { status: 'Under review', assignee: st.excAssignee || 'Head Office Admin' } }, drawer: null })); this.toast('info', 'Marked under review', exc.type + ' assigned to ' + (s.excAssignee || 'Head Office Admin') + '.'); this.pushNotice({ kind: 'action', branch: exc.branch, title: `${exc.type} · under review`, body: exc.detail, rows: [['Exception', `${exc.id} · ${exc.severity} severity`], ['Vehicle', exc.vehicleNumber], ['Trip', exc.tripNumber], ['Action taken', 'Marked under review'], ['Assigned to', s.excAssignee || 'Head Office Admin']], link: exc.tripId ? { trip: exc.tripId } : null, linkLabel: 'View trip' }); },
       excResolve: () => { if (!s.excNote) { this.toast('warning', 'Resolution note required', 'Record what was found before resolving.'); return; } this.setState(st => ({ excOverrides: { ...st.excOverrides, [exc.id]: { status: 'Resolved', assignee: st.excAssignee || 'Head Office Admin' } }, drawer: null })); this.toast('success', 'Exception resolved', exc.type + ' on ' + exc.vehicleNumber + ' closed.'); this.pushNotice({ kind: 'action', branch: exc.branch, title: `${exc.type} · resolved`, body: exc.detail, note: s.excNote, rows: [['Exception', `${exc.id} · ${exc.severity} severity`], ['Vehicle', exc.vehicleNumber], ['Trip', exc.tripNumber], ['Action taken', 'Resolved by Head Office'], ['Resolution note', s.excNote]], link: exc.tripId ? { trip: exc.tripId } : null, linkLabel: 'View trip' }); },
@@ -2307,12 +2885,28 @@ class Component extends DCLogic {
       driverApprovalPendingBorder: s.driverApprovalFilter === 'Pending approval' ? 'var(--color-hazard)' : 'var(--border-strong)', driverApprovalPendingBg: s.driverApprovalFilter === 'Pending approval' ? 'var(--color-hazard-soft)' : '#fff', driverApprovalPendingFg: s.driverApprovalFilter === 'Pending approval' ? '#7A4300' : 'var(--text-heading)',
       setDriverApprovalFilter: e => this.setState(st => ({ driverApprovalFilter: st.driverApprovalFilter === e.currentTarget.dataset.filter ? '' : e.currentTarget.dataset.filter })),
       importMaster: () => this.toast('info', 'Import from Excel', 'Upload the existing sheet; columns are mapped on the next step.'),
-      newRecord: () => { const m = M[s.route]; this.setState({ drawer: { isForm: true, kicker: 'New ' + m.singular, title: m.addLabel, saveLabel: 'Create ' + m.singular, required: m.fields.slice(0, 2).map(f => f[0]), fields: m.fields }, form: {}, formError: '' }); },
-      editRecord: e => { const m = M[s.route]; const r = m.data.find(x => x.id === e.currentTarget.dataset.id); this.setState({ drawer: { isForm: true, kicker: 'Edit ' + m.singular, title: r.name || r.number, saveLabel: 'Save changes', required: m.fields.slice(0, 2).map(f => f[0]), fields: m.fields }, form: { ...r }, formError: '' }); },
+      newRecord: () => { const m = M[s.route]; this.setState({ drawer: { isForm: true, kicker: 'New ' + m.singular, title: m.addLabel, saveLabel: 'Create ' + m.singular, required: m.fields.filter(f => f[2] !== 'section').slice(0, 2).map(f => f[0]), fields: m.fields, validate: m.validate ? f => m.validate(f, true) : null }, form: {}, formError: '' }); },
+      editRecord: e => { const m = M[s.route]; const r = m.data.find(x => x.id === e.currentTarget.dataset.id); this.setState({ drawer: { isForm: true, kicker: 'Edit ' + m.singular, title: r.name || r.number, saveLabel: 'Save changes', required: m.fields.filter(f => f[2] !== 'section').slice(0, 2).map(f => f[0]), fields: m.fields, validate: m.validate ? f => m.validate(f, false) : null }, form: { ...r, phone: r.phone ? String(r.phone).replace(/\D/g, '').slice(-10) : '' }, formError: '' }); },
       askDeleteRecord: e => { const m = M[s.route]; const r = m.data.find(x => x.id === e.currentTarget.dataset.id); const inUse = s.route === 'vehicles' && T.trips.some(t => t.vehicle === r.id && t.status === 'Enroute'); this.setState({ confirm: inUse ? { title: 'Cannot delete ' + (r.name || r.number), body: 'This vehicle has an active trip. Close the trip first, or mark the vehicle Inactive so it no longer appears to supervisors.', okLabel: 'Understood', onOk: () => this.setState({ confirm: null }) } : { title: 'Delete ' + (r.name || r.number) + '?', body: 'Historic trips that reference this ' + m.singular + ' keep their data. Supervisors will no longer see it in dropdowns.', okLabel: 'Delete', danger: true, onOk: () => { this.setState(st => ({ deleted: [...st.deleted, r.id], confirm: null })); this.toast('danger', m.title.replace(' Master', '') + ' deleted', (r.name || r.number) + ' removed.'); } } }); },
-      setDriverApproval: e => { const id = e.currentTarget.dataset.id, approval = e.currentTarget.dataset.approval, driver = T.drivers.find(d => d.id === id); this.setState(st => ({ approvals: { ...st.approvals, [id]: approval } })); this.toast(approval === 'Approved' ? 'success' : 'warning', approval === 'Approved' ? 'Driver approved' : 'Approval requested', approval === 'Approved' ? `${driver.name} is now available to supervisors.` : `${driver.name} is now pending approval.`); this.pushNotice({ kind: 'action', branch: driver.branch, title: approval === 'Approved' ? `Driver approved · ${driver.name}` : `Driver moved back to pending · ${driver.name}`, body: approval === 'Approved' ? `${driver.name} can now be assigned to trips from the driver list.` : `${driver.name} cannot be assigned to new trips until Head Office approves the record again.`, rows: [['Driver', driver.name], ['Type', driver.type], ['Licence', driver.licence], ['Mobile', '+91 ' + driver.phone], ['Action taken', approval === 'Approved' ? 'Approved' : 'Set to pending approval']] }); },
-      approveDriver: () => { this.setState(st => ({ approvals: { ...st.approvals, D07: 'Approved' } })); this.toast('success', 'Driver approved', 'Anbu M. is now available to Chennai HO supervisors.'); this.pushNotice({ kind: 'action', branch: 'B01', title: 'Driver approved · Anbu M.', body: 'Your request to add Anbu M. is approved. He can now be assigned to trips as a supporting driver.', rows: [['Driver', 'Anbu M.'], ['Type', 'Supporting'], ['Licence', 'TN2820210002209'], ['Action taken', 'Approved']] }); },
-      rejectDriver: () => { this.setState(st => ({ approvals: { ...st.approvals, D07: 'Rejected' } })); this.toast('warning', 'Request rejected', 'The supervisor has been notified.'); this.pushNotice({ kind: 'action', branch: 'B01', title: 'Driver request rejected · Anbu M.', body: 'Head Office rejected the request to add Anbu M. He cannot be assigned to trips. Contact Head Office if the licence details need correcting.', rows: [['Driver', 'Anbu M.'], ['Type', 'Supporting'], ['Licence', 'TN2820210002209'], ['Action taken', 'Rejected']] }); },
+      setDriverApproval: e => { const id = e.currentTarget.dataset.id, approval = e.currentTarget.dataset.approval, driver = T.drivers.find(d => d.id === id); this.setSeedApproval(id, approval); this.toast(approval === 'Approved' ? 'success' : 'warning', approval === 'Approved' ? 'Driver approved' : 'Approval requested', approval === 'Approved' ? `${driver.name} is now available to supervisors.` : `${driver.name} is now pending approval.`); this.pushNotice({ kind: 'action', branch: driver.branch, title: approval === 'Approved' ? `Driver approved · ${driver.name}` : `Driver moved back to pending · ${driver.name}`, body: approval === 'Approved' ? `${driver.name} can now be assigned to trips from the driver list.` : `${driver.name} cannot be assigned to new trips until Head Office approves the record again.`, rows: [['Driver', driver.name], ['Type', driver.type], ['Licence', driver.licence], ['Mobile', '+91 ' + driver.phone], ['Action taken', approval === 'Approved' ? 'Approved' : 'Set to pending approval']] }); },
+      drvQueue, drvQueueLabel: `Approval queue · ${pendingDrivers} pending`,
+      reviewDriver: e => { const q = drvQueue.find(x => x.id === e.currentTarget.dataset.id); if (q) q.review(); },
+      dq: (() => { const d = s.drawer && s.drawer.isDriverReq ? (s.drvReqs.find(r => r.id === s.drawer.reqId) || T.drivers.find(x => x.id === s.drawer.reqId)) : null; if (!d) return {};
+        const req = !!d.supervisorName, st = req ? (d.status === 'Pending' ? 'Pending approval' : d.status) : (s.approvals[d.id] || d.approval), pending = st === 'Pending approval', mask = a => a ? '•••• ' + String(a).slice(-4) + ` (${String(a).length} digits)` : '—';
+        const tone = pending ? ['var(--color-hazard-soft)', '#7A4300'] : st === 'Approved' ? ['var(--kr-green-100)', 'var(--kr-green-800)'] : ['var(--kr-red-100)', 'var(--kr-red-800)'];
+        const sec = (title, rows) => ({ title, rows: rows.map(([k, v]) => ({ k, v: v || '—' })) });
+        return { status: st, badgeBg: tone[0], badgeFg: tone[1], pending, decided: !pending,
+          meta: req ? `Requested by ${d.supervisorName} · ${(T.B[d.branch] || {}).name} · ${d.requestedAt}` : `${(T.B[d.branch] || {}).name} · already in the driver master`,
+          trip: req && d.vehicle ? `The supervisor has already assigned this driver to a trip being opened on ${d.vehicle}. Rejecting removes the driver from that trip form.` : '',
+          decidedNote: req && d.decidedAt ? `${d.status} ${d.decidedAt}${d.reason ? ' · ' + d.reason : ''}` : '',
+          sections: req ? [sec('Driver details', [['Name', d.name], ['Licence number', d.licence], ['Mobile', '+91 ' + this.fmtPhone(d.phone)]]), sec('Bank account', [['Account holder', d.holder], ['Account number', mask(d.account)], ['IFSC', d.ifsc]]), sec('Family & reference', [['Family contact', d.family ? '+91 ' + this.fmtPhone(d.family) : ''], ['Reference', d.reference]])]
+            : [sec('Driver details', [['Name', d.name], ['Licence number', d.licence], ['Mobile', '+91 ' + d.phone], ['Type', d.type]])],
+          docs: req ? [['Licence image', d.licImg], ['Aadhaar image', d.aadhaarImg]].map(([label, f]) => ({ label, has: !!(f && f.url), missing: !(f && f.url), url: f && f.url || '', name: f ? `${f.name} · ${f.size}` : 'Not attached', note: f && !f.url ? 'Preview not available' : 'Not attached' })) : [],
+          hasDocs: req };
+      })(),
+      rejectReason: s.rejectReason, setRejectReason: e => this.setState({ rejectReason: e.target.value.slice(0, 200) }),
+      approveDq: () => this.decideDriver(s.drawer.reqId, 'Approved'),
+      rejectDq: () => this.decideDriver(s.drawer.reqId, 'Rejected', s.rejectReason.trim()),
       attBranches, vehStatusBars, attBranch: s.attBranch, setAttBranch: e => this.setState({ attBranch: e.target.value }), attCols: ['Driver', 'Branch', 'Type', 'Present', 'Absent', 'Utilisation', 'Note'], attRows, sendReminders: () => this.toast('success', 'Reminders sent', '3 supervisors with missing days notified.'),
       anTabs, anTab: s.anTab, setAnTab: v => this.setState({ anTab: v }), ranges, setRange: e => this.setState({ range: e.currentTarget.dataset.r }), an,
       reports, runReport: e => this.toast('success', 'Export started', e.currentTarget.dataset.name + ' · CSV will download shortly.'), scheduleReport: e => this.toast('info', 'Schedule', e.currentTarget.dataset.name + ' will be emailed daily at 06:00.'),
@@ -2322,7 +2916,14 @@ class Component extends DCLogic {
       saveSettings: () => this.toast('success', 'Settings saved', 'Variance ' + s.st.variance + '%, radius ' + s.st.radius + ' m, long open ' + s.st.longOpen + ' h.'), resetSettings: () => this.setState({ st: { variance: '5', radius: '100', longOpen: '8', idle: '15', gpsFail: '30', serial: 'monthly', reasons: 'Maintenance, Internal Movement, Empty Return, Driver Testing', session: '12', attReminder: true, excEmail: true } }),
       drawer: s.drawer, closeDrawer: () => this.setState({ drawer: null }), formFields, formError: s.formError,
       composeNotice: () => this.setState({ adminNotifOpen: false, formError: '', form: { branch: 'B01', priority: 'Normal', title: '', body: '' }, drawer: { isForm: true, isNotice: true, kicker: 'Notify supervisors', title: 'Send notice', saveLabel: 'Send notice', required: ['branch', 'title', 'body'], fields: [['branch', 'Send to', [{ value: 'all', label: 'All branches' }, ...T.branches.filter(b => b.status === 'Active').map(b => ({ value: b.id, label: b.name + ' supervisors' }))]], ['priority', 'Priority', ['Normal', 'Urgent']], ['title', 'Subject', null, 'e.g. Photograph every diesel slip'], ['body', 'Message', 'textarea', 'What should supervisors know or do?']] } }),
-      saveForm: () => { const missing = (d.required || []).filter(k => !String(s.form[k] || '').trim()); if (missing.length) { this.setState({ formError: missing.length + ' required field' + (missing.length > 1 ? 's are' : ' is') + ' missing.' }); return; }
+      pickFormUpload: e => { const key = e.currentTarget.dataset.k, file = e.target.files && e.target.files[0]; e.target.value = ''; if (!file) return;
+        if (!/^image\//.test(file.type)) { this.toast('warning', 'Not an image', 'Upload a JPG or PNG photo of the document.'); return; }
+        if (file.size > 5 * 1024 * 1024) { this.toast('warning', 'File too large', 'Keep the photo under 5 MB.'); return; }
+        const kb = file.size / 1024, size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.max(1, Math.round(kb)) + ' KB';
+        this.shrinkImage(file).then(url => this.setState(st => ({ form: { ...st.form, [key]: { name: file.name, size, url } } }))); },
+      clearFormUpload: e => { const key = e.currentTarget.dataset.k; this.setState(st => ({ form: { ...st.form, [key]: null } })); },
+      saveForm: () => { const bad = d.validate ? Object.values(d.validate(s.form)).filter(Boolean).length : 0; if (bad) { this.setState({ formError: bad + (bad === 1 ? ' field' : ' fields') + ' to fix. Check the highlighted fields below.' }); return; }
+        const missing = (d.required || []).filter(k => !String(s.form[k] || '').trim()); if (missing.length) { this.setState({ formError: missing.length + ' required field' + (missing.length > 1 ? 's are' : ' is') + ' missing.' }); return; }
         if (d.isNotice) { const to = s.form.branch === 'all' ? 'All branches' : ((T.B[s.form.branch] || {}).name || '') + ' supervisors'; this.pushNotice({ kind: 'message', branch: s.form.branch, priority: s.form.priority || 'Normal', title: s.form.title.trim(), body: s.form.body.trim(), rows: [['Sent to', to], ['Priority', s.form.priority || 'Normal'], ['Sent by', 'Head Office Admin']] }); this.setState({ drawer: null }); this.toast('success', 'Notice sent', `${s.form.title.trim()} · ${to}`); return; }
         this.setState({ drawer: null }); this.toast('success', d.saveLabel.replace(/^Create|^Save|^Send/, m => ({ Create: 'Created', Save: 'Saved', Send: 'Sent' })[m]), d.title + ' · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })); },
       confirmOpen: !!s.confirm, confirm, confirmActions, cancelConfirm: () => this.setState({ confirm: null }),
