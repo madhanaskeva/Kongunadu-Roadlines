@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/base.css">
+  <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/styles.css">
+  <script src="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/_ds_bundle.js"></script>
+  <style>body{margin:0;background:#fff}a{color:var(--link)}a:hover{color:var(--link-hover)}</style>
+</helmet>
+<div style="font-family:var(--font-body);color:var(--text-body);max-width:1200px;margin:0 auto;padding:48px 24px 80px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
+  <header style="display:flex;flex-direction:column;gap:16px">
+    <img src="assets/logo-1600.png" alt="Kongunadu Road Lines" style="height:40px;width:auto;align-self:flex-start">
+    <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-brand)">Transport Management System · Phase 1 frontend</div>
+    <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em;line-height:1.05;color:var(--text-heading);text-wrap:pretty">Module → screen → workflow structure</h1>
+    <p style="margin:0;font-size:17px;max-width:760px;text-wrap:pretty">Derived from the BRD/SRS v1.0 (14 September 2026). Two surfaces: a mobile app for branch supervisors and a web portal for Head Office administration. Every screen below is built and linked; states listed per screen are reachable in the prototypes.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="TMS Supervisor App.dc.html" style="text-decoration:none"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" hint-size="auto,48px">Open Supervisor App</x-import></a>
+      <a href="TMS Admin Portal.dc.html" style="text-decoration:none"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="lg" hint-size="auto,48px">Open Admin Portal</x-import></a>
+    </div>
+  </header>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+    <sc-for list="{{ roles }}" as="r" hint-placeholder-count="4">
+      <div style="border:1px solid var(--border-default);border-top:4px solid var(--color-brand);border-radius:var(--radius-lg);padding:18px">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--text-heading)">{{ r.role }}</div>
+        <div style="font-size:13px;color:var(--text-muted);margin:2px 0 10px">{{ r.surface }}</div>
+        <div style="font-size:14px">{{ r.does }}</div>
+      </div>
+    </sc-for>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-0.01em;color:var(--text-heading)">Core workflows</h2>
+    <sc-for list="{{ flows }}" as="f" hint-placeholder-count="4">
+      <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--text-heading)">{{ f.name }}</span><span style="font-size:13px;color:var(--text-muted)">{{ f.actor }}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+          <sc-for list="{{ f.steps }}" as="st" hint-placeholder-count="6"><span style="display:inline-flex;align-items:center;gap:6px;font-size:14px"><span style="padding:6px 10px;background:var(--color-brand-tint);border-radius:var(--radius-md);color:var(--kr-green-900);font-weight:600">{{ st }}</span><span style="color:var(--text-muted)">&rarr;</span></span></sc-for>
+          <span style="padding:6px 10px;background:var(--color-brand);border-radius:var(--radius-md);color:#fff;font-weight:600;font-size:14px">{{ f.end }}</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)">Validation: {{ f.rules }}</div>
+      </div>
+    </sc-for>
+  </section>
+
+  <sc-for list="{{ surfaces }}" as="s" hint-placeholder-count="2">
+    <section style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:22px;letter-spacing:-0.01em;color:var(--text-heading)">{{ s.name }}</h2><a href="{{ s.href }}" style="font-size:14px;font-weight:700">{{ s.link }} &rarr;</a></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+        <sc-for list="{{ s.modules }}" as="m" hint-placeholder-count="6">
+          <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+            <div style="padding:12px 16px;background:var(--surface-muted);border-bottom:1px solid var(--border-default)"><div style="font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">{{ m.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ m.brd }}</div></div>
+            <sc-for list="{{ m.screens }}" as="sc" hint-placeholder-count="3">
+              <div style="padding:10px 16px;border-bottom:1px solid var(--border-default);display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:700;color:var(--text-heading)">{{ sc.name }}</span><span style="font-size:12px;color:var(--text-muted)">{{ sc.states }}</span></div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-for>
+
+  <section style="border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+    <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-heading)">Responsive and shared states</h2>
+    <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.7">
+      <li>Supervisor app is mobile-first at 402 px; home screen limited to Open Trip, Close Trip, Unclosed Trips per BRD §12; open trip, close trip, vehicle idle status, attendance and driver requests are reached from the home screen and the notification bell in the header.</li>
+      <li>Admin portal: sidebar collapses to a drawer under 900 px; tables scroll horizontally; cards and KPI grids reflow with auto-fit tracks; global search hides on narrow widths.</li>
+      <li>Shared states: loading skeleton, empty (filters, unclosed trips, exceptions), success toasts, destructive confirmations.</li>
+      <li>Future-phase items shown disabled or noted: OTP/MFA login, Google Maps route intelligence, driver app, offline mode.</li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      roles: [
+        { role: 'Administrator', surface: 'Admin Web Portal', does: 'Owns all masters (branch, supervisor, vehicle, driver, client, customer, loading location, route). Edits and deletes trip records, approves drivers, resolves exceptions, views analytics, exports reports.' },
+        { role: 'Supervisor', surface: 'Mobile app · branch scoped', does: 'Opens and closes trips after loading/unloading, records driver attendance and vehicle status, requests new drivers. Sees only own branch vehicles, clients and trips.' },
+        { role: 'Company Owner', surface: 'Admin Web Portal · read only', does: 'Dashboards, analytics and branch scorecards. No master or trip edits.' },
+        { role: 'Driver', surface: 'No app in Phase 1', does: 'Appears in Driver Master; assigned per trip; attendance recorded by the supervisor. Driver app is a future enhancement.' }
+      ],
+      flows: [
+        { name: 'Open Trip', actor: 'Supervisor · mobile', steps: ['Login', 'Truck loaded', 'Open Trip', 'Client name', 'Vehicle number', 'Loading location', 'Unloading customers', 'Start KM', 'Driver name', 'Trip type', 'Remarks (optional)'], end: 'Save → Trip ID · GPS starts', rules: 'trip number is VEH NO / MM / SNO, branch wise, generated on save; clients come from the supervisor mapping and one vehicle can serve several clients; only idle branch vehicles mapped to that client are listed; loading point can be added on the spot from GPS; unloading is one or many predefined customers of the client, with route diversion alerts; start KM carried from last close (manual on first trip); driver comes from the master, a new or acting driver needs approver permission; non-business needs a reason; opening a trip clears the vehicle idle record.' },
+        { name: 'Close Trip', actor: 'Supervisor · mobile', steps: ['Unclosed trips', 'Select trip', 'Invoice no.', 'LR (optional)', 'Closing odometer', 'Advance · diesel', 'Load / unload qty'], end: 'Closed → vehicle available', rules: 'all required fields present; closing KM ≥ start KM; triple distance check (fixed, GPS, odometer) flags variance over 5%; both sources failed → manual exception to admin.' },
+        { name: 'Exception review', actor: 'Administrator · portal', steps: ['Dashboard', 'Exceptions', 'Filter by type', 'Open detail', 'Assign'], end: 'Under review → Resolved', rules: 'hidden km, variance, route diversion, GPS failure, long open trip, radius breach, missing attendance; resolution note required.' },
+        { name: 'Vehicle idle status', actor: 'Supervisor · mobile', steps: ['Attendance', 'Vehicle idle status', 'Mark idle', 'Select reason', 'Save'], end: 'Idle record shared with Head Office', rules: 'vehicles on an open trip cannot be marked idle; every idle vehicle needs a reason; Other needs a note; idle over 24 h is highlighted.' },
+        { name: 'Attendance', actor: 'Supervisor → Administrator', steps: ['Daily reminder', 'Mark drivers P/A', 'Vehicle status', 'Save'], end: 'Monthly tracker · 31 days', rules: 'drivers on an open trip are present automatically; missing days flagged after 48 h and reported to admin.' }
+      ],
+      surfaces: [
+        { name: 'Supervisor Mobile App', href: 'TMS Supervisor App.dc.html', link: 'Open prototype', modules: [
+          { name: 'Authentication', brd: 'BRD §6.1', screens: [{ name: 'Login', states: 'default · error (attempts left) · loading' }, { name: 'Session expiry', states: 'redirect to login after 12 h inactivity' }] },
+          { name: 'Home', brd: 'BRD §6.2, §12', screens: [{ name: 'Three actions', states: 'Open Trip · Close Trip · Unclosed Trips (count, long-open highlight) · attendance nudge' }, { name: 'Notifications', states: 'header bell · unread count badge · long open trips, pending attendance, missing idle reasons, driver request · tap to open the screen' }, { name: 'GPS permission', states: 'blocks Open Trip until granted' }] },
+          { name: 'Open Trip', brd: 'BRD §6.3', screens: [{ name: 'Form', states: 'client name · vehicle number · loading location (add by GPS) · unloading customers (single/multiple) · start KM · driver name (add acting driver) · trip type · remarks · validation errors · non-business with reason · discard confirmation' }, { name: 'Review', states: 'validation summary · saving' }, { name: 'Success', states: 'generated Trip ID · GPS started' }] },
+          { name: 'Close Trip', brd: 'BRD §6.4, §7.5', screens: [{ name: 'Select trip', states: 'list · empty' }, { name: 'Close form', states: 'empty · errors (closing KM below start) · manual exception when GPS and odometer fail' }, { name: 'Success', states: 'triple distance verification · within 5% · flagged' }] },
+          { name: 'Unclosed Trips', brd: 'BRD §1.4, §16', screens: [{ name: 'List', states: 'filters all / today / long open · progress by GPS · empty' }, { name: 'Trip detail', states: 'enroute · long open warning · GPS failed · GPS timeline · close from detail' }] },
+          { name: 'Trip history', brd: 'BRD §6.5, §16', screens: [{ name: 'Closed trips', states: 'cards newest first · flagged badge · distance and closed time · empty' }, { name: 'Closed trip detail', states: 'fixed / GPS / odometer · variance verdict · opened details · closing details (invoice, LR, odometer, advance, bunk, rate, quantity, diesel amount, load / unload qty)' }] },
+          { name: 'Vehicle idle status', brd: 'BRD §8, §16', screens: [{ name: 'Idle list', states: 'idle / on trip / ready counts · filters · mark idle · reason required · other reason note · over 24 h highlight · save toast' }] },
+          { name: 'Attendance', brd: 'BRD §8', screens: [{ name: 'Daily', states: 'driver P/A toggles · link to vehicle idle status · completion bar · save toast' }, { name: 'Monthly tracker', states: '31-day grid · missing days · month-to-date metrics' }] },
+          { name: 'Driver request', brd: 'BRD §4.2, §6.3', screens: [{ name: 'Request form', states: 'default · errors' }, { name: 'Sent for approval', states: 'pending until admin approves' }] },
+          { name: 'System', brd: 'BRD §13', screens: [{ name: 'Offline', states: 'queued sync · retry (no data loss)' }, { name: 'Toasts', states: 'success · warning' }] }
+        ] },
+        { name: 'Admin Web Portal', href: 'TMS Admin Portal.dc.html', link: 'Open prototype', modules: [
+          { name: 'Authentication', brd: 'BRD §6.1', screens: [{ name: 'Login', states: 'default · error · loading' }] },
+          { name: 'Dashboard', brd: 'BRD §9', screens: [{ name: 'Operations dashboard', states: 'KPIs · trips by branch · open exceptions · long open trips · GPS health' }, { name: 'Global search', states: 'results across trips, vehicles, drivers, clients · empty' }] },
+          { name: 'Trips', brd: 'BRD §4.1, §6', screens: [{ name: 'Trip list', states: 'filters (branch, status, type, flags, search) · loading skeleton · empty · export' }, { name: 'Trip detail', states: 'triple distance verification · record · lifecycle · GPS log · flagged banner' }, { name: 'Edit record', states: 'drawer · audit notice · required validation' }, { name: 'Delete', states: 'confirmation dialog · movement kept in GPS audit' }] },
+          { name: 'Exceptions', brd: 'BRD §7, §16', screens: [{ name: 'Exception controller', states: 'type tiles · Open / Under review / Resolved tabs · empty' }, { name: 'Exception detail', states: 'drawer · assign · resolution note required · link to trip' }] },
+          { name: 'Fleet & GPS', brd: 'BRD §7.1–7.8', screens: [{ name: 'Fleet monitor', states: 'status tiles · filters · per-vehicle GPS status · radius alerts' }, { name: 'Route diversion', states: 'flagged trips · off route now / rejoined / reviewed · expected vs actual corridor · km off, duration, extra distance · view trip' }, { name: 'Non-billable trips', states: 'non-business movements · reason · GPS vs odometer km · top speed, idle · GPS timeline · view trip' }, { name: 'Fallback matrix', states: 'odometer / GPS failure handling' }] },
+          { name: 'Masters (7)', brd: 'BRD §4.1, §10', screens: [{ name: 'Branch · Supervisor · Vehicle · Driver', states: 'list · search · add/edit drawer · delete confirm · blocked delete when in use' }, { name: 'Client · Loading Location · Route', states: 'list · search · add/edit drawer · empty' }, { name: 'Driver approval queue', states: 'approve / reject supporting drivers' }] },
+          { name: 'Attendance', brd: 'BRD §8', screens: [{ name: 'Completion tracker', states: 'branch × day grid · missing days · reminders' }, { name: 'Driver attendance', states: 'present, absent, utilisation, continuous absence · branch filter' }] },
+          { name: 'Analytics & Reports', brd: 'BRD §9, §11', screens: [{ name: 'Analytics', states: 'Trip · GPS · Vehicle · Driver · Branch · Irregularities tabs · date range' }, { name: 'Reports', states: '8 exports replacing Excel · schedule' }] },
+          { name: 'System', brd: 'BRD §3, §6.1', screens: [{ name: 'Users & roles', states: 'users list · invite drawer · permission matrix' }, { name: 'Settings', states: 'thresholds (5%, 100 m, long open) · trip numbering · reasons · security switches' }] }
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

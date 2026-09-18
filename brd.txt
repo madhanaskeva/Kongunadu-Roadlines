@@ -1,0 +1,496 @@
+Transport Management System
+Business Requirement Document (BRD) &amp; Software Requirement Specification (SRS)
+Version
+1.0
+Prepared By
+Project Coordinator
+Client
+Transportation Company
+Document Date
+14 September 2026
+Table of Contents
+Introduction
+Stakeholders
+Business Requirements
+User Roles
+System Overview
+Functional Requirements
+GPS &amp; Distance Verification Logic
+Attendance Management
+Analytics &amp; Reporting
+Database Design Approach
+User Journey
+UI/UX Guidelines
+Non-Functional Requirements
+Future Enhancements
+Success Criteria
+Challenges to be Addressed &amp; System Validation Requirements
+Conclusion
+1. Introduction
+1.1 Purpose of the Document
+This document outlines the complete business and software requirements for developing a Transport Management System for a pharmaceutical transportation company operating more than 700 trucks across multiple branches.
+The objective of this document is to clearly define the client's operational requirements, establish a structured development roadmap, and serve as a common reference for project managers, designers, developers, testers, and stakeholders throughout the project lifecycle.
+Rather than continuing manual Excel-based operations, this platform will provide a centralized digital system where supervisors can capture trips, monitor vehicle movements, validate trips using GPS, improve billing accuracy, reduce operational irregularities, and generate real-time operational analytics from a unified dashboard.
+1.2 Background
+The client operates a large-scale pharmaceutical transportation business managing:
+700+ Trucks
+Multiple Branches
+300–400 Trips per Day
+Currently, all trip information is maintained manually through Excel sheets. This creates several operational challenges:
+Trips are missed and remain unrecorded.
+Revenue is lost because billable trips are not properly captured.
+Manual processes create opportunities for unauthorized record manipulation.
+Vehicle movements cannot be completely verified.
+GPS information is not fully utilized.
+Attendance and vehicle utilization are difficult to monitor.
+Hidden kilometres between trips remain unidentified.
+The client requires:
+Supervisor Mobile Application
+Admin Web Portal
+The Trip Capture Module is the highest priority for Phase 1.
+1.3 Business Objective
+The primary objective is to digitize transportation operations while reducing manual administrative work, preventing revenue leakage, and improving operational transparency.
+The system should enable the organization to:
+Capture every trip digitally.
+Record every vehicle movement, whether billable or not.
+Prevent duplicate vehicle assignments.
+Validate trips using GPS.
+Compare GPS, odometer, and predefined route distances.
+Detect hidden kilometres.
+Improve billing accuracy.
+Reduce operational irregularities.
+Generate real-time analytics.
+Replace Excel-based reporting.
+1.4 Project Scope
+Phase 1 focuses on delivering an MVP with all core trip management capabilities.
+The platform includes:
+Secure Supervisor Login
+Admin Portal
+Trip Capture Module
+Open Trip
+Close Trip
+Branch-wise Vehicle Assignment
+Client &amp; Customer Management
+GPS Integration
+Odometer Recording
+Route Validation
+Pending Trip Dashboard
+Basic Operational Reports
+The architecture remains scalable for future GPS intelligence, attendance automation, and advanced analytics.
+2. Stakeholders
+Stakeholder
+Responsibility
+Organization
+Company Owner
+Business Decisions
+Management
+Head Office Admin
+Master Data &amp; System Control
+Administration
+Branch Supervisors
+Daily Trip Operations
+Field Operations
+Drivers
+Vehicle Operations
+Transport Operations
+Development Team
+Build &amp; Maintain Platform
+Technical Team
+Project Management Team
+Requirement Coordination
+Project Office
+The Supervisor is the primary operational user, while the admin controls all master data.
+3. Business Requirements
+The platform must support transportation operations across multiple branches while ensuring that every vehicle movement is digitally recorded.
+The client specifically requires:
+Branch-wise access control
+Vehicle assignment validation
+Client &amp; Customer mapping
+GPS-based movement tracking
+Business &amp; non-business trip classification
+Billing validation
+Route verification
+Hidden kilometre detection
+Attendance monitoring
+Deep operational analytics
+A key business requirement is:
+Even if a vehicle moves without billing, that movement must still be recorded.
+No vehicle movement should disappear from the system.
+4. User Roles
+4.1 Administrator
+The Admin has complete control over the system.
+Responsibilities include:
+Manage Branch Master
+Supervisor Master
+Vehicle Master
+Driver Master
+Client Master
+Customer Master
+Loading Location Master
+Route Master
+Edit Trip Records
+Delete Incorrect Records
+Monitor Operational Irregularities
+View Analytics
+Investigate Missing Trips
+Only the Admin can modify master data.
+4.2 Supervisor
+The Supervisor performs daily field operations through the mobile application.
+Responsibilities include:
+Login securely
+Open Trips
+Close Trips
+Record Driver Attendance
+Record Vehicle Status
+Select Vehicles
+Select Clients &amp; Customers
+Capture Trip Details
+Request New Driver Addition
+Initially, drivers do not require a separate application.
+5. System Overview
+The finalized Phase 1 workflow follows:
+Supervisor logs into the application.
+Truck is physically loaded.
+Supervisor opens a trip.
+Trip details are captured.
+Trip ID is generated after Save.
+GPS monitoring starts.
+Vehicle travels.
+Supervisor closes the trip after unloading.
+Data becomes available for billing and analytics.
+6. Functional Requirements
+6.1 Secure Authentication
+The system shall provide:
+Secure Login
+Password Protection
+Session Management
+Branch-based Access
+Dashboard Redirection
+Future enhancements:
+OTP Login
+Multi-Factor Authentication
+6.2 Supervisor Dashboard
+The dashboard is designed for field supervisors with minimal navigation.
+First Screen
+The home screen should contain only three primary actions.
+This allows supervisors to quickly access daily operations without unnecessary navigation.
+6.3 Open Trip Module
+The client finalized that Open Trip begins only after the truck has been loaded.
+Required Fields
+Field
+Requirement
+Trip Number
+Auto-generated
+Branch
+Based on Login
+Client
+Dropdown
+Customer
+Dynamic Dropdown
+Vehicle
+Available Vehicles Only
+Driver
+Dropdown
+Loading Location
+Predefined
+Unloading Location
+Single/Multiple
+Start KM
+Manual First Time
+Trip Type
+Business/Non-Business
+Status
+Enroute
+Trip Number
+Format:
+Vehicle Number / Month / Serial Number
+Trip ID is generated only after clicking Save.
+Open Trip Validation
+Before creating a trip, the system shall verify:
+Vehicle has no active trip.
+Driver has no active trip.
+Vehicle belongs to the supervisor's branch.
+Client belongs to the branch.
+Customer belongs to the selected client.
+Vehicle is currently idle.
+Client &amp; Customer Mapping
+One Supervisor handles multiple Clients.
+One Client contains multiple Customers.
+Customer selection determines billing.
+Vehicle Selection Logic
+Only assigned branch vehicles should appear.
+Already booked vehicles must not appear.
+Loading Location
+Loading locations are maintained by Admin.
+Supervisors only select predefined locations.
+Unloading
+Support should include:
+Single Customer
+Multiple Customers
+using multiple checkboxes.
+Driver Assignment
+Drivers appear from Driver Master.
+Supporting drivers require Admin approval before becoming available.
+Vehicle Start KM Logic
+First Trip → Manual Entry.
+Future Trips → Previous Closing KM automatically becomes Starting KM.
+Example:
+Previous Closing
+Next Start
+125450
+125450
+6.4 Close Trip Module
+Once unloading is completed, the supervisor closes the trip.
+Required Fields
+Field
+Status
+Loading Invoice Number
+Required
+LR Number (Lorry Receipt)
+Optional
+Closing Odometer
+Required
+Advance Given
+Required
+Diesel Given
+Required
+Loading &amp; Unloading Quantity
+Required
+Only after these details are completed will the trip close.
+The vehicle then becomes available for the next assignment.
+6.5 Business vs Non-Business Trips
+Every vehicle movement must be classified.
+Trip Type
+Action
+Business
+Generate Billing
+Non-Business
+Record Reason
+Examples of Non-Business:
+Maintenance
+Internal Movement
+Empty Return
+Driver Testing
+No vehicle movement should disappear from records.
+7. GPS &amp; Distance Verification Logic
+GPS serves as the platform's primary verification engine.
+7.1 GPS Responsibilities
+GPS should capture:
+Live Vehicle Movement
+Route Validation
+Route Diversion Detection
+Idle Detection
+Radius Monitoring
+GPS Failure Detection
+7.2 Secure GPS Capture
+Requirements include:
+Geolocation Permission
+Background Location Access
+Continuous Location Capture
+Secure GPS Integration
+7.3 Radius Alert System
+Safe Radius monitoring applies to:
+Vehicle
+Driver
+Supervisor
+Example:
+Warehouse Radius:
+100 meters.
+Vehicle exits.
+Alert generated.
+Radius monitoring should also apply to unloading locations.
+7.4 Route Diversion Detection
+GPS should compare:
+Expected Route
+Actual Route
+Future implementation includes:
+Google Maps Route API
+Route Master
+Example:
+Expected
+Actual
+200 KM
+235 KM
+Diversion:
+35 KM.
+7.5 Triple Distance Verification
+The client finalized that distance should be validated using three independent sources.
+Source
+Purpose
+Fixed Route KM
+Billing Reference
+GPS KM
+Actual Movement
+Odometer KM
+Vehicle Reading
+Example:
+Source
+KM
+Fixed
+200
+GPS
+208
+Odometer
+212
+If variation exceeds 5%, the trip should be flagged.
+7.6 Hidden Kilometre Detection
+Example:
+Event
+KM
+Trip 1 Close
+1000
+Trip 3 Start
+1055
+Missing:
+55 KM.
+System generates an Unaccounted Distance Alert.
+7.7 Vehicle Movement Without Billing
+Even if:
+Billing does not happen,
+GPS misses data,
+Trip is not recorded,
+vehicle movement should still be logged.
+7.8 GPS Failure Handling
+Odometer
+GPS
+Action
+Working
+Working
+Normal
+Working
+Failed
+Use Odometer
+Failed
+Working
+Use GPS
+Failed
+Failed
+Manual Exception
+Admin receives an exception report whenever both sources fail.
+8. Attendance Management
+One Supervisor manages multiple drivers and vehicles.
+Driver Attendance
+Track:
+Present Days
+Absent Days
+Driver Utilization
+Continuous Absence
+Vehicle Attendance
+Daily operational status should include:
+Status
+Example
+Running
+Trip Assigned
+Idle
+No Business
+Idle
+No Driver
+Maintenance
+Service
+Monthly Attendance
+Supervisors should maintain attendance for all 31 days.
+The system should support:
+Attendance reminders
+Completion tracking
+Missing attendance alerts
+9. Analytics &amp; Reporting
+The client requested deep operational analytics.
+The dashboard should provide:
+Trip Analytics
+GPS Analytics
+Vehicle Analytics
+Driver Analytics
+Branch Analytics
+Operational Irregularity Analytics
+This includes:
+Hidden Kilometres
+Missing Trips
+GPS Exceptions
+Billing Leakage
+10. Database Design Approach
+Recommended Database:
+PostgreSQL
+Core Masters:
+Branch
+Supervisor
+Vehicle
+Driver
+Client
+Customer
+Loading Location
+Route
+GPS logs should be stored separately with timestamps to support future route replay and GPS analytics.
+11. User Journey
+Supervisor Journey
+Login → Open Trip → Select Vehicle → Select Client → Capture Loading → GPS Tracking → Close Trip → Submit
+Admin Journey
+Login → Manage Masters → Monitor Trips → Review Exceptions → View Analytics → Export Reports
+12. UI/UX Guidelines
+The application prioritizes:
+Large Buttons
+High Contrast
+Mobile-First Design
+Simple Navigation
+Fast Data Entry
+Minimal Typing
+Dropdown-Based Selection
+The home screen should only contain:
+Open Trip
+Close Trip
+Unclosed Trips
+13. Non-Functional Requirements
+Category
+Requirement
+Performance
+300–400 Trips/Day
+Security
+Secure Authentication
+GPS
+Continuous Tracking
+Scalability
+700+ Vehicles
+Availability
+Mobile &amp; Web
+Reliability
+No Data Loss During GPS Failure
+14. Future Enhancements
+Google Maps Route Intelligence
+Automated Attendance Verification
+GPS-Based Supervisor Presence
+Driver Mobile App
+Vehicle Ignition Integration
+Fuel Analytics
+Predictive Maintenance
+WhatsApp Notifications
+Offline Mode
+AI-Based Operational Irregularity Detection
+Branch Performance Scorecards
+15. Success Criteria
+The project succeeds when:
+Every trip is digitally recorded.
+Every vehicle movement is captured.
+Duplicate vehicle booking is prevented.
+Business &amp; Non-Business trips are classified.
+Hidden kilometres are detected.
+GPS validates routes.
+Billing accuracy improves.
+Attendance becomes measurable.
+Revenue leakage reduces.
+Excel dependency is eliminated.
+16. Challenges to be Addressed &amp; System Validation Requirements
+Vehicle Movement Audit
+Open Trip Validation
+GPS Health Analytics
+Admin Exception Controller
+Long Open Trip Alerts
+Vehicle Idle Intelligence
+Attendance Completion Tracker
+Trip Status Lifecycle
+Branch Data Isolation
+Fixed Route Master Validation
+Odometer, GPS &amp; Fixed Distance Merge Logic
+These remain critical implementation requirements for Phase 1.
+17. Conclusion
+The proposed Transport Management System is much more than a trip tracking application. It is a centralized operational control platform designed specifically for a pharmaceutical transportation company managing 700+ trucks across multiple branches.
+The immediate focus is delivering the Phase 1 Trip Capture Module, where supervisors digitally open and close trips only after vehicle loading is completed, GPS validation begins automatically, and operational data is captured in real time. The finalized workflow also introduces structured billing classification, branch-based access control, attendance tracking, safe radius monitoring for vehicles, drivers, and supervisors, and a comprehensive exception monitoring framework.
+The most significant technical outcome from the client discussion is the three-way distance verification model, where Fixed Route Distance, GPS Movement, and Odometer Readings are combined to estimate the most accurate travel distance. Together with hidden kilometre detection, route diversion monitoring, operational irregularity tracking, and centralized admin oversight, the platform provides a scalable digital foundation that significantly improves operational transparency, billing confidence, and overall transportation management efficiency.
