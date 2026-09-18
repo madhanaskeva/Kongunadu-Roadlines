@@ -521,7 +521,7 @@
             <div style="padding:14px;background:var(--color-brand);border-radius:var(--radius-lg);color:#fff">
               <div style="font-family:var(--font-mono);font-size:16px;font-weight:700">{{ sel.number }}</div>
               <div style="font-size:14px;opacity:.85;margin-top:4px">{{ sel.crewLine }} &middot; {{ sel.partyName }}</div>
-              <div style="display:flex;gap:20px;margin-top:12px;font-size:13px"><span><span style="opacity:.6">Start KM</span><br><strong style="font-size:16px">{{ sel.startKm }}</strong></span><span><span style="opacity:.6">Fixed route</span><br><strong style="font-size:16px">{{ sel.fixedKm }} km</strong></span><span><span style="opacity:.6">GPS so far</span><br><strong style="font-size:16px">{{ sel.gpsKm }} km</strong></span></div>
+              <div style="display:flex;gap:20px;margin-top:12px;font-size:13px"><span><span style="opacity:.6">Start KM</span><br><strong style="font-size:16px">{{ sel.startKm }}</strong></span><span><span style="opacity:.6">Fixed route</span><br><strong style="font-size:16px">{{ sel.fixedKm }} km</strong></span><span><span style="opacity:.6">GPS so far</span><br><strong style="font-size:16px">{{ sel.gpsKm }} km</strong></span><span><span style="opacity:.6">Tank</span><br><strong style="font-size:16px">{{ tankLabel }}</strong></span></div>
             </div>
             <sc-if value="{{ closeHasErrors }}" hint-placeholder-val="{{ false }}">
               <div role="alert" style="padding:12px 14px;background:var(--kr-red-50);border:1px solid var(--kr-red-100);border-radius:var(--radius-md);color:var(--kr-red-800);font-size:14px;font-weight:600">The trip cannot close until the required fields are filled.</div>
@@ -594,8 +594,6 @@
               <sc-if value="{{ cerr.legs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--status-danger);font-weight:600">{{ cerr.legs }}</div></sc-if>
             </section>
 
-            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Advance given" prefix="&#8377;" value="{{ cf.advance }}" on-change="{{ setCf.advance }}" input-mode="numeric" error="{{ cerr.advance }}" hint-size="100%,72px"></x-import>
-
             <!-- DIESEL · one entry per bunk -->
             <section style="border:1px solid {{ fillBox.border }};border-radius:var(--radius-lg);padding:14px;display:flex;flex-direction:column;gap:12px">
               <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
@@ -607,7 +605,7 @@
                   <span aria-hidden="true" style="flex:none;width:36px;height:36px;border-radius:50%;background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:14px">{{ d.n }}</span>
                   <div style="flex:1;min-width:0">
                     <div style="font-weight:700;font-size:14px;color:var(--text-heading);line-height:1.3">{{ d.bunk }}</div>
-                    <div style="font-size:13px;color:var(--text-body)">{{ d.line }}</div>
+                    <div style="font-size:13px;color:{{ d.lineColor }}">{{ d.line }}</div>
                   </div>
                   <div style="flex:none;display:flex;flex-direction:column;gap:2px">
                     <button data-i="{{ d.i }}" onClick="{{ editFill }}" style="all:unset;cursor:pointer;min-height:32px;padding:0 8px;font-size:13px;font-weight:700;color:var(--text-brand)">Edit</button>
@@ -620,7 +618,7 @@
                   <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--kr-green-900)">{{ fillEditorTitle }}</div>
                   <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Bunk name" placeholder="e.g. IOC &ndash; Sriperumbudur Highway" value="{{ cf.fillDraft.bunk }}" on-change="{{ setFillBunk }}" error="{{ fillErr.bunk }}" hint="{{ fillBunkHint }}" hint-size="100%,90px"></x-import>
                   <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
-                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Quantity" suffix="L" value="{{ cf.fillDraft.litres }}" on-change="{{ setFillLitres }}" input-mode="decimal" error="{{ fillErr.litres }}" hint-size="100%,72px"></x-import>
+                    <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Quantity" suffix="L" value="{{ cf.fillDraft.litres }}" on-change="{{ setFillLitres }}" input-mode="decimal" error="{{ fillErr.litres }}" hint="{{ qtyHint }}" hint-size="100%,90px"></x-import>
                     <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="Rate" prefix="&#8377;" suffix="/L" value="{{ cf.fillDraft.rate }}" on-change="{{ setFillRate }}" input-mode="decimal" error="{{ fillErr.rate }}" hint-size="100%,72px"></x-import>
                   </div>
                   <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px"><span style="color:var(--text-muted)">Amount</span><strong style="color:var(--text-heading)">{{ fillDraftAmount }}</strong></div>
@@ -1015,20 +1013,39 @@
               <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ amDriverHint }}</div>
             </div>
             <div>
+              <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select" label="Vehicle status" placeholder="Select status" options="{{ amStatusOptions }}" value="{{ am.status }}" on-change="{{ setAmStatus }}" hint-size="100%,72px"></x-import>
+              <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ amStatusHint }}</div>
+            </div>
+            <div>
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
                 <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Present today &middot; {{ amRowCount }}</span>
                 <button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand)">Month view &rarr;</button>
               </div>
               <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
-                <sc-for list="{{ amRows }}" as="r" hint-placeholder-count="2">
-                  <div style="display:flex;align-items:center;gap:10px;padding:12px 10px 12px 14px;border-bottom:1px solid var(--border-default);background:{{ r.bg }}">
-                    <span style="flex:1;min-width:0"><span style="display:block;font-size:15px;font-weight:700;color:var(--text-heading)">{{ r.name }}</span><span style="display:block;font-size:12px;color:var(--text-muted);font-family:var(--font-mono)">{{ r.vehicle }}</span></span>
-                    <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:var(--radius-sm);background:{{ r.badgeBg }};color:{{ r.badgeFg }}">{{ r.badge }}</span>
-                    <button data-id="{{ r.id }}" onClick="{{ removeAm }}" aria-label="{{ r.removeLabel }}" title="Remove" style="all:unset;cursor:pointer;flex:none;width:36px;height:36px;box-sizing:border-box;display:grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--kr-red-100);background:#fff;color:var(--kr-red-600)" style-hover="background:var(--kr-red-50);border-color:var(--kr-red-600)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
-                  </div>
-                </sc-for>
+                <table style="width:100%;border-collapse:collapse;font-size:13px">
+                  <thead>
+                    <tr style="text-align:left;background:var(--surface-muted)">
+                      <th style="padding:9px 6px 9px 12px;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap">S.No</th>
+                      <th style="padding:9px 6px;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Vehicle number</th>
+                      <th style="padding:9px 6px;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Driver name</th>
+                      <th style="padding:9px 6px;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)">Vehicle status</th>
+                      <th style="padding:9px 8px 9px 0"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Remove</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ amRows }}" as="r" hint-placeholder-count="2">
+                      <tr style="border-top:1px solid var(--border-default);background:{{ r.bg }}">
+                        <td style="padding:10px 6px 10px 12px;font-weight:700;color:var(--text-muted)">{{ r.sno }}</td>
+                        <td style="padding:10px 6px;font-family:var(--font-mono);font-size:12px;color:var(--text-heading);white-space:nowrap">{{ r.vehicle }}</td>
+                        <td style="padding:10px 6px;font-weight:700;color:var(--text-heading)">{{ r.name }}</td>
+                        <td style="padding:10px 6px"><span style="display:inline-flex;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 6px;border-radius:var(--radius-sm);white-space:nowrap;background:{{ r.vsBg }};color:{{ r.vsFg }}">{{ r.vehStatus }}</span></td>
+                        <td style="padding:6px 8px 6px 0;text-align:right"><button data-id="{{ r.id }}" onClick="{{ removeAm }}" aria-label="{{ r.removeLabel }}" title="Remove" style="all:unset;cursor:pointer;width:32px;height:32px;box-sizing:border-box;display:inline-grid;place-items:center;border-radius:var(--radius-md);border:2px solid var(--kr-red-100);background:#fff;color:var(--kr-red-600)" style-hover="background:var(--kr-red-50);border-color:var(--kr-red-600)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"></path></svg></button></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
                 <sc-if value="{{ amRowsEmpty }}" hint-placeholder-val="{{ false }}">
-                  <div style="padding:24px 16px;text-align:center;font-size:14px;color:var(--text-muted)">No drivers marked yet. Pick a vehicle and driver above.</div>
+                  <div style="padding:24px 16px;text-align:center;font-size:14px;color:var(--text-muted)">No drivers marked yet. Pick a vehicle, driver and vehicle status above.</div>
                 </sc-if>
               </div>
             </div>
@@ -1348,15 +1365,15 @@ class Component extends DCLogic {
     form: this.blankForm(),
     showErrors: false, drvPickOpen: false, reqFromOpen: false,
     newLoc: { open: false, name: '' }, showNewLocErr: false, addedLocations: [],
-    drvReqs: [], seedApprovals: {},
+    drvReqs: [], seedApprovals: {}, vehTanks: {}, masterEdits: {},
     cf: this.blankClose(), showCloseErrors: false,
     rf: this.blankRf(), showReqErrors: false,
     selected: 'T01', history: [], histSel: '', closedData: {}, forceEmptyHist: false,
     notifFilter: 'all', notifSel: '', notifRead: ['N05', 'N06'], activity: [], adminNotices: [],
     hf: { vehicle: '', from: '', to: '' }, hfDraft: { from: '', to: '' }, hfCalOpen: false, hfErr: '',
     localTrips: [], closedIds: [],
-    att: { D01: 'P', D02: '', D07: '', D09: '' }, attVeh: { D01: 'V01' }, attTab: 'mark', attSaved: this.seedAttSaved(), attOpenDay: '',
-    am: { vehicle: '', driver: '' },
+    att: { D01: 'P', D02: '', D07: '', D09: '' }, attVeh: { D01: 'V01' }, attVehStatus: {}, attTab: 'mark', attSaved: this.seedAttSaved(), attOpenDay: '',
+    am: { vehicle: '', driver: '', status: '' },
     idle: this.seedIdle(), idleFilter: 'all', showIdleErrors: false
   };
   BR = 'B01'; SUP = 'S01';
@@ -1364,6 +1381,10 @@ class Component extends DCLogic {
   REQ_KEY = 'kr-tms-device-approvals'; IMEI_KEY = 'kr-tms-device-imei'; NOTICE_KEY = 'kr-tms-supervisor-notices';
   // New-driver requests go to the Admin Portal the same way; its approve/reject decisions come back on the same keys.
   DRV_KEY = 'kr-tms-driver-requests'; DRV_APPROVAL_KEY = 'kr-tms-driver-approvals';
+  // Tank sizes Head Office sets in the Vehicle Master override the seed data.
+  TANK_KEY = 'kr-tms-vehicle-tanks';
+  syncTanks() { let m; try { m = JSON.parse(localStorage.getItem(this.TANK_KEY) || '{}') || {}; } catch (e) { return; } const json = JSON.stringify(m); if (json === this._tankJson) return; this._tankJson = json; this.setState({ vehTanks: m }); }
+  tankOf(vehicleId) { return Number(this.state.vehTanks[vehicleId] || (this.T().V[vehicleId] || {}).tank) || 0; }
   readDrvReqs() { try { return JSON.parse(localStorage.getItem(this.DRV_KEY) || '[]') || []; } catch (e) { return this.state.drvReqs; } }
   syncDriverReqs() {
     let list, seed;
@@ -1400,9 +1421,9 @@ class Component extends DCLogic {
   // Your own actions this session, kept as read items in the Notifications page.
   logActivity(n) { this.setState(st => ({ activity: [{ id: 'ACT' + Date.now() + '-' + st.activity.length, kind: 'activity', from: 'You · R. Senthil Kumar', sort: '2026-09-14 09:41:' + String(st.activity.length).padStart(2, '0'), ...n }, ...st.activity] })); }
   componentDidMount() {
-    this.syncNotices(); this.syncDriverReqs();
-    this._poll = setInterval(() => { this.syncApproval(); this.syncNotices(); this.syncDriverReqs(); }, 1000);
-    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncApproval(); if (e.key === this.NOTICE_KEY) this.syncNotices(); if (e.key === this.DRV_KEY || e.key === this.DRV_APPROVAL_KEY) this.syncDriverReqs(); };
+    this.syncNotices(); this.syncDriverReqs(); this.syncTanks(); this.syncMaster();
+    this._poll = setInterval(() => { this.syncApproval(); this.syncNotices(); this.syncDriverReqs(); this.syncTanks(); this.syncMaster(); }, 1000);
+    this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncApproval(); if (e.key === this.NOTICE_KEY) this.syncNotices(); if (e.key === this.DRV_KEY || e.key === this.DRV_APPROVAL_KEY) this.syncDriverReqs(); if (e.key === this.TANK_KEY) this.syncTanks(); if (e.key === this.MASTER_KEY) this.syncMaster(); };
     window.addEventListener('storage', this._onStorage);
     const mine = this.readReqs().find(r => r.imei === this.deviceImei() && r.status === 'Pending');
     if (mine && this.state.screen === 'approval') this.setState({ obStatus: 'waiting', obReqId: mine.id, ob: { ...this.state.ob, phone: mine.phone, requestedAt: mine.requestedAt } });
@@ -1433,7 +1454,19 @@ class Component extends DCLogic {
       this.toast('success', 'Approved by Head Office', 'OTP received. Verify it to continue.');
     } else if (r.status === 'Rejected') this.setState({ obStatus: 'rejected', obReqId: '' });
   }
-  T() { return window.TMS; }
+  // Seed data plus vehicles, drivers and loading locations Head Office added or edited in the Admin Portal masters.
+  T() {
+    const base = window.TMS, e = this.state && this.state.masterEdits;
+    if (!e || !Object.keys(e).length) return base;
+    if (this._t && this._tKey === this._masterJson) return this._t;
+    const merge = (route, seed) => { const x = e[route] || {}, ed = x.edited || {}; return [...seed.map(r => ed[r.id] ? { ...r, ...ed[r.id] } : r), ...(x.added || [])]; };
+    const by = a => Object.fromEntries(a.map(r => [r.id, r]));
+    const vehicles = merge('vehicles', base.vehicles), drivers = merge('drivers', base.drivers), locations = merge('locations', base.locations);
+    this._t = { ...base, vehicles, V: by(vehicles), drivers, D: by(drivers), locations, L: by(locations) }; this._tKey = this._masterJson;
+    return this._t;
+  }
+  MASTER_KEY = 'kr-tms-master-edits';
+  syncMaster() { let m; try { m = JSON.parse(localStorage.getItem(this.MASTER_KEY) || '{}') || {}; } catch (e) { return; } const json = JSON.stringify(m); if (json === this._masterJson) return; this._masterJson = json; this.setState({ masterEdits: m }); }
   go(screen, extra = {}) { this.setState(s => ({ screen, notifOpen: false, history: [...s.history, s.screen], ...extra })); }
   set(path, v) { this.setState(s => ({ [path[0]]: { ...s[path[0]], [path[1]]: v } })); }
   toast(tone, title, message) { clearTimeout(this._tt); this.setState({ toast: { tone, title, message } }); this._tt = setTimeout(() => this.setState({ toast: null }), 3200); }
@@ -1473,14 +1506,15 @@ class Component extends DCLogic {
     const myClients = T.clients.filter(c => (sup.clientIds || []).includes(c.id));
     const clientOptions = myClients.map(c => ({ value: c.id, label: c.name + (c.status === 'Active' ? '' : ' · ' + c.status) }));
     const branchVeh = T.vehicles.filter(v => v.branch === this.BR);
-    const mappedVeh = f.client ? branchVeh.filter(v => (v.clients || []).includes(f.client)) : branchVeh;
+    const forClient = (v, c) => !(v.clients || []).length || v.clients.includes(c);
+    const mappedVeh = f.client ? branchVeh.filter(v => forClient(v, f.client)) : branchVeh;
     // A 'Running' vehicle whose trip was closed in this session is free again.
     const availVeh = mappedVeh.filter(v => (v.status === 'Idle' || v.status === 'Running') && !activeVeh.has(v.id));
     const onTripVeh = mappedVeh.filter(v => activeVeh.has(v.id));
     const vehicleOptions = [...availVeh.map(v => ({ value: v.id, label: `${v.number} · ${v.type}` })), ...onTripVeh.map(v => ({ value: v.id, label: `${v.number} · unclosed trip` }))];
     const busyVeh = mappedVeh.filter(v => !availVeh.includes(v) && !onTripVeh.includes(v)).map(v => `${v.number} (${v.status.toLowerCase()})`);
     // Closing KM from a trip closed in this session beats the master odometer.
-    const lastKm = v => Math.max(v.odometer, ...this.allTrips().filter(t => t.vehicle === v.id && s.closedData[t.id]).map(t => Number(s.closedData[t.id].closeKm) || 0));
+    const lastKm = v => Math.max(Number(v.odometer) || 0, ...this.allTrips().filter(t => t.vehicle === v.id && s.closedData[t.id]).map(t => Number(s.closedData[t.id].closeKm) || 0));
     const allBranchDrv = this.branchDrivers(), branchDrv = allBranchDrv.filter(d => !d.requested || d.approval === 'Approved');
     const locationOptions = [...T.locations.filter(l => l.branch === this.BR && l.status === 'Active'), ...s.addedLocations]
       .map(l => ({ value: l.id, label: l.name })).concat([{ value: '__add', label: '+ Add loading location (GPS)' }]);
@@ -1577,7 +1611,7 @@ class Component extends DCLogic {
       return { closedAt: (cd ? cd.closedAt : t.closed) || '—', closeKm,
         odo: closeKm > t.startKm ? closeKm - t.startKm : (t.odoKm || 0),
         invoice: (cd ? cd.invoice : t.invoice) || '—', lr: (cd ? cd.lr : t.lr) || '—',
-        advance: cd ? money(cd.advance) : (t.advance || '—'),
+        advance: cd ? (cd.advance ? money(cd.advance) : '—') : (t.advance || '—'),
         bunk: (cd ? cd.bunk : t.bunk) || '—', rate, litres,
         qtyLoad: (cd ? cd.qtyLoad : t.qtyLoad) || '—', qtyUnload: (cd ? cd.qtyUnload : t.qtyUnload) || '—',
         totalExpense: cd && cd.totalExpense ? money(cd.totalExpense) : '—', closeRemarks: (cd && cd.remarks) || '—',
@@ -1665,14 +1699,17 @@ class Component extends DCLogic {
     const bunkList = T.bunks.filter(b => b.branch === this.BR && b.status === 'Active');
     const fillEditing = cf.fillEdit >= 0, fillEditorOpen = cf.fillOpen || !fills.length, fd = cf.fillDraft;
     const fdL = Number(fd.litres) || 0, fdR = Number(fd.rate) || 0, fdRef = bunkList.find(b => b.name.toLowerCase() === fd.bunk.trim().toLowerCase());
-    const fillBad = { bunk: !fd.bunk.trim() ? 'Enter the bunk name.' : undefined, litres: !(fdL > 0) ? 'Required.' : undefined, rate: !(fdR > 0) ? 'Required.' : undefined };
-    const fillErr = cf.fillTried ? fillBad : {};
+    const tank = this.tankOf(selTrip.vehicle), overTank = l => tank > 0 && Number(l) > tank, tankMsg = `More than the ${km(tank)} L tank.`;
+    const fillBad = { bunk: !fd.bunk.trim() ? 'Enter the bunk name.' : undefined, litres: !(fdL > 0) ? 'Required.' : overTank(fdL) ? tankMsg : undefined, rate: !(fdR > 0) ? 'Required.' : undefined };
+    // Over-tank shows straight away, not only after tapping Add bunk
+    const fillErr = cf.fillTried ? fillBad : overTank(fdL) ? { litres: tankMsg } : {};
+    const overFill = (cf.fills || []).findIndex(x => overTank(x.litres));
     const dieselLitres = fills.reduce((a, x) => a + (Number(x.litres) || 0), 0), dieselTotal = fills.reduce((a, x) => a + (Number(x.litres) || 0) * (Number(x.rate) || 0), 0);
     const money0 = n => '₹' + Math.round(n).toLocaleString('en-IN');
     const legDirty = legEditorOpen && !!(cf.legDraft.reading || cf.legDraft.photo), fillDirty = fillEditorOpen && !!(fd.bunk.trim() || fd.litres || fd.rate);
-    const closeBad = { invoice: !cf.invoice ? 'Required for billing.' : undefined, advance: !cf.advance ? 'Required.' : undefined,
+    const closeBad = { invoice: !cf.invoice ? 'Required for billing.' : undefined,
       legs: legDirty ? 'Tap Add reading to save the reading you entered, or cancel it.' : !legs.length ? 'Add at least one odometer reading with its photo.' : undefined,
-      fills: fillDirty ? 'Tap Add bunk to save the bunk you entered, or cancel it.' : !fills.length ? 'Add the bunk where diesel was filled.' : undefined,
+      fills: fillDirty ? 'Tap Add bunk to save the bunk you entered, or cancel it.' : !fills.length ? 'Add the bunk where diesel was filled.' : overFill >= 0 ? `Bunk ${overFill + 1} is more than the ${km(tank)} L tank. Edit the quantity.` : undefined,
       totalExpense: !(Number(cf.totalExpense) > 0) ? 'Enter the total expense for this trip.' : undefined,
       qtyLoad: !cf.qtyLoad ? 'Required.' : undefined, qtyUnload: !cf.qtyUnload ? 'Required.' : undefined };
     const cerr = s.showCloseErrors ? closeBad : {};
@@ -1686,7 +1723,7 @@ class Component extends DCLogic {
       sumSec('Odometer', [['Start KM', km(startNum) + ' km'], ...legs.map((l, i) => [`${i + 1}. ${l.from} → ${l.to}`, `${km(l.reading)} km · +${km(l.reading - legPrev(i))} km`]), ['Closing odometer', closeNum ? km(closeNum) + ' km' : ''], ['Trip distance', odo ? km(odo) + ' km' : ''], ['Variance vs fixed', fixed ? pct + '%' : 'Not applicable', flagged]]),
       sumSec('Billing', [['Loading invoice', cf.invoice], ['LR number', cf.lr], ['Loading qty', cf.qtyLoad], ['Unloading qty', cf.qtyUnload]]),
       sumSec('Diesel', [...fills.map(x => [x.bunk, `${km(x.litres)} L × ₹${Number(x.rate).toFixed(2)} = ${money0(x.litres * x.rate)}`]), ['Total diesel', dieselLitres ? `${km(dieselLitres)} L · ${money0(dieselTotal)}` : '']]),
-      sumSec('Expenses', [['Advance given', cf.advance ? money0(Number(cf.advance)) : ''], ['Total expense', cf.totalExpense ? money0(Number(cf.totalExpense)) : ''], ['Remarks', (cf.remarks || '').trim()]])
+      sumSec('Expenses', [['Total expense', cf.totalExpense ? money0(Number(cf.totalExpense)) : ''], ['Remarks', (cf.remarks || '').trim()]])
     ];
     const closePhotos = legs.filter(l => l.photo).map((l, i) => ({ caption: `${i + 1}. ${l.to} · ${km(l.reading)} km`, url: l.photo.url || '' }));
     // Unclosed
@@ -1702,12 +1739,17 @@ class Component extends DCLogic {
     const amDriverOptions = amDriverList.map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.status === 'Inactive' ? ' · inactive' : ''}` }));
     const amMappedDrv = amVeh && amVeh.driver ? this.drv(amVeh.driver) : null;
     const amVehicleHint = amVeh ? `${amVeh.type} · ${amVeh.status === 'Running' ? 'on trip' : amVeh.status.toLowerCase()} · ${amVeh.route}.` : `${branchVeh.length} Chennai HO vehicles from the admin vehicle master.`;
-    const amDriverHint = amVeh && !amDrv ? `Pick the driver for ${amVeh.number}${amMappedDrv ? ` (mapped: ${amMappedDrv.name})` : ''}. They are marked present straight away.`
+    // Vehicle status: Idle or Maintenance; a vehicle that is on a trip can also be recorded as On trip
+    const amStatusOptions = [...(amVeh && amVeh.status === 'Running' ? ['On trip'] : []), 'Idle', 'Maintenance'].map(x => ({ value: x, label: x }));
+    const amStatusHint = amVeh && amDrv ? `Choose the status of ${amVeh.number} to add ${amDrv.name} to today’s attendance.` : 'Idle or under maintenance. The driver is added once vehicle, driver and status are chosen.';
+    const vehStatusOf = id => s.attVehStatus[id] || ((T.V[s.attVeh[id]] || {}).status === 'Running' ? 'On trip' : 'Not set');
+    const amDriverHint = amVeh && !amDrv ? `Pick the driver for ${amVeh.number}${amMappedDrv ? ` (mapped: ${amMappedDrv.name})` : ''}, then the vehicle status.`
+      : amVeh && amDrv ? `${amDrv.name} will be marked present on ${amVeh.number} once you choose the vehicle status.`
       : amDrv && !amVeh ? `Pick the vehicle for ${amDrv.name} to mark them present.`
-      : `${amDriverList.length} approved Chennai HO drivers from the admin driver master. Picking a vehicle and driver marks the driver present.`;
+      : `${amDriverList.length} approved Chennai HO drivers from the admin driver master. Pick a vehicle, driver and vehicle status to mark the driver present.`;
     // Marked attendance tab · saved days, newest first
     const TODAY_DAY = '2026-09-14';
-    const todayEntries = Object.fromEntries(amDriverList.filter(d => s.att[d.id]).map(d => [d.id, [s.att[d.id], s.att[d.id] === 'P' ? (s.attVeh[d.id] || '') : '']]));
+    const todayEntries = Object.fromEntries(amDriverList.filter(d => s.att[d.id]).map(d => [d.id, [s.att[d.id], s.att[d.id] === 'P' ? (s.attVeh[d.id] || '') : '', s.att[d.id] === 'P' ? (s.attVehStatus[d.id] || '') : '']]));
     const savedToday = s.attSaved.find(r => r.day === TODAY_DAY);
     const attUnsaved = Object.keys(todayEntries).length > 0 && JSON.stringify(todayEntries) !== JSON.stringify(savedToday ? savedToday.entries : null);
     const savedSorted = [...s.attSaved].sort((a, b) => b.day.localeCompare(a.day));
@@ -1718,8 +1760,9 @@ class Component extends DCLogic {
       const open = openDay === r.day, isToday = r.day === TODAY_DAY;
       return { day: r.day, label: r.label, isToday, savedLine: `Saved at ${r.savedAt} by R. Senthil Kumar`, present, absent, unmarked: unmarked || false, rows, open, expanded: open ? 'true' : 'false', rot: open ? '180deg' : '0deg', edge: unmarked ? 'var(--color-hazard)' : 'var(--color-brand)' };
     });
-    const amRows = amDriverList.filter(d => s.att[d.id]).map(d => { const v = s.att[d.id], vn = (T.V[s.attVeh[d.id] || (branchVeh.find(x => x.driver === d.id) || {}).id] || {}).number;
-      return { id: d.id, name: d.name, vehicle: vn || 'No vehicle', badge: v === 'P' ? 'Present' : 'Absent', badgeBg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[0], badgeFg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[1], bg: v === 'P' ? 'var(--color-brand-tint)' : '#fff', removeLabel: `Remove ${d.name}` }; });
+    const amRows = amDriverList.filter(d => s.att[d.id]).map((d, i) => { const v = s.att[d.id], vn = (T.V[s.attVeh[d.id] || (branchVeh.find(x => x.driver === d.id) || {}).id] || {}).number;
+      const vs = vehStatusOf(d.id), [vsBg, vsFg] = this.statusTone(vs);
+      return { id: d.id, sno: i + 1, name: d.name, vehicle: vn || 'No vehicle', vehStatus: vs, vsBg, vsFg, badge: v === 'P' ? 'Present' : 'Absent', badgeBg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[0], badgeFg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[1], bg: v === 'P' ? 'var(--color-brand-tint)' : '#fff', removeLabel: `Remove ${d.name}` }; });
     // Vehicle idle status
     const activeByVeh = Object.fromEntries(this.active().map(t => [t.vehicle, t]));
     const idleRows = branchVeh.map(v => {
@@ -1777,7 +1820,7 @@ class Component extends DCLogic {
       { group: 'Home', items: [['home', '', 'Home · actions'], ['open', 'home', 'Open trip'], ['closeList', 'home', 'Close trip'], ['gpsPerm', '', 'GPS permission']] },
       { group: 'Notifications', items: [['notifications', '', 'All notifications'], ['notifications', 'office', 'Head Office only'], ['notifications', 'alert', 'Alerts only'], ['notifDetail', 'N01', 'Detail · admin message'], ['notifDetail', 'N02', 'Detail · admin action'], ['notifDetail', 'al-att-0914', 'Detail · system alert']] },
       { group: 'Open trip', items: [['open', 'blank', 'Form · empty'], ['open', 'errors', 'Form · validation errors'], ['open', 'filled', 'Form · filled with remarks'], ['open', 'singleDrop', 'Form · single unloading'], ['open', 'nonbiz', 'Non-business · errors'], ['open', 'nonbizFilled', 'Non-business · filled'], ['open', 'addloc', 'Form · add GPS loading point'], ['open', 'drvConfirm', 'Driver · confirm mapped (✓ / ✕)'], ['open', 'drvPick', 'Driver · choose available popup'], ['open', 'drvNone', 'Driver · mapped driver unavailable'], ['open', 'discard', 'Discard confirmation'], ['open', 'unclosed', 'Vehicle has unclosed trip · popup'], ['trip', 'resume', 'Close first · back to Open Trip'], ['openReview', 'filled', 'Review before save'], ['openReview', 'saving', 'Saving · loading'], ['openDone', '', 'Success · trip ID']] },
-      { group: 'Close trip', items: [['closeList', '', 'Select trip'], ['closeList', 'empty', 'Select trip · empty'], ['close', 'blank', 'Close form'], ['close', 'errors', 'Close form · errors'], ['close', 'manual', 'Manual exception (T02)'], ['close', 'filled', 'Filled · readings and 2 bunks'], ['close', 'editor', 'Adding another reading / bunk'], ['closeReview', '', 'Review before closing'], ['closeDone', 'ok', 'Success · within 5%'], ['closeDone', 'flag', 'Success · flagged variance']] },
+      { group: 'Close trip', items: [['closeList', '', 'Select trip'], ['closeList', 'empty', 'Select trip · empty'], ['close', 'blank', 'Close form'], ['close', 'errors', 'Close form · errors'], ['close', 'manual', 'Manual exception (T02)'], ['close', 'filled', 'Filled · readings and 2 bunks'], ['close', 'editor', 'Adding another reading / bunk'], ['close', 'overTank', 'Diesel · more than tank capacity'], ['closeReview', '', 'Review before closing'], ['closeDone', 'ok', 'Success · within 5%'], ['closeDone', 'flag', 'Success · flagged variance']] },
       { group: 'Unclosed trips', items: [['unclosed', '', 'List'], ['unclosed', 'empty', 'Empty state'], ['trip', 'T01', 'Detail · enroute'], ['trip', 'T03', 'Detail · long open, GPS failed']] },
       { group: 'Trip history', items: [['history', '', 'Closed trips \u00b7 list'], ['history', 'vehicle', 'Filter \u00b7 vehicle'], ['history', 'calendar', 'Filter \u00b7 date range picker'], ['history', 'both', 'Filter \u00b7 vehicle + dates'], ['history', 'nomatch', 'Filter \u00b7 no match'], ['history', 'empty', 'Closed trips \u00b7 empty'], ['histTrip', 'T06', 'Closed trip detail'], ['histTrip', 'T07', 'Closed trip \u00b7 flagged']] },
       { group: 'Vehicle idle status', items: [['idle', '', 'Idle vehicles · reasons'], ['idle', 'errors', 'Idle · reason missing'], ['idle', 'other', 'Idle · other reason note']] },
@@ -1851,7 +1894,7 @@ class Component extends DCLogic {
       bigBtn: { height: 56, fontSize: 17 }, selNarrow: { width: 170 }, toastStyle: { width: '100%' },
       activeCount: activeD.length, tripWord: activeD.length === 1 ? 'trip' : 'trips', unclosedHint: activeD.some(t => t.hoursOpen > 24) ? 'One trip has been open more than 24 h.' : 'Trips waiting to be closed.', unclosedCountColor: activeD.some(t => t.hoursOpen > 24) ? 'var(--kr-saffron-600)' : 'var(--color-brand)',
       attendanceTotal, attendanceMarked, attendancePct: Math.round(attendanceMarked / Math.max(1, attendanceTotal) * 100) + '%',
-      goHome: () => this.setState({ screen: 'home', history: [], notifOpen: false, railVariant: '' }), goOpen, goCloseList: () => this.go('closeList', { railVariant: '' }), goUnclosed: () => this.go('unclosed', { forceEmpty: false, railVariant: '' }), goAttendance: () => this.go('attendance', { railVariant: '' }), goAttMonth: () => this.go('attMonth', { railVariant: '' }), goAttMark: () => this.go('attMark', { railVariant: '', am: { vehicle: '', driver: '' }, attTab: 'mark', attOpenDay: '' }),
+      goHome: () => this.setState({ screen: 'home', history: [], notifOpen: false, railVariant: '' }), goOpen, goCloseList: () => this.go('closeList', { railVariant: '' }), goUnclosed: () => this.go('unclosed', { forceEmpty: false, railVariant: '' }), goAttendance: () => this.go('attendance', { railVariant: '' }), goAttMonth: () => this.go('attMonth', { railVariant: '' }), goAttMark: () => this.go('attMark', { railVariant: '', am: { vehicle: '', driver: '', status: '' }, attTab: 'mark', attOpenDay: '' }),
       back: () => this.setState(st => { const h = [...st.history]; const prev = h.pop() || 'home'; return { screen: prev, history: h, railVariant: '' }; }),
       stop: e => e.stopPropagation(),
       notifShown, notifTotal: notifAll.length, notifUnread, notifHasUnread: notifUnread > 0, nd,
@@ -1868,7 +1911,7 @@ class Component extends DCLogic {
       openNotifLink: () => {
         const l = nd.link || {};
         if (l.trip) { const tr = this.allTrips().find(x => x.id === l.trip); const closed = tr && (tr.status === 'Closed' || s.closedIds.includes(tr.id)); return closed ? this.go('histTrip', { histSel: l.trip, railVariant: '' }) : this.go('trip', { selected: l.trip, railVariant: '' }); }
-        if (l.screen === 'attMark') return this.go('attMark', { railVariant: '', am: { vehicle: '', driver: '' }, attTab: 'mark' });
+        if (l.screen === 'attMark') return this.go('attMark', { railVariant: '', am: { vehicle: '', driver: '', status: '' }, attTab: 'mark' });
         if (l.screen === 'idle') return this.go('idle', { railVariant: '', showIdleErrors: false });
         if (l.screen) this.go(l.screen, { railVariant: '' });
       },
@@ -1888,7 +1931,7 @@ class Component extends DCLogic {
       setSingleCust: e => this.set(['form', 'unloading'], e.target.value ? [e.target.value] : []),
       singleCustInfo: unloadMode === 'single' && picked[0] ? (customerOptions.find(c => c.id === picked[0]) || {}).sub : '',
       unloadErrText: unloadMode === 'single' ? 'Select the unloading customer.' : 'Tick at least one unloading customer.',
-      setClient: e => { const client = e.target.value; this.setState(st => { const drop = client && st.form.vehicle && !((T.V[st.form.vehicle] || {}).clients || []).includes(client); return { form: { ...st.form, client, unloading: [], ...(drop ? { vehicle: '', driver: '', driverOk: false } : {}) } }; }); },
+      setClient: e => { const client = e.target.value; this.setState(st => { const vv = T.V[st.form.vehicle] || {}, drop = client && st.form.vehicle && (vv.clients || []).length > 0 && !vv.clients.includes(client); return { form: { ...st.form, client, unloading: [], ...(drop ? { vehicle: '', driver: '', driverOk: false } : {}) } }; }); },
       setVehicle: e => { const vid = e.target.value, open = this.active().find(t => t.vehicle === vid); if (open) { this.setState({ unclosedAlert: { vehicle: vid, trip: open.id } }); return; } this.setState(st => ({ form: { ...st.form, vehicle: vid, driver: '', driverOk: false } })); }, setRemarks: e => this.set(['form', 'remarks'], e.target.value.slice(0, 250)), setStartKm: e => this.set(['form', 'startKm'], e.target.value), setReason: e => this.set(['form', 'reason'], e.target.value),
       setLoading: e => { if (e.target.value === '__add') { this.setState({ newLoc: { open: true, name: '' }, showNewLocErr: false }); return; } this.set(['form', 'loading'], e.target.value); },
       acceptDriver: () => this.setState(st => ({ form: { ...st.form, driver: driverVal, driverOk: true } })),
@@ -1919,7 +1962,7 @@ class Component extends DCLogic {
       // close
       activeTrips: activeD, noActive: !activeD.length, pickClose: e => this.go('close', { selected: e.currentTarget.dataset.id, showCloseErrors: false, cf: this.blankClose() }),
       sel: selD, selLongOpen: selD.hoursOpen > 24, selRows, gpsLog: T.gpsLog,
-      cf: { ...cf, legDraft: ld }, setCf: this.bind('cf', ['invoice', 'lr', 'advance', 'qtyLoad', 'qtyUnload']), cerr,
+      cf: { ...cf, legDraft: ld }, setCf: this.bind('cf', ['invoice', 'lr', 'qtyLoad', 'qtyUnload']), cerr,
       closeHasErrors: Object.values(cerr).some(Boolean), closeManualException: (selTrip.flags || []).includes('GPS weak') || (selTrip.flags || []).includes('GPS failed'),
       // odometer readings
       pointOptions, legErr, legBox: { border: cerr.legs ? 'var(--status-danger)' : 'var(--border-default)' },
@@ -1942,7 +1985,8 @@ class Component extends DCLogic {
       removeLeg: e => { const i = Number(e.currentTarget.dataset.i); this.patchCf({ legs: legs.filter((_, j) => j !== i), legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false }); },
       // diesel bunks
       fillErr, fillBox: { border: cerr.fills ? 'var(--status-danger)' : 'var(--border-default)' },
-      fillCards: fills.map((x, i) => ({ i, n: i + 1, bunk: x.bunk, line: `${km(x.litres)} L × ₹${Number(x.rate).toFixed(2)}/L = ${money0(x.litres * x.rate)}`, bg: fillEditing && cf.fillEdit === i ? 'var(--color-brand-tint)' : '#fff' })),
+      fillCards: fills.map((x, i) => ({ i, n: i + 1, bunk: x.bunk, line: `${km(x.litres)} L × ₹${Number(x.rate).toFixed(2)}/L = ${money0(x.litres * x.rate)}`, bg: overTank(x.litres) ? 'var(--kr-red-100)' : fillEditing && cf.fillEdit === i ? 'var(--color-brand-tint)' : '#fff', lineColor: overTank(x.litres) ? 'var(--kr-red-800)' : 'var(--text-body)' })),
+      tankLabel: tank ? km(tank) + ' L' : '—', qtyHint: tank ? `Tank holds ${km(tank)} L` : undefined,
       fillEditorOpen, fillAddShown: !fillEditorOpen, fillCanCancel: fills.length > 0, fillEditorTitle: fillEditing ? `Edit bunk ${cf.fillEdit + 1}` : `Bunk ${fills.length + 1}`, fillSaveLabel: fillEditing ? 'Save changes' : 'Add bunk',
       fillBunkHint: fdRef ? `Branch bunk · rate on record ₹${fdRef.rate.toFixed(2)}/L.` : 'Type the bunk name from the diesel slip.',
       fillDraftAmount: fdL && fdR ? money0(fdL * fdR) : '—',
@@ -1964,7 +2008,7 @@ class Component extends DCLogic {
       closeReviewNote: flagged ? `The odometer distance is outside 5% of the ${km(fixed)} km fixed route, so Head Office reviews it after you close.` : fixed ? `Odometer distance is within 5% of the ${km(fixed)} km fixed route.` : 'Non-business movement. No fixed route to check against.',
       submitClose: () => { if (Object.values(closeBad).some(Boolean)) { this.setState({ showCloseErrors: true, railVariant: 'errors' }); return; } this.go('closeReview', { railVariant: '' }); },
       confirmClose: () => {
-        const rec = { invoice: cf.invoice, lr: cf.lr, advance: cf.advance, closeKm: String(closeNum), bunk: fills.map(x => x.bunk).join(', '), litres: String(dieselLitres), rate: dieselLitres ? (dieselTotal / dieselLitres).toFixed(2) : '', fills, legs, totalExpense: cf.totalExpense, remarks: (cf.remarks || '').trim(), qtyLoad: cf.qtyLoad, qtyUnload: cf.qtyUnload, closedAt: '14 Sep 2026 09:41' };
+        const rec = { invoice: cf.invoice, lr: cf.lr, closeKm: String(closeNum), bunk: fills.map(x => x.bunk).join(', '), litres: String(dieselLitres), rate: dieselLitres ? (dieselTotal / dieselLitres).toFixed(2) : '', fills, legs, totalExpense: cf.totalExpense, remarks: (cf.remarks || '').trim(), qtyLoad: cf.qtyLoad, qtyUnload: cf.qtyUnload, closedAt: '14 Sep 2026 09:41' };
         this.setState(st => ({ closedIds: [...st.closedIds, selTrip.id], closedData: { ...st.closedData, [selTrip.id]: rec } })); const resume = s.resumeOpen && s.resumeOpen.trip === selTrip.id; if (resume) { this.setState(st => ({ screen: 'open', history: ['home'], resumeOpen: null, railVariant: '', showErrors: false, form: { ...st.form, vehicle: s.resumeOpen.vehicle, startKm: '', driver: '', driverOk: false } })); this.toast(flagged ? 'warning' : 'success', 'Trip closed · back to Open Trip', `${selD.vehicleNumber} is free now. Finish opening the new trip.${flagged ? ` Variance ${pct}% sent to admin exceptions.` : ''}`); } else { this.go('closeDone'); this.toast(flagged ? 'warning' : 'success', flagged ? 'Closed with flag' : 'Trip closed', flagged ? `Variance ${pct}% sent to admin exceptions.` : `${selD.vehicleNumber} is available again.`); } this.logActivity({ title: `Trip closed · ${selD.number}`, body: flagged ? `Closed with a ${pct}% distance variance. It was sent to Head Office exceptions for review.` : `${selD.vehicleNumber} is available again. Distance is within the 5% limit.`, rows: [['Trip', selD.number], ['Vehicle', selD.vehicleNumber], ['Invoice', cf.invoice], ['Closing odometer', km(closeNum) + ' km'], ['Diesel', `${km(dieselLitres)} L · ${fills.length} ${fills.length === 1 ? 'bunk' : 'bunks'} · ${money0(dieselTotal)}`], ['Total expense', money0(Number(cf.totalExpense))], ['Variance', fixed ? pct + '%' : 'Not applicable']], link: { trip: selTrip.id }, linkLabel: 'View closed trip' }); },
       verify,
       // trip history
@@ -2017,7 +2061,8 @@ class Component extends DCLogic {
       toggleAttDay: e => { const day = e.currentTarget.dataset.day; this.setState({ attOpenDay: openDay === day ? 'none' : day }); },
       setAmVehicle: e => this.pickAm({ vehicle: e.target.value }),
       setAmDriver: e => this.pickAm({ driver: e.target.value }),
-      removeAm: e => { const id = e.currentTarget.dataset.id, d = this.drv(id), vn = (T.V[s.attVeh[id]] || {}).number; this.setState(st => { const attVeh = { ...st.attVeh }; delete attVeh[id]; return { att: { ...st.att, [id]: '' }, attVeh }; }); this.toast('warning', 'Removed', `${d ? d.name : 'Driver'}${vn ? ' · ' + vn : ''} removed from today’s attendance.`); },
+      amStatusOptions, amStatusHint, setAmStatus: e => this.pickAm({ status: e.target.value }),
+      removeAm: e => { const id = e.currentTarget.dataset.id, d = this.drv(id), vn = (T.V[s.attVeh[id]] || {}).number; this.setState(st => { const attVeh = { ...st.attVeh }, attVehStatus = { ...st.attVehStatus }; delete attVeh[id]; delete attVehStatus[id]; return { att: { ...st.att, [id]: '' }, attVeh, attVehStatus }; }); this.toast('warning', 'Removed', `${d ? d.name : 'Driver'}${vn ? ' · ' + vn : ''} removed from today’s attendance.`); },
       saveAmEntry: () => { if (!Object.keys(todayEntries).length) { this.toast('warning', 'Nothing to save', 'Pick a vehicle and driver to mark someone present first.'); return; } this.setState(st => ({ attSaved: [{ day: TODAY_DAY, label: 'Sun, 14 Sep 2026', savedAt: '09:41', entries: todayEntries }, ...st.attSaved.filter(r => r.day !== TODAY_DAY)], attTab: 'marked', attOpenDay: TODAY_DAY, railVariant: '' })); this.toast(attendanceMarked < attendanceTotal ? 'warning' : 'success', attendanceMarked < attendanceTotal ? 'Saved · incomplete' : 'Attendance saved', `${attendanceMarked} of ${attendanceTotal} drivers marked for 14 September.`); this.logActivity({ title: 'Attendance saved · 14 Sep', body: `${attendanceMarked} of ${attendanceTotal} drivers marked${attendanceMarked < attendanceTotal ? ', some still unmarked' : ''}.`, rows: attDrivers.map(d => [d.name, s.att[d.id] === 'P' ? 'Present' + (s.attVeh[d.id] ? ' · ' + (T.V[s.attVeh[d.id]] || {}).number : '') : s.att[d.id] === 'A' ? 'Absent' : 'Not marked']), link: { screen: 'attMark' }, linkLabel: 'Open attendance' }); },
       markDriver: e => this.set(['att', e.currentTarget.dataset.id], e.currentTarget.dataset.v),
       saveAttendance: () => { this.toast(attendanceMarked < attendanceTotal ? 'warning' : 'success', attendanceMarked < attendanceTotal ? 'Saved · incomplete' : 'Attendance saved', `${attendanceMarked} of ${attendanceTotal} drivers marked for 14 September.`); this.logActivity({ title: 'Attendance saved · 14 Sep', body: `${attendanceMarked} of ${attendanceTotal} drivers marked${attendanceMarked < attendanceTotal ? ', some still unmarked' : ''}.`, rows: attDrivers.map(d => [d.name, s.att[d.id] === 'P' ? 'Present' + (s.attVeh[d.id] ? ' · ' + (T.V[s.attVeh[d.id]] || {}).number : '') : s.att[d.id] === 'A' ? 'Absent' : 'Not marked']), link: { screen: 'attMark' }, linkLabel: 'Open attendance' }); this.go('home'); },
@@ -2060,10 +2105,11 @@ class Component extends DCLogic {
   }
   pickAm(patch) {
     const am = { ...this.state.am, ...patch };
-    if (!am.vehicle || !am.driver) { this.setState({ am }); return; }
+    if (patch.vehicle !== undefined && patch.vehicle !== this.state.am.vehicle) am.status = '';
+    if (!am.vehicle || !am.driver || !am.status) { this.setState({ am }); return; }
     const T = this.T(), d = this.drv(am.driver), v = T.V[am.vehicle];
-    this.setState(st => ({ att: { ...st.att, [am.driver]: 'P' }, attVeh: { ...st.attVeh, [am.driver]: am.vehicle }, am: { vehicle: '', driver: '' } }));
-    this.toast('success', 'Marked present', `${d.name} · ${v.number} · 14 September.`);
+    this.setState(st => ({ att: { ...st.att, [am.driver]: 'P' }, attVeh: { ...st.attVeh, [am.driver]: am.vehicle }, attVehStatus: { ...st.attVehStatus, [am.driver]: am.status }, am: { vehicle: '', driver: '', status: '' } }));
+    this.toast('success', 'Marked present', `${d.name} · ${v.number} · ${am.status} · 14 September.`);
   }
   bind(key, fields) { const o = {}; fields.forEach(k => o[k] = e => this.set([key, k], e.target.value)); return o; }
   blankForm() { return { client: '', vehicle: '', loading: '', unloading: [], unloadMode: 'single', startKm: '', driver: '', driverOk: false, type: 'Business', reason: '', remarks: '', from: '', to: '', km: '' }; }
@@ -2086,7 +2132,7 @@ class Component extends DCLogic {
       { day: '2026-09-11', label: 'Thu, 11 Sep 2026', savedAt: '18:20', entries: { D01: ['P', 'V01'], D02: ['P', 'V02'], D09: ['A', ''], D10: ['P', 'V04'], D11: ['P', 'V08'] } }
     ];
   }
-  blankClose() { return { invoice: '', lr: '', advance: '', qtyLoad: '', qtyUnload: '', totalExpense: '', remarks: '',
+  blankClose() { return { invoice: '', lr: '', qtyLoad: '', qtyUnload: '', totalExpense: '', remarks: '',
     legs: [], legDraft: this.blankLeg(), legEdit: -1, legOpen: false, legTried: false,
     fills: [], fillDraft: this.blankFill(), fillEdit: -1, fillOpen: false, fillTried: false }; }
   blankLeg() { return { from: '', to: '', reading: '', photo: null }; }
@@ -2104,7 +2150,7 @@ class Component extends DCLogic {
     const filled = { client: 'C02', vehicle: 'V02', loading: 'L01', unloading: ['U05', 'U06'], unloadMode: 'multiple', startKm: '', driver: 'D02', driverOk: true, type: 'Business', reason: '', remarks: '18 kL liquid argon. Tank pressure and seals checked before dispatch.' };
     const t01 = this.allTrips().find(t => t.id === 'T01'), p01 = t01 ? this.tripPoints(t01) : ['Loading point', 'Customer'];
     const odoPhoto = { name: 'odometer.jpg', size: '180 KB', url: '' };
-    const closeFilled = { ...this.blankClose(), invoice: 'SP/INV/22890', lr: 'LR-004451', advance: '8000', qtyLoad: '18 kL liquid oxygen', qtyUnload: '18 kL liquid oxygen', totalExpense: '46800', remarks: 'Waited 3 h at the hospital gate for unloading slot.',
+    const closeFilled = { ...this.blankClose(), invoice: 'SP/INV/22890', lr: 'LR-004451', qtyLoad: '18 kL liquid oxygen', qtyUnload: '18 kL liquid oxygen', totalExpense: '46800', remarks: 'Waited 3 h at the hospital gate for unloading slot.',
       fills: [{ bunk: 'IOC – Sriperumbudur Highway', litres: '220', rate: '94.80' }, { bunk: 'HP – Kurnool Bypass', litres: '100', rate: '96.10' }], legs: [{ from: p01[0], to: p01[1], reading: '126090', photo: odoPhoto }] };
     switch (screen + ':' + variant) {
       case 'approval:': base.obStatus = 'idle'; base.obShowErr = false; base.ob = { ...blankOb }; break;
@@ -2143,6 +2189,7 @@ class Component extends DCLogic {
       case 'close:errors': base.selected = 'T01'; base.cf = { ...this.blankClose(), closeKm: '125000' }; base.showCloseErrors = true; break;
       case 'close:manual': base.selected = 'T02'; base.cf = this.blankClose(); break;
       case 'close:filled': base.selected = 'T01'; base.cf = closeFilled; break;
+      case 'close:overTank': base.selected = 'T01'; base.cf = { ...this.blankClose(), fillDraft: { bunk: 'IOC – Sriperumbudur Highway', litres: '450', rate: '94.80' } }; break;
       case 'close:editor': base.selected = 'T01'; base.cf = { ...closeFilled, fillOpen: true, legOpen: true }; break;
       case 'closeReview:': base.selected = 'T01'; base.cf = closeFilled; base.history = ['home', 'closeList', 'close']; break;
       case 'closeDone:ok': base.selected = 'T01'; base.cf = closeFilled; break;
@@ -2155,11 +2202,11 @@ class Component extends DCLogic {
       case 'history:empty': base.forceEmptyHist = true; base.hf = { vehicle: '', from: '', to: '' }; base.hfCalOpen = false; break;
       case 'histTrip:T06': base.histSel = 'T06'; base.history = ['home', 'history']; break;
       case 'histTrip:T07': base.histSel = 'T07'; base.history = ['home', 'history']; break;
-      case 'attMark:': base.am = { vehicle: '', driver: '' }; base.attTab = 'mark'; break;
-      case 'attMark:marked': base.am = { vehicle: '', driver: '' }; base.attTab = 'marked'; base.attOpenDay = '2026-09-13'; base.attSaved = this.seedAttSaved(); break;
-      case 'attMark:savedToday': base.am = { vehicle: '', driver: '' }; base.attTab = 'marked'; base.attOpenDay = '2026-09-14'; base.att = { ...this.state.att, D01: 'P', D02: 'P', D10: 'P' }; base.attVeh = { ...this.state.attVeh, D01: 'V01', D02: 'V02', D10: 'V04' }; base.attSaved = [{ day: '2026-09-14', label: 'Sun, 14 Sep 2026', savedAt: '09:41', entries: { D01: ['P', 'V01'], D02: ['P', 'V02'], D10: ['P', 'V04'] } }, ...this.seedAttSaved()]; break;
-      case 'attMark:filled': base.am = { vehicle: '', driver: '' }; base.attTab = 'mark'; base.att = { ...this.state.att, D01: 'P', D02: 'P', D10: 'P' }; base.attVeh = { ...this.state.attVeh, D01: 'V01', D02: 'V02', D10: 'V04' }; break;
-      case 'attMark:empty': base.am = { vehicle: '', driver: '' }; base.attTab = 'mark'; base.att = {}; base.attVeh = {}; break;
+      case 'attMark:': base.am = { vehicle: '', driver: '', status: '' }; base.attTab = 'mark'; break;
+      case 'attMark:marked': base.am = { vehicle: '', driver: '', status: '' }; base.attTab = 'marked'; base.attOpenDay = '2026-09-13'; base.attSaved = this.seedAttSaved(); break;
+      case 'attMark:savedToday': base.am = { vehicle: '', driver: '', status: '' }; base.attTab = 'marked'; base.attOpenDay = '2026-09-14'; base.att = { ...this.state.att, D01: 'P', D02: 'P', D10: 'P' }; base.attVeh = { ...this.state.attVeh, D01: 'V01', D02: 'V02', D10: 'V04' }; base.attSaved = [{ day: '2026-09-14', label: 'Sun, 14 Sep 2026', savedAt: '09:41', entries: { D01: ['P', 'V01'], D02: ['P', 'V02'], D10: ['P', 'V04'] } }, ...this.seedAttSaved()]; break;
+      case 'attMark:filled': base.am = { vehicle: '', driver: '', status: '' }; base.attTab = 'mark'; base.att = { ...this.state.att, D01: 'P', D02: 'P', D10: 'P' }; base.attVeh = { ...this.state.attVeh, D01: 'V01', D02: 'V02', D10: 'V04' }; base.attVehStatus = { ...this.state.attVehStatus, D02: 'Idle', D10: 'Maintenance' }; break;
+      case 'attMark:empty': base.am = { vehicle: '', driver: '', status: '' }; base.attTab = 'mark'; base.att = {}; base.attVeh = {}; base.attVehStatus = {}; break;
       case 'idle:': base.idle = this.seedIdle(); break;
       case 'idle:errors': base.idle = { ...this.seedIdle(), V08: { on: true, reason: '', note: '' } }; base.showIdleErrors = true; break;
       case 'idle:other': base.idle = { ...this.seedIdle(), V10: { on: true, reason: 'Other', note: 'Waiting for FC renewal at RTO', since: '14 Sep 07:15', hours: 2 } }; break;

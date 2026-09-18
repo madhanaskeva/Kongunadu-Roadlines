@@ -24,6 +24,7 @@
         href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/styles.css">
       <script src="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/_ds_bundle.js"></script>
       <script src="tms-data.js"></script>
+      <script src="tms-report-builder.js"></script>
       <style>
         /* Status badge colours: one colour per status, same in the Supervisor App and the Admin Portal */
         :root{
@@ -462,7 +463,7 @@
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px">
                       <sc-for list="{{ dashCards }}" as="k" hint-placeholder-count="6">
                         <button data-route="{{ k.route }}" onClick="{{ navTo }}"
-                          style="all:unset;cursor:pointer;display:block;background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px 18px;border-top:4px solid {{ k.edge }};transition:box-shadow var(--dur-base),transform var(--dur-base)"
+                          style="all:unset;cursor:pointer;display:flex;flex-direction:column;box-sizing:border-box;background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:16px 18px;border-top:4px solid {{ k.edge }};transition:box-shadow var(--dur-base),transform var(--dur-base)"
                           style-hover="box-shadow:var(--shadow-md);transform:translateY(-2px)">
                           <div
                             style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">
@@ -471,6 +472,17 @@
                             style="font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-0.02em;color:var(--text-heading);margin-top:6px;line-height:1">
                             {{ k.value }}</div>
                           <div style="font-size:13px;color:{{ k.subColor }};margin-top:6px">{{ k.sub }}</div>
+                          <sc-if value="{{ k.hasStats }}" hint-placeholder-val="{{ false }}">
+                            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+                              <sc-for list="{{ k.stats }}" as="x" hint-placeholder-count="2">
+                                <div
+                                  style="padding-top:6px;border-top:1px solid var(--border-default);font-size:12px;line-height:1.4;color:var(--text-body)">
+                                  <span
+                                    style="display:block;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">{{
+                                    x.h }}</span>{{ x.text }}</div>
+                              </sc-for>
+                            </div>
+                          </sc-if>
                         </button>
                       </sc-for>
                     </div>
@@ -554,6 +566,33 @@
                                     title="{{ x.label }}" style="width:{{ x.w }};background:{{ x.color }}"></span></sc-for>
                               </div>
                             </sc-if>
+                            <sc-if value="{{ c.isGroups }}" hint-placeholder-val="{{ false }}">
+                              <sc-for list="{{ c.groups }}" as="gr" hint-placeholder-count="2">
+                                <div style="display:flex;flex-direction:column;gap:10px">
+                                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+                                    <span
+                                      style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-heading)">{{
+                                      gr.h }}</span><span style="font-size:12px;color:var(--text-muted)">{{ gr.sub }}</span>
+                                  </div>
+                                  <sc-for list="{{ gr.rows }}" as="b" hint-placeholder-count="4">
+                                    <div
+                                      style="display:grid;grid-template-columns:minmax(90px,150px) 1fr minmax(56px,auto);gap:12px;align-items:center;font-size:14px">
+                                      <span
+                                        style="font-weight:600;color:var(--text-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{
+                                        b.name }}</span><span
+                                        style="height:14px;background:var(--kr-grey-100);border-radius:2px;overflow:hidden;display:flex"><sc-for
+                                          list="{{ b.segs }}" as="g" hint-placeholder-count="1"><span
+                                            style="width:{{ g.w }};background:{{ g.color }}"></span></sc-for></span><span
+                                        style="text-align:right;font-weight:700;color:var(--text-heading);white-space:nowrap">{{
+                                        b.value }}</span>
+                                    </div>
+                                  </sc-for>
+                                  <sc-if value="{{ gr.hasNote }}" hint-placeholder-val="{{ false }}">
+                                    <div style="font-size:13px;color:var(--text-muted)">{{ gr.note }}</div>
+                                  </sc-if>
+                                </div>
+                              </sc-for>
+                            </sc-if>
                             <sc-if value="{{ c.hasNote }}" hint-placeholder-val="{{ false }}">
                               <p style="margin:0;font-size:14px">{{ c.note }}</p>
                             </sc-if>
@@ -575,6 +614,30 @@
                               style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand);white-space:nowrap">{{
                               l.linkLabel }}</button>
                           </div>
+                          <sc-if value="{{ l.isTable }}" hint-placeholder-val="{{ false }}">
+                            <div style="overflow-x:auto">
+                              <table style="width:100%;border-collapse:collapse;font-size:14px">
+                                <thead>
+                                  <tr style="text-align:left;background:var(--surface-muted)"><sc-for list="{{ l.cols }}" as="h"
+                                      hint-placeholder-count="3">
+                                      <th
+                                        style="padding:10px 14px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap">
+                                        {{ h }}</th>
+                                    </sc-for></tr>
+                                </thead>
+                                <tbody><sc-for list="{{ l.tRows }}" as="r" hint-placeholder-count="5">
+                                    <tr data-kind="{{ r.kind }}" data-id="{{ r.id }}" data-route="{{ r.route }}"
+                                      onClick="{{ openDashItem }}" style="cursor:pointer;border-top:1px solid var(--border-default)"
+                                      style-hover="background:var(--surface-muted)"><sc-for list="{{ r.cells }}" as="c"
+                                        hint-placeholder-count="3">
+                                        <td
+                                          style="padding:10px 14px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;font-weight:{{ c.weight }};color:{{ c.color }}">
+                                          {{ c.v }}</td>
+                                      </sc-for></tr>
+                                  </sc-for></tbody>
+                              </table>
+                            </div>
+                          </sc-if>
                           <sc-for list="{{ l.items }}" as="x" hint-placeholder-count="5">
                             <button data-kind="{{ x.kind }}" data-id="{{ x.id }}" data-route="{{ x.route }}"
                               onClick="{{ openDashItem }}"
@@ -1713,11 +1776,279 @@
                   </div>
                 </sc-if>
 
-                <!-- REPORTS -->
+                <!-- REPORTS · report builder: pick a report, add quick filters and typed conditions, preview, export .xlsx -->
                 <sc-if value="{{ is.reports }}" hint-placeholder-val="{{ false }}">
-                  <p style="margin:0;font-size:15px;max-width:720px">Operational reports replace the Excel sheets. Each
-                    export is scoped by branch and date range and records who exported it.</p>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+                    <div>
+                      <h2
+                        style="margin:0;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-0.01em;color:var(--text-heading)">
+                        Report builder</h2>
+                      <div style="font-size:14px;color:var(--text-muted);max-width:640px">Describe the report you need in
+                        plain words, add quick filters if useful, preview it, then download it as Excel.</div>
+                    </div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap"><x-import
+                        component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="ghost"
+                        on-click="{{ rbReset }}" hint-size="auto,40px">Reset</x-import><x-import
+                        component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary"
+                        on-click="{{ rbExport }}" disabled="{{ rbNoResult }}" hint-size="auto,40px">Export Excel</x-import><x-import
+                        component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
+                        on-click="{{ rbGenerate }}" hint-size="auto,40px">Generate report</x-import></div>
+                  </div>
+                  <sc-if value="{{ rbMissing }}" hint-placeholder-val="{{ false }}">
+                    <div role="alert"
+                      style="padding:12px 14px;background:var(--kr-red-100);border-radius:var(--radius-md);color:var(--kr-red-800);font-size:14px">
+                      The report engine (tms-report-builder.js) did not load. Check that the file sits next to this page.</div>
+                  </sc-if>
+                  <sc-if value="{{ rbReady }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:grid;grid-template-columns:{{ rbGridCols }};gap:24px;align-items:start">
+                    <!-- builder -->
+                    <div
+                      style="position:{{ rbSticky }};top:76px;display:flex;flex-direction:column;gap:16px">
+                      <section
+                        style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:8px">
+                        <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                          label="Report type" options="{{ rbTypeOptions }}" value="{{ rbType }}"
+                          on-change="{{ setRbType }}" hint-size="100%,72px"></x-import>
+                        <div style="font-size:13px;color:var(--text-muted)"><sc-if value="{{ rbTypeSwitch }}"
+                            hint-placeholder-val="{{ false }}"><strong style="color:#7A4300">Heads up.</strong> </sc-if>{{
+                          rbTypeHint }}</div>
+                      </section>
+
+                      <section
+                        style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:14px">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+                          <h3
+                            style="margin:0;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-heading)">
+                            Custom conditions</h3>
+                          <span style="font-size:12px;color:var(--text-muted)">Type what you need</span>
+                        </div>
+                        <sc-for list="{{ rbConds }}" as="c" hint-placeholder-count="2">
+                          <div style="display:flex;flex-direction:column;gap:8px">
+                            <sc-if value="{{ c.notFirst }}" hint-placeholder-val="{{ false }}">
+                              <div role="group" aria-label="Join with the previous condition"
+                                style="display:flex;align-items:center;gap:8px">
+                                <span style="flex:1;height:1px;background:var(--border-default)"></span>
+                                <span
+                                  style="display:inline-flex;border:2px solid var(--color-brand);border-radius:var(--radius-pill);overflow:hidden"><button
+                                    data-id="{{ c.id }}" data-j="and" onClick="{{ setRbJoin }}"
+                                    style="all:unset;cursor:pointer;padding:3px 12px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.08em;background:{{ c.andBg }};color:{{ c.andFg }}">AND</button><button
+                                    data-id="{{ c.id }}" data-j="or" onClick="{{ setRbJoin }}"
+                                    style="all:unset;cursor:pointer;padding:3px 12px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.08em;background:{{ c.orBg }};color:{{ c.orFg }}">OR</button></span>
+                                <span style="flex:1;height:1px;background:var(--border-default)"></span>
+                              </div>
+                            </sc-if>
+                            <div style="display:flex;justify-content:space-between;align-items:baseline">
+                              <span
+                                style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Condition
+                                {{ c.n }}</span>
+                              <button data-id="{{ c.id }}" onClick="{{ removeRbCond }}" aria-label="Remove condition {{ c.n }}"
+                                style="all:unset;cursor:pointer;font-size:12px;font-weight:700;color:var(--kr-red-700);padding:2px 6px;border-radius:var(--radius-sm)"
+                                style-hover="background:var(--kr-red-100)">Remove</button>
+                            </div>
+                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input"
+                              placeholder="{{ c.placeholder }}" value="{{ c.text }}" on-change="{{ c.set }}"
+                              hint-size="100%,44px"></x-import>
+                            <sc-if value="{{ c.ok }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                                <span style="font-size:12px;color:var(--kr-green-800);font-weight:700">Understood:</span>
+                                <sc-for list="{{ c.chips }}" as="x" hint-placeholder-count="2"><span
+                                    style="font-size:12px;padding:2px 8px;border-radius:var(--radius-pill);background:var(--color-brand-tint);color:var(--kr-green-900)">{{
+                                    x.label }}</span></sc-for>
+                              </div>
+                            </sc-if>
+                            <sc-if value="{{ c.bad }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12px;color:#7A4300">Not understood yet. Try words like “above
+                                5000 km”, a branch, a driver or “this week”.</div>
+                            </sc-if>
+                            <sc-if value="{{ c.hasNotes }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12px;color:var(--text-muted)">{{ c.notes }}</div>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                        <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
+                          variant="secondary" size="sm" on-click="{{ addRbCond }}" hint-size="auto,32px">+ Add
+                          condition</x-import>
+                        <div style="display:flex;flex-direction:column;gap:6px">
+                          <span style="font-size:12px;color:var(--text-muted)">Try one of these</span>
+                          <div style="display:flex;flex-wrap:wrap;gap:6px">
+                            <sc-for list="{{ rbExamples }}" as="x" hint-placeholder-count="4"><button
+                                data-t="{{ x.t }}" onClick="{{ useRbExample }}"
+                                style="all:unset;cursor:pointer;font-size:12px;padding:3px 10px;border-radius:var(--radius-pill);border:1px solid var(--border-strong);color:var(--text-body);background:#fff"
+                                style-hover="border-color:var(--color-brand);color:var(--text-brand)">{{ x.t }}</button></sc-for>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section
+                        style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+                          <h3
+                            style="margin:0;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-heading)">
+                            Quick filters</h3>
+                          <span style="font-size:12px;color:var(--text-muted)">{{ rbQuickUsed }}</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px">
+                          <sc-for list="{{ rbQuick }}" as="q" hint-placeholder-count="6">
+                            <div style="opacity:{{ q.fade }}"><x-import
+                                component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                                label="{{ q.label }}" options="{{ q.options }}" value="{{ q.value }}"
+                                on-change="{{ q.set }}" disabled="{{ q.disabled }}" hint-size="100%,72px"></x-import></div>
+                          </sc-for>
+                        </div>
+                        <div style="opacity:{{ rbDateFade }};display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="From"
+                            type="date" value="{{ rbFrom }}" on-change="{{ setRbFrom }}" disabled="{{ rbDateOff }}"
+                            hint-size="100%,72px"></x-import>
+                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="To"
+                            type="date" value="{{ rbTo }}" on-change="{{ setRbTo }}" disabled="{{ rbDateOff }}"
+                            hint-size="100%,72px"></x-import>
+                        </div>
+                        <div style="font-size:12px;color:var(--text-muted)">{{ rbDateNote }} Greyed filters do not
+                          apply to this report type.</div>
+                      </section>
+                    </div>
+
+                    <!-- live preview -->
+                    <section
+                      style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden;min-width:0">
+                      <sc-if value="{{ rbEmpty }}" hint-placeholder-val="{{ true }}">
+                        <div
+                          style="padding:64px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
+                          <div
+                            style="width:56px;height:56px;border-radius:var(--radius-lg);background:var(--color-brand-tint);color:var(--color-brand);display:grid;place-items:center">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M3 3v18h18"></path>
+                              <path d="M7 15l4-4 3 3 5-6"></path>
+                            </svg></div>
+                          <div
+                            style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-heading)">
+                            No preview yet</div>
+                          <div style="font-size:14px;color:var(--text-muted);max-width:380px">Describe the report you
+                            need or apply filters to generate a preview.</div>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ rbLoading }}" hint-placeholder-val="{{ false }}">
+                        <div role="status" aria-live="polite" style="padding:24px;display:flex;flex-direction:column;gap:16px">
+                          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+                            <div style="height:78px;border-radius:var(--radius-md);background:var(--kr-grey-100);animation:tmsShimmer 1.4s ease-in-out infinite"></div>
+                            <div style="height:78px;border-radius:var(--radius-md);background:var(--kr-grey-100);animation:tmsShimmer 1.4s ease-in-out infinite"></div>
+                            <div style="height:78px;border-radius:var(--radius-md);background:var(--kr-grey-100);animation:tmsShimmer 1.4s ease-in-out infinite"></div>
+                            <div style="height:78px;border-radius:var(--radius-md);background:var(--kr-grey-100);animation:tmsShimmer 1.4s ease-in-out infinite"></div>
+                          </div>
+                          <div style="height:14px;width:40%;background:var(--kr-grey-200);border-radius:2px;animation:tmsShimmer 1.4s ease-in-out infinite"></div>
+                          <div style="height:12px;background:var(--kr-grey-100);border-radius:2px"></div>
+                          <div style="height:12px;width:92%;background:var(--kr-grey-100);border-radius:2px"></div>
+                          <div style="height:12px;width:86%;background:var(--kr-grey-100);border-radius:2px"></div>
+                          <div style="font-size:13px;color:var(--text-muted);text-align:center">Generating report&hellip;</div>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ rbHasResult }}" hint-placeholder-val="{{ false }}">
+                        <div
+                          style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--border-default)">
+                          <div>
+                            <h3
+                              style="margin:0;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">
+                              {{ rbTitle }}</h3>
+                            <div style="font-size:13px;color:var(--text-muted)">{{ rbMeta }}</div>
+                          </div>
+                          <div style="position:relative">
+                            <button onClick="{{ toggleRbCols }}" aria-expanded="{{ rbColsOpen }}"
+                              style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border:2px solid var(--border-strong);border-radius:var(--radius-md);font-size:13px;font-weight:700;color:var(--text-heading);background:#fff"
+                              style-hover="border-color:var(--color-brand)">{{ rbColsLabel }}<svg width="14" height="14"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9l6 6 6-6"></path>
+                              </svg></button>
+                            <sc-if value="{{ rbColsOpen }}" hint-placeholder-val="{{ false }}">
+                              <div
+                                style="position:absolute;right:0;top:40px;z-index:20;width:240px;max-height:340px;overflow:auto;background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:8px">
+                                <sc-for list="{{ rbColOptions }}" as="o" hint-placeholder-count="8"><button
+                                    data-k="{{ o.k }}" onClick="{{ toggleRbCol }}" role="checkbox" aria-checked="{{ o.on }}"
+                                    style="all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:7px 8px;border-radius:var(--radius-sm);font-size:14px;color:var(--text-heading)"
+                                    style-hover="background:var(--surface-muted)"><span
+                                      style="flex:none;width:18px;height:18px;box-sizing:border-box;border-radius:4px;border:2px solid {{ o.boxBorder }};background:{{ o.boxBg }};color:#fff;font-size:12px;font-weight:800;line-height:14px;text-align:center">{{
+                                      o.tick }}</span>{{ o.label }}</button></sc-for>
+                                <div style="border-top:1px solid var(--border-default);margin-top:6px;padding:8px 8px 2px">
+                                  <button onClick="{{ rbColsDefault }}"
+                                    style="all:unset;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-brand)">Reset
+                                    to default columns</button></div>
+                              </div>
+                            </sc-if>
+                          </div>
+                        </div>
+                        <sc-if value="{{ rbSwitched }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="margin:14px 18px 0;padding:10px 12px;background:var(--color-brand-tint);border-radius:var(--radius-md);font-size:13px;color:var(--kr-green-900)">
+                            {{ rbSwitchedText }}</div>
+                        </sc-if>
+                        <sc-if value="{{ rbStale }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="margin:14px 18px 0;padding:10px 12px;background:var(--color-hazard-soft);border-radius:var(--radius-md);font-size:13px;color:#7A4300">
+                            <strong>Filters changed.</strong> This preview and the export still use the previous
+                            filters. Generate again to refresh.</div>
+                        </sc-if>
+                        <div
+                          style="padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+                          <sc-for list="{{ rbSummary }}" as="k" hint-placeholder-count="4">
+                            <div
+                              style="border:1px solid var(--border-default);border-top:4px solid {{ k.edge }};border-radius:var(--radius-md);padding:12px 14px">
+                              <div
+                                style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">
+                                {{ k.label }}</div>
+                              <div
+                                style="font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em;color:var(--text-heading);margin-top:4px;line-height:1.1">
+                                {{ k.value }}</div>
+                            </div>
+                          </sc-for>
+                        </div>
+                        <div style="overflow:auto;max-height:560px;border-top:1px solid var(--border-default)">
+                          <table style="width:100%;border-collapse:collapse;font-size:14px">
+                            <thead>
+                              <tr style="text-align:left;background:var(--surface-muted);position:sticky;top:0"><sc-for
+                                  list="{{ rbHead }}" as="h" hint-placeholder-count="6">
+                                  <th
+                                    style="padding:10px 14px;text-align:{{ h.align }};font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap;background:var(--surface-muted)">
+                                    {{ h.label }}</th>
+                                </sc-for></tr>
+                            </thead>
+                            <tbody><sc-for list="{{ rbRows }}" as="r" hint-placeholder-count="6">
+                                <tr style="border-top:1px solid var(--border-default)"><sc-for list="{{ r.cells }}" as="c"
+                                    hint-placeholder-count="6">
+                                    <td
+                                      style="padding:10px 14px;white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis;text-align:{{ c.align }};font-weight:{{ c.weight }};color:{{ c.color }};font-family:{{ c.font }}">
+                                      {{ c.v }}</td>
+                                  </sc-for></tr>
+                              </sc-for></tbody>
+                          </table>
+                          <sc-if value="{{ rbNoRows }}" hint-placeholder-val="{{ false }}">
+                            <div style="padding:32px 24px;text-align:center;font-size:14px;color:var(--text-muted)">No
+                              records match these conditions. Check how each condition was understood on the left, or
+                              loosen a filter.</div>
+                          </sc-if>
+                        </div>
+                      </sc-if>
+                    </section>
+                  </div>
+                  </sc-if>
+
+                  <!-- ready-made reports kept from the earlier page -->
+                  <section
+                    style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
+                    <button onClick="{{ toggleRbTemplates }}"
+                      style="all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:14px 18px"
+                      style-hover="background:var(--surface-muted)">
+                      <span>
+                        <span
+                          style="display:block;font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.02em;text-transform:uppercase;color:var(--text-heading)">Ready-made
+                          reports</span>
+                        <span style="display:block;font-size:13px;color:var(--text-muted)">Standard exports, scoped by
+                          branch and date range. Each export records who exported it.</span>
+                      </span>
+                      <span style="font-size:13px;font-weight:700;color:var(--text-brand)">{{ rbTemplatesLabel }}</span>
+                    </button>
+                    <sc-if value="{{ rbTemplatesOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:0 18px 18px">
                     <sc-for list="{{ reports }}" as="r" hint-placeholder-count="9">
                       <div
                         style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:10px">
@@ -1737,6 +2068,8 @@
                       </div>
                     </sc-for>
                   </div>
+                    </sc-if>
+                  </section>
                 </sc-if>
 
                 <!-- USERS & ROLES -->
@@ -1901,92 +2234,95 @@
                         <h3
                           style="margin:0;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-heading)">
                           {{ dashAddTitle }}</h3>
-                        <sc-if value="{{ dashCanAdd }}" hint-placeholder-val="{{ true }}">
-                          <div style="display:flex;flex-direction:column;gap:6px">
-                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
-                              label="{{ dashMetricLabel }}" placeholder="Choose…" options="{{ dashSrcOptions }}"
-                              value="{{ dashForm.src }}" on-change="{{ setDashForm.src }}"
-                              hint-size="100%,72px"></x-import>
-                            <sc-if value="{{ hasDashFormErr }}" hint-placeholder-val="{{ false }}">
-                              <div style="font-size:13px;font-weight:600;color:var(--kr-red-700)">{{ dashFormErr }}</div>
-                            </sc-if>
-                          </div>
-                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input"
-                            label="Title" placeholder="{{ dashTitlePh }}" value="{{ dashForm.title }}"
-                            on-change="{{ setDashForm.title }}" hint="Leave blank to use the metric name."
-                            hint-size="100%,96px"></x-import>
-                          <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
-                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
-                              label="Accent colour" options="{{ dashColorOptions }}" value="{{ dashForm.color }}"
-                              on-change="{{ setDashForm.color }}" hint-size="100%,72px"></x-import>
-                          </sc-if>
-                          <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
-                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
-                              label="Chart style" options="{{ dashStyleOptions }}" value="{{ dashForm.style }}"
-                              on-change="{{ setDashForm.style }}" hint-size="100%,72px"></x-import>
-                          </sc-if>
-                          <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
-                            <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
-                              label="Rows to show" options="{{ dashRowOptions }}" value="{{ dashForm.rows }}"
-                              on-change="{{ setDashForm.rows }}" hint-size="100%,72px"></x-import>
-                          </sc-if>
-                          <div style="display:flex;flex-direction:column;gap:6px">
+                        <div style="display:flex;flex-direction:column;gap:6px">
+                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Select"
+                            label="Module" placeholder="Choose a module…" options="{{ dashModuleOptions }}"
+                            value="{{ dashForm.module }}" on-change="{{ setDashModule }}"
+                            hint-size="100%,72px"></x-import>
+                        </div>
+                        <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input"
+                          label="Label name" placeholder="{{ dashTitlePh }}" value="{{ dashForm.title }}"
+                          on-change="{{ setDashTitle }}" hint="Shown as the heading on the dashboard. Blank uses the module name."
+                          hint-size="100%,96px"></x-import>
+                        <div style="display:flex;flex-direction:column;gap:8px">
+                          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
                             <span
-                              style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Preview
-                              · live data</span>
-                            <sc-if value="{{ dashNoPreview }}" hint-placeholder-val="{{ false }}">
-                              <div
-                                style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:22px 16px;text-align:center;font-size:13px;color:var(--text-muted);background:#fff">
-                                Choose what to show and the value is fetched here.</div>
-                            </sc-if>
-                            <sc-for list="{{ dashPreview }}" as="w" hint-placeholder-count="1">
-                              <div
-                                style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
-                                <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
-                                  <span style="display:block;height:4px;width:36px;border-radius:2px;background:{{ w.edgeTop }}"></span>
-                                  <span
-                                    style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">{{
-                                    w.label }}</span>
-                                  <span
-                                    style="font-family:var(--font-display);font-weight:800;font-size:30px;letter-spacing:-0.02em;color:var(--text-heading);line-height:1">{{
-                                    w.value }}</span>
-                                  <span style="font-size:12px;color:{{ w.subColor }}">{{ w.sub }}</span>
-                                </sc-if>
-                                <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
-                                  <span
-                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
-                                    w.title }}</span>
-                                  <span style="display:flex;align-items:flex-end;gap:3px;height:48px"><sc-for
-                                      list="{{ w.mini }}" as="m" hint-placeholder-count="8"><span
-                                        style="flex:1;height:{{ m.h }};background:var(--color-brand);border-radius:1px"></span></sc-for></span>
-                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.styleLabel }} · {{ w.desc
-                                    }}</span>
-                                </sc-if>
-                                <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
-                                  <span
-                                    style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
-                                    w.title }}</span>
-                                  <sc-for list="{{ w.previewItems }}" as="p" hint-placeholder-count="3"><span
-                                      style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-body);min-width:0"><span
-                                        style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ p.dot }}"></span><span
-                                        style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.title
-                                        }}</span></span></sc-for>
-                                  <sc-if value="{{ w.isEmpty }}" hint-placeholder-val="{{ false }}"><span
-                                      style="font-size:12px;color:var(--text-muted)">{{ w.empty }}</span></sc-if>
-                                  <span style="font-size:12px;color:var(--text-muted)">{{ w.rowsText }}</span>
-                                </sc-if>
-                              </div>
-                            </sc-for>
+                              style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Headings</span>
+                            <sc-if value="{{ dashHasModule }}" hint-placeholder-val="{{ true }}"><span
+                                style="display:flex;gap:10px;align-items:baseline;font-size:12px;color:var(--text-muted)">{{
+                                dashHeadCount }}<button onClick="{{ dashHeadsAll }}"
+                                  style="all:unset;cursor:pointer;font-weight:700;color:var(--text-brand)">All</button><button
+                                  onClick="{{ dashHeadsNone }}"
+                                  style="all:unset;cursor:pointer;font-weight:700;color:var(--text-muted)">None</button></span></sc-if>
                           </div>
-                          <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
-                            on-click="{{ addDashItem }}" hint-size="100%,40px">Add to dashboard</x-import>
-                        </sc-if>
-                        <sc-if value="{{ dashAllAdded }}" hint-placeholder-val="{{ false }}">
-                          <div
-                            style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:20px 16px;font-size:13px;color:var(--text-muted);background:#fff">
-                            Every metric in this view is already on the dashboard. Remove one to add it again with a
-                            different title or style.</div>
-                        </sc-if>
+                          <sc-if value="{{ dashNoModule }}" hint-placeholder-val="{{ false }}">
+                            <div
+                              style="border:1px dashed var(--border-strong);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text-muted);background:#fff">
+                              Choose a module to see its headings.</div>
+                          </sc-if>
+                          <sc-if value="{{ dashHasModule }}" hint-placeholder-val="{{ true }}">
+                            <div role="group" aria-label="Headings" style="display:flex;flex-wrap:wrap;gap:8px">
+                              <sc-for list="{{ dashHeads }}" as="c" hint-placeholder-count="6"><button
+                                  data-h="{{ c.h }}" onClick="{{ toggleDashHead }}" aria-pressed="{{ c.on }}"
+                                  style="all:unset;cursor:pointer;display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};transition:background var(--dur-fast)"
+                                  style-hover="border-color:var(--color-brand)"><span style="margin-right:{{ c.tickGap }}">{{ c.tick }}</span>{{ c.h }}</button></sc-for>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{ hasDashFormErr }}" hint-placeholder-val="{{ false }}">
+                            <div style="font-size:13px;font-weight:600;color:var(--kr-red-700)">{{ dashFormErr }}</div>
+                          </sc-if>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px">
+                          <span
+                            style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">Preview
+                            · live data</span>
+                          <sc-if value="{{ dashNoPreview }}" hint-placeholder-val="{{ false }}">
+                            <div
+                              style="border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:22px 16px;text-align:center;font-size:13px;color:var(--text-muted);background:#fff">
+                              {{ dashPreviewHint }}</div>
+                          </sc-if>
+                          <sc-for list="{{ dashPreview }}" as="w" hint-placeholder-count="1">
+                            <div
+                              style="background:#fff;border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+                              <sc-if value="{{ dashIsCards }}" hint-placeholder-val="{{ true }}">
+                                <span style="display:block;height:4px;width:36px;border-radius:2px;background:{{ w.edgeTop }}"></span>
+                                <span
+                                  style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">{{
+                                  w.label }}</span>
+                                <span
+                                  style="font-family:var(--font-display);font-weight:800;font-size:30px;letter-spacing:-0.02em;color:var(--text-heading);line-height:1">{{
+                                  w.value }}</span>
+                                <span style="font-size:12px;color:{{ w.subColor }}">{{ w.sub }}</span>
+                                <sc-for list="{{ w.stats }}" as="x" hint-placeholder-count="2"><span
+                                    style="display:block;font-size:12px;color:var(--text-body);padding-top:4px;border-top:1px solid var(--border-default)"><strong
+                                      style="color:var(--text-heading)">{{ x.h }}</strong> · {{ x.text }}</span></sc-for>
+                              </sc-if>
+                              <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
+                                <span
+                                  style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                  w.title }}</span>
+                                <span style="display:flex;align-items:flex-end;gap:3px;height:48px"><sc-for
+                                    list="{{ w.mini }}" as="m" hint-placeholder-count="8"><span
+                                      style="flex:1;height:{{ m.h }};background:var(--color-brand);border-radius:1px"></span></sc-for></span>
+                                <span style="font-size:12px;color:var(--text-muted)">{{ w.styleLabel }} · {{ w.desc
+                                  }}</span>
+                              </sc-if>
+                              <sc-if value="{{ dashIsLists }}" hint-placeholder-val="{{ false }}">
+                                <span
+                                  style="font-family:var(--font-display);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-heading)">{{
+                                  w.title }}</span>
+                                <sc-for list="{{ w.previewItems }}" as="p" hint-placeholder-count="3"><span
+                                    style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-body);min-width:0"><span
+                                      style="flex:none;width:6px;height:6px;border-radius:50%;background:{{ p.dot }}"></span><span
+                                      style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.title
+                                      }}</span></span></sc-for>
+                                <span style="font-size:12px;color:var(--text-muted)">{{ w.rowsText }} · {{ w.desc }}</span>
+                              </sc-if>
+                            </div>
+                          </sc-for>
+                        </div>
+                        <x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button"
+                          on-click="{{ addDashItem }}" hint-size="100%,40px">Add</x-import>
                       </div>
                       <!-- what is on the dashboard now -->
                       <div
@@ -2017,6 +2353,9 @@
                                     style="font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-0.02em;color:var(--text-heading);line-height:1">{{
                                     w.value }}</span>
                                   <span style="font-size:12px;color:{{ w.subColor }}">{{ w.sub }}</span>
+                                  <sc-for list="{{ w.stats }}" as="x" hint-placeholder-count="2"><span
+                                      style="display:block;font-size:12px;color:var(--text-body);padding-top:4px;border-top:1px solid var(--border-default)"><strong
+                                        style="color:var(--text-heading)">{{ x.h }}</strong> · {{ x.text }}</span></sc-for>
                                 </sc-if>
                                 <sc-if value="{{ dashIsCharts }}" hint-placeholder-val="{{ false }}">
                                   <span
@@ -2261,9 +2600,17 @@
                         placeholder="Select" options="{{ f.options }}" value="{{ f.value }}" on-change="{{ f.set }}"
                         hint-size="100%,72px"></x-import><sc-if value="{{ f.hasError }}" hint-placeholder-val="{{ false }}"><span
                           style="font-size:13px;font-weight:600;color:var(--status-danger)">{{ f.error }}</span></sc-if></div></sc-if>
+                    <sc-if value="{{ f.isChecks }}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="{{ f.label }}">
+                        <div style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-heading)">{{ f.label }}</div>
+                        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ f.checks }}" as="c" hint-placeholder-count="3"><button
+                            role="checkbox" aria-checked="{{ c.aria }}" data-key="{{ f.key }}" data-v="{{ c.value }}" onClick="{{ toggleFormCheck }}"
+                            style="all:unset;cursor:pointer;box-sizing:border-box;min-height:40px;padding:0 12px;display:inline-flex;align-items:center;gap:8px;border:2px solid {{ c.border }};border-radius:var(--radius-md);background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600"><span
+                              aria-hidden="true" style="width:16px;height:16px;border-radius:4px;border:2px solid {{ c.box }};background:{{ c.boxBg }};display:grid;place-items:center;color:#fff;font-size:11px;line-height:1">{{ c.tick }}</span>{{ c.label }}</button></sc-for></div>
+                        <div style="margin-top:6px;font-size:13px;color:var(--text-muted)">{{ f.hint }}</div>
+                      </div></sc-if>
                     <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><x-import
                         component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Input" label="{{ f.label }}"
-                        placeholder="{{ f.placeholder }}" prefix="{{ f.prefix }}" input-mode="{{ f.inputMode }}"
+                        placeholder="{{ f.placeholder }}" prefix="{{ f.prefix }}" suffix="{{ f.suffix }}" input-mode="{{ f.inputMode }}"
                         value="{{ f.value }}" on-change="{{ f.set }}"
                         error="{{ f.error }}" hint="{{ f.hint }}" hint-size="100%,72px"></x-import></sc-if>
                     <sc-if value="{{ f.isUpload }}" hint-placeholder-val="{{ false }}">
@@ -2388,10 +2735,11 @@ class Component extends DCLogic {
     fleetFilter: 'all', masterQ: '', masterKey: 'vehicles', attBranch: '', anTab: 'trips', range: '30d', userTab: 'users', distQ: '', distReview: {},
     drawer: null, form: {}, formError: '', confirm: null,
     st: { variance: '5', radius: '100', longOpen: '8', idle: '15', gpsFail: '30', serial: 'monthly', reasons: 'Maintenance, Internal Movement, Empty Return, Driver Testing', session: '12', attReminder: true, excEmail: true },
-    approvals: {}, driverApprovalFilter: '', deleted: [], drvReqs: [], rejectReason: '',
+    approvals: {}, driverApprovalFilter: '', deleted: [], drvReqs: [], rejectReason: '', vehTanks: {}, masterEdits: {},
     devReqs: [], devFilter: 'all', adminNotifOpen: false,
+    rb: this.rbBlank(),
     // Dashboard layout: dashCfg lists the widgets on the dashboard; dashForm is the Settings "add" form for the open tab
-    dashTab: 'cards', dashCfg: null, dashForm: { src: '', title: '', color: '', style: '', rows: '5' }, dashFormErr: ''
+    dashTab: 'cards', dashCfg: null, dashForm: { module: '', title: '', fields: [] }, dashFormErr: ''
   };
   // Metrics a dashboard widget can be built from. Every one starts on the dashboard; Settings › Dashboard layout adds and removes them.
   DASH_KEY = 'kr-tms-dash-layout-v2';
@@ -2400,7 +2748,7 @@ class Component extends DCLogic {
     charts: ['branchTrips', 'tripsTrend', 'gpsHealth', 'excByType', 'vehStatus', 'distVariance'],
     lists: ['openExceptions', 'longOpenTrips', 'distAlerts', 'driverQueue', 'deviceRequests', 'recentTrips']
   };
-  DASH_BLANK_FORM = { src: '', title: '', color: '', style: '', rows: '5' };
+  DASH_BLANK_FORM = { module: '', title: '', fields: [] };
   // One widget = { uid, src, title } plus colour (cards), style (charts) or rows (lists). Empty title/colour/style = the metric's own.
   dashItem(group, src, f = {}) {
     const base = { uid: src + '-' + Math.random().toString(36).slice(2, 7), src, title: f.title || '' };
@@ -2409,7 +2757,7 @@ class Component extends DCLogic {
   dashDefault() { return Object.fromEntries(Object.keys(this.DASH_ALL).map(g => [g, this.DASH_ALL[g].map(src => ({ ...this.dashItem(g, src), uid: src }))])); }
   loadDash() {
     let cfg = this.dashDefault();
-    try { const saved = JSON.parse(localStorage.getItem(this.DASH_KEY) || 'null'); if (saved && typeof saved === 'object') cfg = Object.fromEntries(Object.keys(this.DASH_ALL).map(g => [g, Array.isArray(saved[g]) ? saved[g].filter(i => i && this.DASH_ALL[g].includes(i.src)) : cfg[g]])); } catch (e) { /* storage blocked: default layout */ }
+    try { const saved = JSON.parse(localStorage.getItem(this.DASH_KEY) || 'null'); if (saved && typeof saved === 'object') cfg = Object.fromEntries(Object.keys(this.DASH_ALL).map(g => [g, Array.isArray(saved[g]) ? saved[g].filter(i => i && (this.DASH_ALL[g].includes(i.src) || (i.module && Array.isArray(i.fields)))) : cfg[g]])); } catch (e) { /* storage blocked: default layout */ }
     this.setState({ dashCfg: cfg });
   }
   saveDash(cfg) {
@@ -2422,6 +2770,8 @@ class Component extends DCLogic {
     // Device approval requests come from the Supervisor App through localStorage (same origin).
     this.syncDevReqs(true); this.syncDrvReqs(true); this.loadDash();
     try { const ap = JSON.parse(localStorage.getItem(this.DRV_APPROVAL_KEY) || '{}'); if (ap && typeof ap === 'object') this.setState({ approvals: ap }); } catch (e) { /* storage blocked: decisions stay in this tab */ }
+    try { const me = JSON.parse(localStorage.getItem(this.MASTER_KEY) || '{}'); if (me && typeof me === 'object') this.setState({ masterEdits: me }); } catch (e) { /* storage blocked: records stay in this tab */ }
+    try { const vt = JSON.parse(localStorage.getItem(this.TANK_KEY) || '{}'); if (vt && typeof vt === 'object') this.setState({ vehTanks: vt }); } catch (e) { /* storage blocked: tank sizes stay in this tab */ }
     this._devPoll = setInterval(() => { this.syncDevReqs(false); this.syncDrvReqs(false); }, 1000);
     this._onStorage = e => { if (e.key === this.REQ_KEY) this.syncDevReqs(false); if (e.key === this.DRV_KEY) this.syncDrvReqs(false); };
     window.addEventListener('storage', this._onStorage);
@@ -2444,6 +2794,37 @@ class Component extends DCLogic {
   // New-driver requests from the Supervisor App (same origin, localStorage). Decisions are written back to the
   // request, and decisions on drivers already in the master go to DRV_APPROVAL_KEY, so the app reacts to both.
   DRV_KEY = 'kr-tms-driver-requests'; DRV_APPROVAL_KEY = 'kr-tms-driver-approvals';
+  // Diesel tank size per vehicle, edited in the Vehicle Master; the Supervisor App caps diesel entries with it.
+  TANK_KEY = 'kr-tms-vehicle-tanks';
+  // Records added or edited in the master pages, per master: { added: [...], edited: { id: record } }.
+  // Kept in localStorage so they survive a reload and the Supervisor App picks up vehicles, drivers and locations.
+  MASTER_KEY = 'kr-tms-master-edits';
+  mdata(route, seed) { const e = this.state.masterEdits[route] || {}, ed = e.edited || {}; return [...(e.added || []), ...seed.map(r => ed[r.id] ? { ...r, ...ed[r.id] } : r)]; }
+  saveMaster(route, rec, isNew) {
+    const all = this.state.masterEdits, cur = all[route] || { added: [], edited: {} }, added = cur.added || [];
+    const next = { ...all, [route]: isNew ? { ...cur, added: [rec, ...added] } : added.some(r => r.id === rec.id) ? { ...cur, added: added.map(r => r.id === rec.id ? rec : r) } : { ...cur, edited: { ...(cur.edited || {}), [rec.id]: rec } } };
+    this.setState({ masterEdits: next });
+    // Uploaded photos can overflow storage; keep the record without them rather than lose it.
+    try { localStorage.setItem(this.MASTER_KEY, JSON.stringify(next)); } catch (e) {
+      try { localStorage.setItem(this.MASTER_KEY, JSON.stringify(next, (k, v) => k === 'url' && typeof v === 'string' && v.startsWith('data:') ? '' : v)); } catch (e2) { /* storage blocked: kept in this tab only */ }
+    }
+  }
+  // Numbers stay numbers, and a new record gets the defaults the tables and the Supervisor App expect.
+  normalizeRecord(route, form, isNew) {
+    const T = this.T(), f = { ...form }, dg = x => String(x || '').replace(/\D/g, '');
+    const num = k => { if (f[k] !== undefined && f[k] !== '') f[k] = Number(String(f[k]).replace(/[^\d.-]/g, '')) || 0; };
+    if (isNew) f.id = route.slice(0, 2).toUpperCase() + 'X' + Date.now();
+    const dflt = (k, v) => { if (f[k] === undefined || f[k] === '' || f[k] === null) f[k] = v; };
+    if (route === 'vehicles') { num('odometer'); num('tank'); if (!Array.isArray(f.clients)) f.clients = []; if (!f.driver) f.driver = null; if (isNew) { dflt('odometer', 0); dflt('status', 'Idle'); dflt('gps', 'Pending'); } }
+    if (route === 'drivers') { f.phone = this.fmtPhone(dg(f.phone)); if (isNew) { f.approval = 'Approved'; dflt('status', 'Active'); dflt('type', 'Regular'); f.present = 0; f.absent = 0; f.util = '—'; } }
+    if (route === 'branches' && isNew) { f.vehicles = 0; f.supervisors = 0; dflt('status', 'Active'); }
+    if (route === 'supervisors') { f.phone = this.fmtPhone(dg(f.phone)); if (isNew) { f.lastLogin = 'Never'; dflt('status', 'Active'); } }
+    if (route === 'clients' && isNew) { f.customers = 0; dflt('status', 'Active'); }
+    if (route === 'locations') { num('radius'); num('lat'); num('lng'); dflt('radius', 100); dflt('status', 'Active'); }
+    if (route === 'routes') { num('km'); num('hours'); f.name = `${(T.L[f.from] || {}).name || '—'} → ${f.to || '—'}`; dflt('status', 'Active'); }
+    return f;
+  }
+  setVehTank(id, litres) { const vehTanks = { ...this.state.vehTanks, [id]: litres }; this.setState({ vehTanks }); try { localStorage.setItem(this.TANK_KEY, JSON.stringify(vehTanks)); } catch (e) { /* storage blocked: the app keeps the old size */ } }
   readDrvReqs() { try { return JSON.parse(localStorage.getItem(this.DRV_KEY) || '[]') || []; } catch (e) { return this.state.drvReqs; } }
   writeDrvReqs(list) { try { localStorage.setItem(this.DRV_KEY, JSON.stringify(list)); } catch (e) { /* storage blocked: keep in memory */ } this.setState({ drvReqs: list }); this._drvJson = JSON.stringify(list); }
   syncDrvReqs(first) {
@@ -2489,6 +2870,113 @@ class Component extends DCLogic {
   }
   newOtp() { return String(1000 + Math.floor(Math.random() * 9000)); }
   toast(tone, title, message) { clearTimeout(this._tt); this.setState({ toast: { tone, title, message } }); this._tt = setTimeout(() => this.setState({ toast: null }), 3500); }
+  // ---- Reports · report builder. Parsing, data and the .xlsx file come from tms-report-builder.js (window.TMSReports).
+  RB_EXAMPLES = ['Vehicles above 5000 km', 'Drivers absent for more than 3 days', 'Diesel filled above 100 litres', 'Trips with GPS failure', 'Non-business trips this week', 'Long open trips', 'Trips with distance variance above 5%', 'High severity exceptions', 'Trips handled by Supervisor Senthil'];
+  rbBlank() { return { type: 'trip', quick: { branch: '', vehicle: '', driver: '', client: '', customer: '', from: '', to: '', tripType: '' }, conds: [{ id: 1, text: '', join: 'and' }], cols: {}, colsOpen: false, loading: false, result: null, templatesOpen: false }; }
+  // What Generate will run. A condition that is clearly about another report (e.g. "drivers absent…") picks that report.
+  rbSpec(rb) {
+    const R = window.TMSReports, inferred = rb.conds.map(c => R.inferType(c.text)).find(Boolean);
+    return { type: inferred || rb.type, picked: rb.type, quick: { ...rb.quick }, conditions: rb.conds.filter(c => c.text.trim()).map(c => ({ text: c.text.trim(), join: c.join })) };
+  }
+  rbKey(spec) { return JSON.stringify([spec.type, spec.quick, spec.conditions]); }
+  rbCols(rb, type) { return rb.cols[type] || window.TMSReports.TYPES[type].fields.filter(f => f.def).map(f => f.key); }
+  rbSet(patch) { this.setState(st => ({ rb: { ...st.rb, ...patch } })); }
+  rbGenerate() {
+    const R = window.TMSReports, T = this.T(), spec = this.rbSpec(this.state.rb);
+    this.rbSet({ loading: true, colsOpen: false });
+    clearTimeout(this._rbT);
+    this._rbT = setTimeout(() => {
+      const rows = R.run(spec, T), order = R.TYPES[spec.type].fields.map(f => f.key);
+      // columns a condition talks about (e.g. Diesel) join the preview
+      const used = spec.conditions.flatMap(c => R.parse(c.text, spec.type, T).clauses.map(x => x.field)).filter(k => R.field(spec.type, k));
+      this.setState(st => {
+        const cols = this.rbCols(st.rb, spec.type), next = order.filter(k => cols.includes(k) || used.includes(k));
+        return { rb: { ...st.rb, type: spec.type, loading: false, cols: { ...st.rb.cols, [spec.type]: next }, result: { spec, rows, at: new Date(), switchedFrom: spec.type !== spec.picked ? spec.picked : '' } } };
+      });
+    }, 650);
+  }
+  rbExport() {
+    const R = window.TMSReports, T = this.T(), rb = this.state.rb, res = rb.result;
+    if (!res) { this.toast('warning', 'Nothing to export', 'Generate a report first, then export the preview.'); return; }
+    const type = res.spec.type, cols = this.rbCols(rb, type).map(k => R.field(type, k)).filter(Boolean);
+    const rows = res.rows.map(r => cols.map(f => r[f.key] == null ? '' : r[f.key]));
+    const q = res.spec.quick, qLabel = { branch: ['Branch', T.B], vehicle: ['Vehicle', T.V, 'number'], driver: ['Driver', T.D], client: ['Client', T.C], customer: ['Customer', T.U] };
+    const crit = [['Report type', R.TYPES[type].label], ['Generated', res.at.toLocaleString('en-IN')], ['Exported by', 'Head Office Admin'], ['Records', rows.length]];
+    Object.keys(qLabel).forEach(k => { if (q[k] && R.QUICK[type].includes(k)) { const [label, map, key] = qLabel[k]; crit.push([label, (map[q[k]] || {})[key || 'name'] || q[k]]); } });
+    if (q.tripType && R.QUICK[type].includes('tripType')) crit.push(['Trip type', q.tripType]);
+    if ((q.from || q.to) && R.QUICK[type].includes('date')) crit.push(['Date range', (q.from || '…') + ' to ' + (q.to || '…')]);
+    res.spec.conditions.forEach((c, i) => { const p = R.parse(c.text, type, T); crit.push([(i ? c.join.toUpperCase() + ' · ' : '') + 'Condition ' + (i + 1), c.text], ['Understood as', p.understood ? p.clauses.map(x => x.label).join('; ') : 'Not understood · ignored']); });
+    const blob = R.xlsx([{ name: R.TYPES[type].label, columns: cols.map(f => f.label + (f.unit ? ' (' + f.unit + ')' : '')), rows }, { name: 'Criteria', columns: ['Item', 'Value'], rows: crit }]);
+    const d = new Date(), name = `Custom_Report_${String(d.getDate()).padStart(2, '0')}_${String(d.getMonth() + 1).padStart(2, '0')}_${d.getFullYear()}.xlsx`;
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+    this.toast('success', 'Excel downloaded', `${name} · ${rows.length} rows · ${cols.length} columns`);
+  }
+  rbVals() {
+    const R = window.TMSReports, T = this.T(), s = this.state, rb = s.rb;
+    if (!R) return { rbReady: false, rbMissing: true };
+    const spec = this.rbSpec(rb), type = spec.type, TY = R.TYPES[type];
+    const applies = k => R.QUICK[type].includes(k);
+    const setQuick = k => e => { const v = e && e.target ? e.target.value : e; this.setState(st => ({ rb: { ...st.rb, quick: { ...st.rb.quick, [k]: v } } })); };
+    const opts = (list, label, all) => [{ value: '', label: all }, ...list.map(x => ({ value: x.id, label: label(x) }))];
+    const quick = [
+      ['branch', 'Branch', opts(T.branches, b => b.name, 'All branches')], ['vehicle', 'Vehicle', opts(T.vehicles, v => v.number, 'All vehicles')],
+      ['driver', 'Driver', opts(T.drivers, d => d.name, 'All drivers')], ['client', 'Client', opts(T.clients, c => c.name, 'All clients')],
+      ['customer', 'Customer', opts(T.customers, c => c.name, 'All customers')], ['tripType', 'Trip type', [{ value: '', label: 'Any type' }, { value: 'Business', label: 'Business' }, { value: 'Non-Business', label: 'Non-Business' }]]
+    ].map(([k, label, options]) => ({ k, label, options, value: rb.quick[k], set: setQuick(k), disabled: !applies(k), off: !applies(k), fade: applies(k) ? 1 : 0.55 }));
+    const quickUsed = Object.keys(rb.quick).filter(k => rb.quick[k] && applies(k === 'from' || k === 'to' ? 'date' : k)).length;
+    // conditions, each parsed live so the admin sees how it was understood
+    const conds = rb.conds.map((c, i) => {
+      const p = c.text.trim() ? R.parse(c.text, type, T) : null, and = c.join !== 'or';
+      return { id: c.id, n: i + 1, text: c.text, notFirst: i > 0, placeholder: 'e.g. ' + this.RB_EXAMPLES[i % this.RB_EXAMPLES.length],
+        andBg: and ? 'var(--color-brand)' : '#fff', andFg: and ? '#fff' : 'var(--text-heading)', orBg: and ? '#fff' : 'var(--color-brand)', orFg: and ? 'var(--text-heading)' : '#fff',
+        chips: p ? p.clauses.map(x => ({ label: x.label })) : [], ok: !!(p && p.understood), bad: !!(p && !p.understood), empty: !p,
+        notes: p ? p.notes.join(' · ') : '', hasNotes: !!(p && p.notes.length),
+        set: e => { const v = e.target.value.slice(0, 200); this.setState(st => ({ rb: { ...st.rb, conds: st.rb.conds.map(x => x.id === c.id ? { ...x, text: v } : x) } })); } };
+    });
+    // preview
+    const res = rb.result, rType = res ? res.spec.type : type, RT = R.TYPES[rType];
+    const colKeys = this.rbCols(rb, rType), cols = colKeys.map(k => R.field(rType, k)).filter(Boolean);
+    const fmtN = n => Number(n).toLocaleString('en-IN', { maximumFractionDigits: 1 });
+    const fmtV = (f, v) => v == null || v === '' ? '—' : f.kind === 'num' ? fmtN(v) + (f.unit ? (f.unit === '%' ? '%' : ' ' + f.unit) : '') : String(v);
+    const rows = res ? res.rows : [], n = rows.length, sum = k => rows.reduce((a, r) => a + (Number(r[k]) || 0), 0), cnt = (k, v) => rows.filter(r => r[k] === v).length;
+    const summary = !res ? [] : ({
+      trip: [['Total records', n], ['Total distance', fmtN(sum('distance')) + ' km'], ['Business trips', cnt('type', 'Business')], ['Non-business trips', cnt('type', 'Non-Business')]],
+      vehicle: [['Total records', n], ['Total distance', fmtN(sum('distance')) + ' km'], ['Running', cnt('status', 'Running')], ['Idle / maintenance', cnt('status', 'Idle') + cnt('status', 'Maintenance')]],
+      driver: [['Total records', n], ['Total distance', fmtN(sum('distance')) + ' km'], ['Present days', fmtN(sum('present'))], ['Absent days', fmtN(sum('absent'))]],
+      attendance: [['Total records', n], ['Present days', fmtN(sum('present'))], ['Absent days', fmtN(sum('absent'))], ['Avg utilisation', n ? Math.round(sum('util') / n) + '%' : '—']],
+      gps: [['Total records', n], ['Tracking', cnt('gps', 'OK')], ['Weak signal', cnt('gps', 'Weak')], ['No fix', cnt('gps', 'Failed')]],
+      exception: [['Total records', n], ['High severity', cnt('severity', 'High')], ['Open', cnt('status', 'Open')], ['Resolved', cnt('status', 'Resolved')]]
+    }[rType]).map(([label, value], i) => ({ label, value, edge: ['var(--color-brand)', 'var(--kr-green-800)', 'var(--kr-saffron-500)', 'var(--kr-grey-300)'][i] }));
+    const stale = !!res && this.rbKey(spec) !== this.rbKey(res.spec);
+    const toggleType = e => { const v = e && e.target ? e.target.value : e; this.rbSet({ type: v }); };
+    return {
+      rbReady: true, rbMissing: false, rbGridCols: s.width < 1100 ? 'minmax(0,1fr)' : 'minmax(320px,380px) minmax(0,1fr)', rbSticky: s.width < 1100 ? 'static' : 'sticky',
+      rbTypeOptions: Object.keys(R.TYPES).map(k => ({ value: k, label: R.TYPES[k].label })), rbType: rb.type, setRbType: toggleType,
+      rbTypeHint: type !== rb.type ? `Your conditions are about ${TY.noun}. Generate switches this to ${TY.label}.` : `${TY.label} · ${R.dataset(type, T).length} ${TY.noun} available.`,
+      rbTypeSwitch: type !== rb.type, rbQuick: quick, rbQuickUsed: quickUsed ? quickUsed + ' applied' : 'Optional',
+      rbFrom: rb.quick.from, rbTo: rb.quick.to, setRbFrom: setQuick('from'), setRbTo: setQuick('to'), rbDateOff: !applies('date'), rbDateFade: applies('date') ? 1 : 0.55,
+      rbDateNote: applies('date') ? 'Filters by trip opened / exception raised date.' : `Not used by ${TY.label}.`,
+      rbConds: conds, rbExamples: this.RB_EXAMPLES.map(t => ({ t })),
+      addRbCond: () => this.setState(st => ({ rb: { ...st.rb, conds: [...st.rb.conds, { id: Math.max(0, ...st.rb.conds.map(c => c.id)) + 1, text: '', join: 'and' }] } })),
+      removeRbCond: e => { const id = Number(e.currentTarget.dataset.id); this.setState(st => { const left = st.rb.conds.filter(c => c.id !== id); return { rb: { ...st.rb, conds: left.length ? left : [{ id: id + 1, text: '', join: 'and' }] } }; }); },
+      setRbJoin: e => { const id = Number(e.currentTarget.dataset.id), j = e.currentTarget.dataset.j; this.setState(st => ({ rb: { ...st.rb, conds: st.rb.conds.map(c => c.id === id ? { ...c, join: j } : c) } })); },
+      useRbExample: e => { const text = e.currentTarget.dataset.t; this.setState(st => { const empty = st.rb.conds.find(c => !c.text.trim()); return { rb: { ...st.rb, conds: empty ? st.rb.conds.map(c => c === empty ? { ...c, text } : c) : [...st.rb.conds, { id: Math.max(0, ...st.rb.conds.map(c => c.id)) + 1, text, join: 'and' }] } }; }); },
+      rbGenerate: () => this.rbGenerate(), rbExport: () => this.rbExport(), rbReset: () => { clearTimeout(this._rbT); this.setState({ rb: this.rbBlank() }); },
+      rbNoResult: !res, rbHasResult: !!res && !rb.loading, rbLoading: rb.loading, rbEmpty: !res && !rb.loading,
+      rbTitle: res ? RT.label : '', rbMeta: res ? `${n} ${n === 1 ? 'record' : 'records'} · generated ${res.at.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}` : '',
+      rbSwitched: !!(res && res.switchedFrom), rbSwitchedText: res && res.switchedFrom ? `Switched from ${R.TYPES[res.switchedFrom].label} to ${RT.label} because your conditions are about ${RT.noun}.` : '',
+      rbStale: stale && !rb.loading, rbSummary: summary,
+      rbHead: cols.map(f => ({ label: f.label, align: f.kind === 'num' ? 'right' : 'left' })),
+      rbRows: rows.map(r => ({ cells: cols.map((f, i) => ({ v: fmtV(f, r[f.key]), align: f.kind === 'num' ? 'right' : 'left', weight: i ? 400 : 700, color: i ? 'var(--text-body)' : 'var(--text-heading)', font: /number|vehicle|trip/i.test(f.key) && i === 0 ? 'var(--font-mono)' : 'inherit' })) })),
+      rbNoRows: !!res && !n && !rb.loading,
+      rbColsLabel: `Choose columns · ${cols.length}`, rbColsOpen: rb.colsOpen, toggleRbCols: () => this.rbSet({ colsOpen: !rb.colsOpen }),
+      rbColOptions: RT.fields.map(f => { const on = colKeys.includes(f.key); return { k: f.key, label: f.label, on: on ? 'true' : 'false', tick: on ? '✓' : '', boxBg: on ? 'var(--color-brand)' : '#fff', boxBorder: on ? 'var(--color-brand)' : 'var(--border-strong)' }; }),
+      toggleRbCol: e => { const k = e.currentTarget.dataset.k, order = RT.fields.map(f => f.key), cur = this.rbCols(rb, rType); if (cur.includes(k) && cur.length === 1) { this.toast('warning', 'Keep one column', 'A report needs at least one column.'); return; } const next = order.filter(x => x === k ? !cur.includes(k) : cur.includes(x)); this.setState(st => ({ rb: { ...st.rb, cols: { ...st.rb.cols, [rType]: next } } })); },
+      rbColsDefault: () => this.setState(st => { const cols = { ...st.rb.cols }; delete cols[rType]; return { rb: { ...st.rb, cols } }; }),
+      rbTemplatesOpen: rb.templatesOpen, rbTemplatesLabel: rb.templatesOpen ? 'Hide' : 'Show', toggleRbTemplates: () => this.rbSet({ templatesOpen: !rb.templatesOpen })
+    };
+  }
   nav(route, extra = {}) {
     const showLoading = route === 'trips' && this.state.route !== 'trips';
     this.setState({ route, navOpen: false, globalQ: '', drawer: null, loading: showLoading, ...extra });
@@ -2527,10 +3015,14 @@ class Component extends DCLogic {
     const txt = (v, o = {}) => ({ v: v == null ? '—' : String(v), text: true, badge: false, color: o.strong ? 'var(--text-heading)' : 'var(--text-body)', weight: o.strong ? 600 : 400 });
     const branchOpts = T.branches.map(b => ({ value: b.id, label: b.name }));
     return {
-      branches: { title: 'Branch Master', singular: 'branch', plural: 'branches', addLabel: 'Add branch', searchPh: 'Search branch or state', data: T.branches, cols: [['Code', 'code'], ['Branch', 'name'], ['State', 'state'], ['Vehicles', 'vehicles'], ['Supervisors', 'supervisors'], ['Status', 'status']], cells: b => [txt(b.code, { strong: true }), txt(b.name, { strong: true }), txt(b.state), txt(b.vehicles), txt(b.supervisors), status(b.status)], fields: [['code', 'Branch code'], ['name', 'Branch name'], ['state', 'State'], ['status', 'Status', ['Active', 'Inactive']]] },
-      supervisors: { title: 'Supervisor Master', singular: 'supervisor', plural: 'supervisors', addLabel: 'Add supervisor', searchPh: 'Search name or phone', data: T.supervisors, cols: [['Name', 'name'], ['Phone', 'phone'], ['Branch', 'branch'], ['Clients handled', 'clients'], ['Last login', 'lastLogin'], ['Status', 'status']], cells: s => [txt(s.name, { strong: true }), txt(s.phone), txt(bn(s.branch)), txt(s.clients), txt(s.lastLogin), status(s.status)], fields: [['name', 'Full name'], ['phone', 'Mobile number'], ['branch', 'Branch', branchOpts], ['clients', 'Clients handled', null, 'Comma separated'], ['status', 'Status', ['Active', 'Suspended']]] },
-      vehicles: { title: 'Vehicle Master', singular: 'vehicle', plural: 'vehicles', addLabel: 'Add vehicle', searchPh: 'Search registration', data: T.vehicles, cols: [['Registration', 'number'], ['Type', 'type'], ['Branch', 'branch'], ['Odometer', 'odometer'], ['GPS', 'gps'], ['Status', 'status']], cells: v => [txt(v.number, { strong: true }), txt(v.type), txt(bn(v.branch)), txt(v.odometer.toLocaleString('en-IN') + ' km'), txt(v.gps), status(v.status === 'Idle' || v.status === 'Running' ? 'Active' : v.status)], fields: [['number', 'Registration number', null, 'TN 28 AQ 4521'], ['type', 'Vehicle type', ['Reefer container 20ft', 'Reefer trailer 32ft', 'Closed body 19ft', 'Closed body 24ft']], ['branch', 'Branch', branchOpts], ['odometer', 'Current odometer (km)'], ['status', 'Status', ['Idle', 'Maintenance', 'Inactive']]] },
-      drivers: { title: 'Driver Master', singular: 'driver', plural: 'drivers', addLabel: 'Add driver', searchPh: 'Search name or licence', data: [...this.state.drvReqs.map(r => ({ id: r.id, name: r.name, licence: r.licence, phone: this.fmtPhone(r.phone), branch: r.branch, type: 'New', status: 'Active', approval: r.status === 'Pending' ? 'Pending approval' : r.status })), ...T.drivers], approval: true, cols: [['Name', 'name'], ['Licence', 'licence'], ['Phone', 'phone'], ['Branch', 'branch'], ['Type', 'type'], ['Approval', 'approval'], ['Status', 'status']], cells: d => { const ap = this.state.approvals[d.id] || d.approval; return [txt(d.name, { strong: true }), txt(d.licence), txt(d.phone), txt(bn(d.branch)), txt(d.type), status(ap), status(ap === 'Approved' ? d.status : ap === 'Rejected' ? 'Inactive' : 'Pending')]; }, fields: [
+      branches: { title: 'Branch Master', singular: 'branch', plural: 'branches', addLabel: 'Add branch', searchPh: 'Search branch or state', data: this.mdata('branches', T.branches), cols: [['Code', 'code'], ['Branch', 'name'], ['State', 'state'], ['Vehicles', 'vehicles'], ['Supervisors', 'supervisors'], ['Status', 'status']], cells: b => [txt(b.code, { strong: true }), txt(b.name, { strong: true }), txt(b.state), txt(b.vehicles), txt(b.supervisors), status(b.status)], fields: [['code', 'Branch code'], ['name', 'Branch name'], ['state', 'State'], ['status', 'Status', ['Active', 'Inactive']]] },
+      supervisors: { title: 'Supervisor Master', singular: 'supervisor', plural: 'supervisors', addLabel: 'Add supervisor', searchPh: 'Search name or phone', data: this.mdata('supervisors', T.supervisors), cols: [['Name', 'name'], ['Phone', 'phone'], ['Branch', 'branch'], ['Clients handled', 'clients'], ['Last login', 'lastLogin'], ['Status', 'status']], cells: s => [txt(s.name, { strong: true }), txt(s.phone), txt(bn(s.branch)), txt(s.clients), txt(s.lastLogin), status(s.status)], fields: [['name', 'Full name'], ['phone', 'Mobile number'], ['branch', 'Branch', branchOpts], ['clients', 'Clients handled', null, 'Comma separated'], ['status', 'Status', ['Active', 'Suspended']]] },
+      vehicles: { title: 'Vehicle Master', singular: 'vehicle', plural: 'vehicles', addLabel: 'Add vehicle', searchPh: 'Search registration', data: this.mdata('vehicles', T.vehicles).map(v => ({ ...v, tank: this.state.vehTanks[v.id] || v.tank })), cols: [['Registration', 'number'], ['Type', 'type'], ['Branch', 'branch'], ['Odometer', 'odometer'], ['Tank', 'tank'], ['GPS', 'gps'], ['Status', 'status']], cells: v => [txt(v.number, { strong: true }), txt(v.type), txt(bn(v.branch)), txt(Number(v.odometer || 0).toLocaleString('en-IN') + ' km'), txt(v.tank ? Number(v.tank).toLocaleString('en-IN') + ' L' : '—'), txt(v.gps), status(v.status === 'Idle' || v.status === 'Running' ? 'Active' : v.status)], fields: [['number', 'Registration number', null, 'TN 28 AQ 4521'], ['type', 'Vehicle type', ['Reefer container 20ft', 'Reefer trailer 32ft', 'Closed body 19ft', 'Closed body 24ft']], ['branch', 'Branch', branchOpts], ['odometer', 'Current odometer (km)'], ['tank', 'Tank capacity', null, 'e.g. 400', { suffix: 'L', clean: 'litres', hint: 'Diesel tank size. Supervisors cannot enter a fill larger than this.' }],
+        ['clients', 'Clients served', 'checks', null, { options: this.mdata('clients', T.clients).map(c => ({ value: c.id, label: c.name })), hint: 'Supervisors see this vehicle when they pick one of these clients. Leave all unticked to allow any client.' }],
+        ['driver', 'Mapped driver', [{ value: '', label: 'No driver mapped' }, ...this.mdata('drivers', T.drivers).filter(d => (this.state.approvals[d.id] || d.approval) === 'Approved' && d.status !== 'Inactive').map(d => ({ value: d.id, label: `${d.name} · ${bn(d.branch)}` }))]],
+        ['status', 'Status', ['Idle', 'Running', 'Maintenance', 'Inactive']]],
+        validate: f => { const n = Number(f.tank); return { tank: !String(f.tank || '').trim() ? 'Enter the tank capacity.' : !(n >= 50 && n <= 1500) ? 'Enter a size between 50 and 1,500 L.' : undefined }; } },
+      drivers: { title: 'Driver Master', singular: 'driver', plural: 'drivers', addLabel: 'Add driver', searchPh: 'Search name or licence', data: this.mdata('drivers', [...this.state.drvReqs.map(r => ({ id: r.id, name: r.name, licence: r.licence, phone: this.fmtPhone(r.phone), branch: r.branch, type: 'New', status: 'Active', approval: r.status === 'Pending' ? 'Pending approval' : r.status })), ...T.drivers]), approval: true, cols: [['Name', 'name'], ['Licence', 'licence'], ['Phone', 'phone'], ['Branch', 'branch'], ['Type', 'type'], ['Approval', 'approval'], ['Status', 'status']], cells: d => { const ap = this.state.approvals[d.id] || d.approval; return [txt(d.name, { strong: true }), txt(d.licence), txt(d.phone), txt(bn(d.branch)), txt(d.type), status(ap), status(ap === 'Approved' ? d.status : ap === 'Rejected' ? 'Inactive' : 'Pending')]; }, fields: [
         ['s1', 'Driver details', 'section'],
         ['name', 'Driver name', null, 'Full name as on licence'],
         ['licence', 'Licence number', null, 'TN28 2019 0004521', { clean: 'licence' }],
@@ -2562,9 +3054,9 @@ class Component extends DCLogic {
           ifsc: (need || has(f.ifsc)) && !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(f.ifsc || '') ? 'Enter a valid IFSC, e.g. SBIN0001234.' : undefined,
           family: (need || has(f.family)) && dg(f.family).length !== 10 ? 'Enter a 10-digit family contact number.' : has(f.family) && dg(f.family) === dg(f.phone) ? 'Use a family member’s number, not the driver’s.' : undefined
         }; } },
-      clients: { title: 'Client Master', singular: 'client', plural: 'clients', addLabel: 'Add client', searchPh: 'Search client or GST', data: T.clients, cols: [['Client', 'name'], ['GSTIN', 'gst'], ['Branch', 'branch'], ['Customers', 'customers'], ['Contact', 'contact']], cells: c => [txt(c.name, { strong: true }), txt(c.gst), txt(bn(c.branch)), txt(c.customers), txt(c.contact)], fields: [['name', 'Client name'], ['gst', 'GSTIN'], ['branch', 'Branch', branchOpts], ['contact', 'Contact'], ['status', 'Status', ['Active', 'On hold']]] },
-      locations: { title: 'Loading Location Master', singular: 'loading location', plural: 'loading locations', addLabel: 'Add location', searchPh: 'Search location', data: T.locations, cols: [['Location', 'name'], ['Branch', 'branch'], ['Address', 'address'], ['Safe radius', 'radius'], ['Coordinates', 'lat']], cells: l => [txt(l.name, { strong: true }), txt(bn(l.branch)), txt(l.address), txt(l.radius + ' m'), txt(l.lat + ', ' + l.lng)], fields: [['name', 'Location name'], ['branch', 'Branch', branchOpts], ['address', 'Address'], ['radius', 'Safe radius (m)', null, '100'], ['lat', 'Latitude'], ['lng', 'Longitude'], ['status', 'Status', ['Active', 'Inactive']]] },
-      routes: { title: 'Route Master', singular: 'route', plural: 'routes', addLabel: 'Add route', searchPh: 'Search route', data: T.routes, cols: [['Route', 'name'], ['From', 'from'], ['To', 'to'], ['Fixed KM', 'km'], ['Duration', 'hours'], ['Toll', 'toll']], cells: r => [txt(r.name, { strong: true }), txt((T.L[r.from] || {}).name), txt(r.to), txt(r.km + ' km'), txt(r.hours + ' h'), txt(r.toll)], fields: [['from', 'Loading location', T.locations.map(l => ({ value: l.id, label: l.name }))], ['to', 'Destination'], ['km', 'Fixed distance (km)', null, 'Billing reference'], ['hours', 'Expected duration (h)'], ['toll', 'Toll estimate'], ['status', 'Status', ['Active', 'Under review']]] }
+      clients: { title: 'Client Master', singular: 'client', plural: 'clients', addLabel: 'Add client', searchPh: 'Search client or GST', data: this.mdata('clients', T.clients), cols: [['Client', 'name'], ['GSTIN', 'gst'], ['Branch', 'branch'], ['Customers', 'customers'], ['Contact', 'contact']], cells: c => [txt(c.name, { strong: true }), txt(c.gst), txt(bn(c.branch)), txt(c.customers), txt(c.contact)], fields: [['name', 'Client name'], ['gst', 'GSTIN'], ['branch', 'Branch', branchOpts], ['contact', 'Contact'], ['status', 'Status', ['Active', 'On hold']]] },
+      locations: { title: 'Loading Location Master', singular: 'loading location', plural: 'loading locations', addLabel: 'Add location', searchPh: 'Search location', data: this.mdata('locations', T.locations), cols: [['Location', 'name'], ['Branch', 'branch'], ['Address', 'address'], ['Safe radius', 'radius'], ['Coordinates', 'lat']], cells: l => [txt(l.name, { strong: true }), txt(bn(l.branch)), txt(l.address), txt(l.radius + ' m'), txt(l.lat + ', ' + l.lng)], fields: [['name', 'Location name'], ['branch', 'Branch', branchOpts], ['address', 'Address'], ['radius', 'Safe radius (m)', null, '100'], ['lat', 'Latitude'], ['lng', 'Longitude'], ['status', 'Status', ['Active', 'Inactive']]] },
+      routes: { title: 'Route Master', singular: 'route', plural: 'routes', addLabel: 'Add route', searchPh: 'Search route', data: this.mdata('routes', T.routes), cols: [['Route', 'name'], ['From', 'from'], ['To', 'to'], ['Fixed KM', 'km'], ['Duration', 'hours'], ['Toll', 'toll']], cells: r => [txt(r.name, { strong: true }), txt((T.L[r.from] || {}).name), txt(r.to), txt(r.km + ' km'), txt(r.hours + ' h'), txt(r.toll)], fields: [['from', 'Loading location', T.locations.map(l => ({ value: l.id, label: l.name }))], ['to', 'Destination'], ['km', 'Fixed distance (km)', null, 'Billing reference'], ['hours', 'Expected duration (h)'], ['toll', 'Toll estimate'], ['status', 'Status', ['Active', 'Under review']]] }
     };
   }
   renderVals() {
@@ -2731,16 +3223,18 @@ class Component extends DCLogic {
     if (d && d.isForm) {
       const errs = s.formError && d.validate ? d.validate(s.form) : {}; let sectionNo = 0;
       const dg = x => String(x || '').replace(/\D/g, '');
-      const clean = { phone: v => dg(v).slice(0, 10), account: v => dg(v).slice(0, 18), licence: v => v.toUpperCase().slice(0, 20), ifsc: v => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) };
+      const clean = { litres: v => dg(v).slice(0, 4), phone: v => dg(v).slice(0, 10), account: v => dg(v).slice(0, 18), licence: v => v.toUpperCase().slice(0, 20), ifsc: v => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11) };
       formFields = d.fields.map(([key, label, opts, hint, x = {}]) => {
-        const isSection = opts === 'section', isUpload = opts === 'upload', isArea = opts === 'textarea', isSelect = Array.isArray(opts);
+        const isSection = opts === 'section', isUpload = opts === 'upload', isArea = opts === 'textarea', isChecks = opts === 'checks', isSelect = Array.isArray(opts);
         const options = isSelect ? (typeof opts[0] === 'string' ? opts.map(o => ({ value: o, label: o })) : opts) : null;
         const raw = s.form[key], file = isUpload && raw && typeof raw === 'object' ? raw : null, max = x.max || 500;
         const error = errs[key] || (s.formError && !raw && (d.required || []).includes(key) ? 'Required' : undefined);
-        return { key, label, isSection, isUpload, isSelect, isArea, isText: !isSection && !isUpload && !isSelect && !isArea, sectionNo: isSection ? ++sectionNo : '',
+        const picked = isChecks && Array.isArray(raw) ? raw : [];
+        return { key, label, isSection, isUpload, isSelect, isArea, isChecks, isText: !isSection && !isUpload && !isSelect && !isArea && !isChecks, sectionNo: isSection ? ++sectionNo : '',
+          checks: isChecks ? (x.options || []).map(o => { const on = picked.includes(o.value); return { value: o.value, label: o.label, aria: on ? 'true' : 'false', tick: on ? '✓' : '', border: on ? 'var(--color-brand)' : 'var(--border-strong)', bg: on ? 'var(--color-brand-tint)' : '#fff', fg: 'var(--text-heading)', box: on ? 'var(--color-brand)' : 'var(--border-strong)', boxBg: on ? 'var(--color-brand)' : '#fff' }; }) : [],
           count: String(raw || '').length, countText: (x.optional ? 'Optional · ' : '') + String(raw || '').length + '/' + max, max,
-          areaBorder: error ? 'var(--status-danger)' : 'var(--border-strong)', options, value: raw == null || file ? '' : String(raw), placeholder: isUpload ? '' : hint || '', hint: x.hint || '', note: isUpload ? hint || '' : '',
-          prefix: x.prefix || undefined, inputMode: x.prefix || x.clean === 'account' ? 'numeric' : undefined, error, hasError: !!error,
+          areaBorder: error ? 'var(--status-danger)' : 'var(--border-strong)', options, value: raw == null || file || isChecks ? '' : String(raw), placeholder: isUpload ? '' : hint || '', hint: x.hint || '', note: isUpload ? hint || '' : '',
+          prefix: x.prefix || undefined, suffix: x.suffix || undefined, inputMode: x.prefix || x.clean === 'account' || x.clean === 'litres' ? 'numeric' : undefined, error, hasError: !!error,
           upEmpty: isUpload && !file, upSet: !!file, upName: file ? file.name : '', upSize: file ? file.size : '', upUrl: file && file.url || '', upNoUrl: !!file && !file.url, upBorder: error ? 'var(--status-danger)' : 'var(--border-strong)',
           set: e => { const v = e.target.value; this.setState(st => ({ form: { ...st.form, [key]: clean[x.clean] ? clean[x.clean](v) : v.slice(0, isArea ? max : undefined) } })); } };
       });
@@ -2810,20 +3304,74 @@ class Component extends DCLogic {
     const dashColors = { green: 'var(--color-brand)', red: 'var(--kr-red-600)', saffron: 'var(--kr-saffron-500)', grey: 'var(--kr-grey-300)' };
     const styleName = { bars: 'Horizontal bars', columns: 'Columns' };
     const cat = Object.fromEntries(Object.keys(dashCatalog).map(g => [g, Object.fromEntries(dashCatalog[g].map(w => [w.id, w]))]));
-    // build a configured widget from its metric; values always come from live data
-    const build = {
-      cards: it => { const w = cat.cards[it.src]; return { ...w, uid: it.uid, label: it.title || w.label, edge: dashColors[it.color] || w.edge }; },
-      charts: it => { const w = cat.charts[it.src]; return { ...shapeChart(w, it.style), uid: it.uid, title: it.title || w.title, styleLabel: styleName[it.style] || w.kindLabel, mini: miniOf(w) }; },
-      lists: it => { const w = cat.lists[it.src], n = Number(it.rows) || 5, items = w.items.slice(0, n); return { ...w, uid: it.uid, title: it.title || w.title, items, isEmpty: !items.length, rowsText: 'Up to ' + n + ' rows' }; }
+    // Sidebar modules and their table headings. Settings › Dashboard layout builds widgets from a module plus the headings picked.
+    const txtOf = v => v == null ? '' : String(v).trim() === '—' ? '' : String(v).trim();
+    const masterMod = (id, label) => { const m = M[id]; return { id, label, route: id, rows: m.data.filter(r => !s.deleted.includes(r.id)).map(r => { const cells = m.cells(r); return { _id: r.id, ...Object.fromEntries(m.cols.map(([h], i) => [h, cells[i] ? cells[i].v : ''])) }; }), cols: m.cols.map(([h]) => h) }; };
+    const mod = (id, label, route, heads, rows, kind) => ({ id, label, route, kind, cols: heads.map(h => h[0]), rows: rows.map(r => ({ _id: r.id, ...Object.fromEntries(heads.map(([h, fn]) => [h, fn(r)])) })) });
+    const dashModules = [
+      mod('trips', 'Trips', 'trips', [['Trip number', r => r.number], ['Branch', r => r.branchName], ['Vehicle', r => r.vehicleNumber], ['Driver', r => r.driverName], ['Client · unloading', r => r.clientName], ['Type', r => r.type], ['Opened', r => r.opened], ['Status', r => r.badge], ['Flags', r => r.flagText]], trips, 'trip'),
+      mod('exceptions', 'Exceptions', 'exceptions', [['Severity', r => r.severity], ['Type', r => r.type], ['Vehicle / trip', r => r.vehicleNumber], ['Detail', r => r.detail], ['Branch', r => r.branchName], ['Raised', r => r.raised], ['Assignee', r => r.assignee], ['Status', r => r.status]], exceptions, 'exc'),
+      mod('fleet', 'Fleet & GPS', 'fleet', [['Vehicle', r => r.number], ['Type', r => r.type], ['Branch', r => r.branchName], ['Driver', r => r.driverName], ['Status', r => r.status], ['GPS', r => r.gps], ['Odometer', r => r.odometer], ['Last seen', r => r.lastSeen], ['Route', r => r.route]], fleetAll),
+      mod('distance', 'Distance variation', 'distance', [['Trip', r => r.number], ['Vehicle', r => r.vehicleNumber], ['Route', r => r.route], ['Branch', r => r.branchName], ['Fixed KM', r => r.fixedKm], ['GPS KM', r => r.gpsKm], ['Odometer KM', r => r.odoKm], ['Variance', r => r.pctText], ['Review', r => r.review]], distAll),
+      mod('attendance', 'Attendance', 'attendance', [['Driver', r => r.name], ['Branch', r => (T.B[r.branch] || {}).name], ['Type', r => r.type], ['Present', r => r.present], ['Absent', r => r.absent], ['Utilisation', r => r.util], ['Status', r => r.status]], T.drivers.filter(d => d.approval === 'Approved')),
+      masterMod('branches', 'Branches'), masterMod('supervisors', 'Supervisors'), masterMod('vehicles', 'Vehicles'), masterMod('drivers', 'Drivers'), masterMod('clients', 'Clients'), masterMod('locations', 'Loading locations'), masterMod('routes', 'Routes'),
+      mod('analytics', 'Analytics', 'analytics', [['Area', r => r.area], ['KPI', r => r.kpi], ['Value', r => r.value], ['Note', r => r.note]], anTabs.flatMap(tb => anDefs[tb.value].kpis.map(([kpi, value, note], i) => ({ id: tb.value + i, area: tb.label, kpi, value, note })))),
+      mod('reports', 'Reports', 'reports', [['Report', r => r.name], ['Description', r => r.desc], ['Last run', r => r.last], ['Rows', r => r.rows]], reports),
+      mod('deviceApprovals', 'Device approvals', 'deviceApprovals', [['Mobile number', r => '+91 ' + this.fmtPhone(r.phone)], ['IMEI', r => this.fmtImei(r.imei)], ['Device', r => r.device || 'Android phone'], ['Branch', r => r.branch], ['Requested', r => r.requestedAt], ['Status', r => r.status]], s.devReqs),
+      mod('users', 'Users & roles', 'users', [['Name', r => r.name], ['Email', r => r.email], ['Role', r => r.role], ['Branch scope', r => r.branch], ['Status', r => r.status], ['Last active', r => r.last]], T.users)
+    ];
+    const modById = Object.fromEntries(dashModules.map(m => [m.id, m]));
+    // What one heading says across a module's records: numbers are totalled, repeated values are counted, unique values are tallied
+    const numOf = v => { if (typeof v === 'number') return v; const m = /^\s*₹?\s*(-?[\d,]+(?:\.\d+)?)\s*(km|%|h|m|min|l|days?)?\s*$/i.exec(txtOf(v)); return m ? parseFloat(m[1].replace(/,/g, '')) : null; };
+    const unitOf = vals => { const m = vals.map(v => /(km|%|h|min|days?)\s*$/i.exec(txtOf(v))).find(Boolean); return m ? m[1] : ''; };
+    const fmtN = n => Number.isInteger(n) ? n.toLocaleString('en-IN') : n.toLocaleString('en-IN', { maximumFractionDigits: 1 });
+    const headingStat = (m, h) => {
+      const vals = m.rows.map(r => r[h]).filter(v => txtOf(v) !== ''), nums = vals.map(numOf), counts = {};
+      vals.forEach(v => { const k = txtOf(v); counts[k] = (counts[k] || 0) + 1; });
+      const groups = Object.entries(counts).sort((x, y) => y[1] - x[1]), distinct = groups.length;
+      if (vals.length && nums.every(n => n != null)) {
+        const u = unitOf(vals), sfx = u ? (u === '%' ? '%' : ' ' + u) : '', total = nums.reduce((x, y) => x + y, 0), avg = total / nums.length, max = Math.max(...nums);
+        return { kind: 'number', text: (u === '%' ? '' : 'Total ' + fmtN(total) + sfx + ' · ') + 'avg ' + fmtN(avg) + sfx + ' · max ' + fmtN(max) + sfx, nums: m.rows.map(r => [r, numOf(r[h])]).filter(([, n]) => n != null), sfx };
+      }
+      if (!vals.length) return { kind: 'empty', text: 'No values yet', groups: [] };
+      if (distinct <= 8 && distinct < vals.length) return { kind: 'category', text: groups.slice(0, 3).map(([k, n]) => k + ' ' + n).join(' · ') + (distinct > 3 ? ' · +' + (distinct - 3) + ' more' : ''), groups };
+      return { kind: 'text', text: vals.length + ' filled · ' + distinct + ' unique', groups };
     };
-    const dashCfg = s.dashCfg || this.dashDefault();
+    const palette = ['var(--color-brand)', 'var(--kr-saffron-500)', 'var(--kr-red-600)', 'var(--kr-green-100)', 'var(--kr-grey-500)', '#2F7DB5'];
+    const buildCustom = {
+      cards: it => { const m = modById[it.module]; const fields = it.fields.filter(h => m.cols.includes(h));
+        return { uid: it.uid, label: it.title || m.label, value: m.rows.length, sub: m.rows.length === 1 ? 'record in ' + m.label : 'records in ' + m.label, subColor: 'var(--text-muted)', edge: 'var(--color-brand)', route: m.route,
+          stats: fields.map(h => ({ h, text: headingStat(m, h).text })), hasStats: !!fields.length }; },
+      charts: it => { const m = modById[it.module]; const fields = it.fields.filter(h => m.cols.includes(h)), keyCol = m.cols[0];
+        const groups = fields.map(h => { const st = headingStat(m, h);
+          if (st.kind === 'number') { const top = [...st.nums].sort((x, y) => y[1] - x[1]).slice(0, 6), mx = Math.max(1, ...top.map(x => x[1])); return { h, sub: 'Highest by ' + h.toLowerCase(), note: '', hasNote: false, rows: hbar(top.map(([r, n]) => [txtOf(r[keyCol]) || '—', [[n, 'var(--color-brand)']], fmtN(n) + st.sfx]), mx) }; }
+          if (st.kind === 'category') { const mx = Math.max(1, ...st.groups.map(g => g[1])); return { h, sub: 'Records per value', note: '', hasNote: false, rows: hbar(st.groups.slice(0, 6).map(([k, n], i) => [k, [[n, palette[i % palette.length]]], n]), mx) }; }
+          return { h, sub: '', note: st.kind === 'empty' ? 'No values yet.' : 'Every record has its own value (' + st.text + '), so there is nothing to chart.', hasNote: true, rows: [] }; });
+        const first = groups.find(g => g.rows.length);
+        return { uid: it.uid, title: it.title || m.label, meta: m.rows.length + ' records', route: m.route, isGroups: true, isHbar: false, isColumn: false, isStat: false, hasLegend: false, hasNote: false, legend: [], rows: [], bars: [], stats: [], groups,
+          styleLabel: m.label + ' · ' + fields.length + (fields.length === 1 ? ' heading' : ' headings'), desc: fields.join(', '), mini: first ? first.rows.slice(0, 10).map(r => ({ h: Math.max(8, parseFloat(r.segs[0].w)) + '%' })) : [] }; },
+      lists: it => { const m = modById[it.module]; const fields = it.fields.filter(h => m.cols.includes(h)), shown = m.rows.slice(0, 8);
+        return { uid: it.uid, title: it.title || m.label, linkLabel: 'Open ' + m.label + ' →', route: m.route, isTable: true, items: [], empty: 'No records in ' + m.label + ' yet.', isEmpty: !m.rows.length,
+          cols: fields, tRows: shown.map(r => ({ kind: m.kind || 'route', id: r._id, route: m.route, cells: fields.map((h, i) => ({ v: txtOf(r[h]) || '—', weight: i ? 400 : 700, color: i ? 'var(--text-body)' : 'var(--text-heading)' })) })),
+          rowsText: m.label + ' · ' + (m.rows.length > 8 ? 'first 8 of ' + m.rows.length : m.rows.length) + ' rows', desc: fields.join(', '),
+          previewItems: shown.slice(0, 2).map(r => ({ dot: 'var(--color-brand)', title: fields.slice(0, 2).map(h => txtOf(r[h]) || '—').join(' · ') })) }; }
+    };
+    // build a widget: ready-made metrics (the defaults) or one made from a module and its headings
+    const build = {
+      cards: it => { if (it.module) return buildCustom.cards(it); const w = cat.cards[it.src]; return { ...w, uid: it.uid, label: it.title || w.label, edge: dashColors[it.color] || w.edge, stats: [], hasStats: false }; },
+      charts: it => { if (it.module) return buildCustom.charts(it); const w = cat.charts[it.src]; return { ...shapeChart(w, it.style), uid: it.uid, title: it.title || w.title, styleLabel: styleName[it.style] || w.kindLabel, mini: miniOf(w), isGroups: false, groups: [] }; },
+      lists: it => { if (it.module) return buildCustom.lists(it); const w = cat.lists[it.src], n = Number(it.rows) || 5, items = w.items.slice(0, n); return { ...w, uid: it.uid, title: it.title || w.title, items, isEmpty: !items.length, rowsText: 'Up to ' + n + ' rows', isTable: false, cols: [], tRows: [] }; }
+    };
+    const okItem = it => it.module ? !!modById[it.module] : !!cat.cards[it.src] || !!cat.charts[it.src] || !!cat.lists[it.src];
+    const dashCfg0 = s.dashCfg || this.dashDefault(), dashCfg = Object.fromEntries(Object.keys(dashCfg0).map(g => [g, dashCfg0[g].filter(okItem)]));
     const dashCards = dashCfg.cards.map(build.cards), dashCharts = dashCfg.charts.map(build.charts), dashLists = dashCfg.lists.map(build.lists);
     const dt = s.dashTab, df = s.dashForm, dtItems = dashCfg[dt];
     const dashNoun = { cards: 'card', charts: 'chart', lists: 'list' }[dt];
-    const srcOptions = dashCatalog[dt].filter(w => !dtItems.some(i => i.src === w.id)).map(w => ({ value: w.id, label: w.title }));
+    const fm = modById[df.module] || null;
     // live preview in the form: what the widget will show once added
-    const formItem = srcOptions.some(o => o.value === df.src) ? build[dt](this.dashItem(dt, df.src, df)) : null;
+    const formItem = fm && df.fields.length ? build[dt]({ uid: 'preview', module: df.module, title: df.title.trim(), fields: fm.cols.filter(h => df.fields.includes(h)) }) : null;
     return {
+      ...this.rbVals(),
       isLogin, isApp: !isLogin, is, nav, navTo: e => this.nav(e.currentTarget.dataset.route), pageTitle, crumb,
       loginError: s.loginState === 'error', loginLoading: s.loginState === 'loading', loginIdle: s.loginState !== 'loading',
       doLogin: () => { this.setState({ loginState: 'loading' }); setTimeout(() => this.setState({ loginState: 'idle', route: 'dashboard' }), 1000); }, loginFail: () => this.setState({ loginState: 'error' }), logout: () => this.setState({ route: 'login', loginState: 'idle' }),
@@ -2839,26 +3387,30 @@ class Component extends DCLogic {
       openDashItem: e => { const { kind, id, route } = e.currentTarget.dataset; if (kind === 'exc') openExcById(id); else if (kind === 'trip' && id) this.nav('trip', { selectedTrip: id }); else if (kind === 'drv') { const q = drvQueue.find(z => z.id === id); if (q) q.review(); } else if (route) this.nav(route); },
       // settings › dashboard layout — add with the form, remove or reorder on the right; each change goes straight to the dashboard
       dashTabs: [['cards', 'Card view'], ['charts', 'Chart view'], ['lists', 'List view']].map(([value, label]) => ({ value, label })), dashTab: dt,
-      setDashTab: v => this.setState({ dashTab: v, dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' }),
+      setDashTab: v => this.setState({ dashTab: v, dashFormErr: '' }),
       dashIsCards: dt === 'cards', dashIsCharts: dt === 'charts', dashIsLists: dt === 'lists', dashNoun,
       dashAddTitle: 'Add a ' + dashNoun,
-      dashMetricLabel: { cards: 'Metric', charts: 'Chart data', lists: 'List data' }[dt],
-      dashForm: df, setDashForm: this.bind('dashForm', ['src', 'title', 'color', 'style', 'rows']),
-      dashSrcOptions: srcOptions, dashCanAdd: !!srcOptions.length, dashAllAdded: !srcOptions.length, dashFormErr: s.dashFormErr, hasDashFormErr: !!s.dashFormErr,
-      dashTitlePh: formItem ? (formItem.label || formItem.title) : 'Uses the metric name',
-      dashColorOptions: [{ value: '', label: 'Match the metric' }, { value: 'green', label: 'Green' }, { value: 'red', label: 'Red' }, { value: 'saffron', label: 'Saffron' }, { value: 'grey', label: 'Grey' }],
-      dashStyleOptions: [{ value: '', label: formItem && dt === 'charts' ? 'Default · ' + cat.charts[df.src].kindLabel : 'Default' }, { value: 'bars', label: 'Horizontal bars' }, { value: 'columns', label: 'Columns' }],
-      dashRowOptions: ['3', '5', '10'].map(v => ({ value: v, label: v + ' rows' })),
-      dashPreview: formItem ? [{ ...formItem, edgeTop: formItem.edge || 'var(--color-brand)', previewItems: (formItem.items || []).slice(0, 3) }] : [], dashNoPreview: !formItem,
+      dashForm: df, dashModuleOptions: dashModules.map(m => ({ value: m.id, label: m.label })),
+      setDashModule: e => { const v = e && e.target ? e.target.value : e; this.setState(st => ({ dashForm: { ...st.dashForm, module: v, fields: [] }, dashFormErr: '' })); },
+      setDashTitle: e => { const v = e.target.value.slice(0, 60); this.setState(st => ({ dashForm: { ...st.dashForm, title: v } })); },
+      dashHasModule: !!fm, dashNoModule: !fm, dashFormErr: s.dashFormErr, hasDashFormErr: !!s.dashFormErr,
+      dashTitlePh: fm ? fm.label : 'e.g. Trips this week',
+      dashHeadCount: fm ? df.fields.length + ' of ' + fm.cols.length + ' selected' : '',
+      dashHeads: fm ? fm.cols.map(h => { const on = df.fields.includes(h); return { h, on: on ? 'true' : 'false', bg: on ? 'var(--color-brand)' : '#fff', fg: on ? '#fff' : 'var(--text-heading)', border: on ? 'var(--color-brand)' : 'var(--border-strong)', tick: on ? '✓' : '', tickGap: on ? '6px' : '0' }; }) : [],
+      toggleDashHead: e => { const h = e.currentTarget.dataset.h; this.setState(st => { const f = st.dashForm.fields; return { dashForm: { ...st.dashForm, fields: f.includes(h) ? f.filter(x => x !== h) : [...f, h] }, dashFormErr: '' }; }); },
+      dashHeadsAll: () => fm && this.setState(st => ({ dashForm: { ...st.dashForm, fields: [...fm.cols] }, dashFormErr: '' })), dashHeadsNone: () => this.setState(st => ({ dashForm: { ...st.dashForm, fields: [] } })),
+      dashPreview: formItem ? [{ ...formItem, name: formItem.label || formItem.title, edgeTop: formItem.edge || 'var(--color-brand)', previewItems: formItem.previewItems || (formItem.items || []).slice(0, 2) }] : [], dashNoPreview: !formItem,
+      dashPreviewHint: !fm ? 'Choose a module and its headings to see the live values.' : 'Select at least one heading to see the live values.',
       addDashItem: () => {
-        if (!df.src) { this.setState({ dashFormErr: 'Choose what this ' + dashNoun + ' should show.' }); return; }
-        const item = this.dashItem(dt, df.src, { ...df, title: df.title.trim() }), name = item.title || cat[dt][df.src].title;
+        if (!fm) { this.setState({ dashFormErr: 'Choose a module.' }); return; }
+        if (!df.fields.length) { this.setState({ dashFormErr: 'Select at least one heading from ' + fm.label + '.' }); return; }
+        const item = { uid: fm.id + '-' + Math.random().toString(36).slice(2, 7), module: fm.id, title: df.title.trim(), fields: fm.cols.filter(h => df.fields.includes(h)) };
         this.saveDash({ ...dashCfg, [dt]: [...dtItems, item] }); this.setState({ dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' });
-        this.toast('success', 'Added to dashboard', name + ' · values fill in automatically.');
+        this.toast('success', 'Added to dashboard', (item.title || fm.label) + ' · ' + item.fields.length + (item.fields.length === 1 ? ' heading' : ' headings') + ' from ' + fm.label + '.');
       },
-      dashOnBoard: dtItems.map((it, i) => { const w = build[dt](it); return { ...w, name: w.label || w.title, edgeTop: w.edge || 'var(--color-brand)', previewItems: (w.items || []).slice(0, 2), upVis: i ? 'visible' : 'hidden', downVis: i < dtItems.length - 1 ? 'visible' : 'hidden' }; }),
+      dashOnBoard: dtItems.map((it, i) => { const w = build[dt](it); return { ...w, name: w.label || w.title, edgeTop: w.edge || 'var(--color-brand)', previewItems: w.previewItems || (w.items || []).slice(0, 2), upVis: i ? 'visible' : 'hidden', downVis: i < dtItems.length - 1 ? 'visible' : 'hidden' }; }),
       dashBoardEmpty: !dtItems.length,
-      removeDashItem: e => { const uid = e.currentTarget.dataset.uid, it = dtItems.find(x => x.uid === uid); this.saveDash({ ...dashCfg, [dt]: dtItems.filter(x => x.uid !== uid) }); if (it) this.toast('info', 'Removed from dashboard', it.title || cat[dt][it.src].title); },
+      removeDashItem: e => { const uid = e.currentTarget.dataset.uid, it = dtItems.find(x => x.uid === uid); this.saveDash({ ...dashCfg, [dt]: dtItems.filter(x => x.uid !== uid) }); if (it) this.toast('info', 'Removed from dashboard', it.title || (it.module ? modById[it.module].label : cat[dt][it.src].title)); },
       moveDashItem: e => { const { uid, dir } = e.currentTarget.dataset, i = dtItems.findIndex(x => x.uid === uid), j = i + Number(dir); if (i < 0 || j < 0 || j >= dtItems.length) return; const next = [...dtItems]; [next[i], next[j]] = [next[j], next[i]]; this.saveDash({ ...dashCfg, [dt]: next }); },
       dashRestoreAll: () => { this.saveDash(this.dashDefault()); this.setState({ dashForm: { ...this.DASH_BLANK_FORM }, dashFormErr: '' }); this.toast('info', 'Dashboard restored', 'Every metric is back on the dashboard.'); },
       viewDashboard: () => this.nav('dashboard'),
@@ -2922,9 +3474,11 @@ class Component extends DCLogic {
         const kb = file.size / 1024, size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.max(1, Math.round(kb)) + ' KB';
         this.shrinkImage(file).then(url => this.setState(st => ({ form: { ...st.form, [key]: { name: file.name, size, url } } }))); },
       clearFormUpload: e => { const key = e.currentTarget.dataset.k; this.setState(st => ({ form: { ...st.form, [key]: null } })); },
+      toggleFormCheck: e => { const { key, v } = e.currentTarget.dataset; this.setState(st => { const cur = Array.isArray(st.form[key]) ? st.form[key] : []; return { form: { ...st.form, [key]: cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v] } }; }); },
       saveForm: () => { const bad = d.validate ? Object.values(d.validate(s.form)).filter(Boolean).length : 0; if (bad) { this.setState({ formError: bad + (bad === 1 ? ' field' : ' fields') + ' to fix. Check the highlighted fields below.' }); return; }
         const missing = (d.required || []).filter(k => !String(s.form[k] || '').trim()); if (missing.length) { this.setState({ formError: missing.length + ' required field' + (missing.length > 1 ? 's are' : ' is') + ' missing.' }); return; }
         if (d.isNotice) { const to = s.form.branch === 'all' ? 'All branches' : ((T.B[s.form.branch] || {}).name || '') + ' supervisors'; this.pushNotice({ kind: 'message', branch: s.form.branch, priority: s.form.priority || 'Normal', title: s.form.title.trim(), body: s.form.body.trim(), rows: [['Sent to', to], ['Priority', s.form.priority || 'Normal'], ['Sent by', 'Head Office Admin']] }); this.setState({ drawer: null }); this.toast('success', 'Notice sent', `${s.form.title.trim()} · ${to}`); return; }
+        if (is.master && M[s.route]) { const isNew = !s.form.id, rec = this.normalizeRecord(s.route, s.form, isNew); this.saveMaster(s.route, rec, isNew); if (s.route === 'vehicles' && rec.tank) this.setVehTank(rec.id, rec.tank); }
         this.setState({ drawer: null }); this.toast('success', d.saveLabel.replace(/^Create|^Save|^Send/, m => ({ Create: 'Created', Save: 'Saved', Send: 'Sent' })[m]), d.title + ' · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })); },
       confirmOpen: !!s.confirm, confirm, confirmActions, cancelConfirm: () => this.setState({ confirm: null }),
       toast: s.toast, hideToast: () => this.setState({ toast: null }),

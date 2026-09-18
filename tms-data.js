@@ -17,16 +17,16 @@ const supervisors=[
  {id:'S06',name:'A. Deshmukh',phone:'98200 65430',branch:'B05',clients:'INOX Air Products',clientIds:['C01'],status:'Active',lastLogin:'Today 06:40'}
 ];
 const vehicles=[
- {id:'V01',number:'TN 28 AQ 4521',type:'Reefer container 20ft',branch:'B01',clients:['C01','C02'],driver:'D01',odometer:125450,status:'Running',gps:'OK',lastSeen:'2 min ago',route:'Sriperumbudur \u2192 Hyderabad'},
- {id:'V02',number:'TN 28 BC 1180',type:'Reefer trailer 32ft',branch:'B01',clients:['C01','C02','C05'],driver:'D02',odometer:98210,status:'Idle',gps:'OK',lastSeen:'6 min ago',route:'Parked at Sriperumbudur hub'},
- {id:'V03',number:'TN 34 CV 0921',type:'Reefer container 20ft',branch:'B02',clients:['C03'],driver:'D03',odometer:210330,status:'Running',gps:'Weak',lastSeen:'18 min ago',route:'Namakkal \u2192 Bengaluru'},
- {id:'V04',number:'TN 28 AR 7712',type:'Closed body 19ft',branch:'B01',clients:['C02','C05'],driver:null,odometer:66120,status:'Idle',gps:'OK',lastSeen:'1 min ago',route:'Parked at Ambattur yard'},
- {id:'V05',number:'TS 09 UB 3344',type:'Reefer container 20ft',branch:'B03',clients:['C04'],driver:'D05',odometer:154880,status:'Running',gps:'Failed',lastSeen:'2 h 14 min ago',route:'Hyderabad \u2192 Mumbai'},
- {id:'V06',number:'TN 34 CQ 5566',type:'Reefer trailer 32ft',branch:'B02',clients:['C03'],driver:'D04',odometer:187002,status:'Maintenance',gps:'OK',lastSeen:'40 min ago',route:'Service bay, Namakkal'},
- {id:'V07',number:'KA 01 AJ 9087',type:'Closed body 24ft',branch:'B04',clients:['C06'],driver:'D06',odometer:44510,status:'Running',gps:'OK',lastSeen:'1 min ago',route:'Bengaluru \u2192 Chennai'},
- {id:'V08',number:'TN 28 BD 2209',type:'Reefer container 20ft',branch:'B01',clients:['C01','C02'],driver:'D07',odometer:132760,status:'Idle',gps:'OK',lastSeen:'3 min ago',route:'Parked at Sriperumbudur hub'},
- {id:'V09',number:'MH 04 GH 6612',type:'Reefer trailer 32ft',branch:'B05',clients:['C01'],driver:'D08',odometer:201115,status:'Running',gps:'OK',lastSeen:'just now',route:'Mumbai \u2192 Pune'},
- {id:'V10',number:'TN 28 AQ 8890',type:'Closed body 19ft',branch:'B01',clients:['C02','C05'],driver:'D09',odometer:75300,status:'Idle',gps:'OK',lastSeen:'9 min ago',route:'Parked at Ambattur yard'}
+ {id:'V01',number:'TN 28 AQ 4521',type:'Reefer container 20ft',branch:'B01',clients:['C01','C02'],driver:'D01',tank:300,odometer:125450,status:'Running',gps:'OK',lastSeen:'2 min ago',route:'Sriperumbudur \u2192 Hyderabad'},
+ {id:'V02',number:'TN 28 BC 1180',type:'Reefer trailer 32ft',branch:'B01',clients:['C01','C02','C05'],driver:'D02',tank:400,odometer:98210,status:'Idle',gps:'OK',lastSeen:'6 min ago',route:'Parked at Sriperumbudur hub'},
+ {id:'V03',number:'TN 34 CV 0921',type:'Reefer container 20ft',branch:'B02',clients:['C03'],driver:'D03',tank:300,odometer:210330,status:'Running',gps:'Weak',lastSeen:'18 min ago',route:'Namakkal \u2192 Bengaluru'},
+ {id:'V04',number:'TN 28 AR 7712',type:'Closed body 19ft',branch:'B01',clients:['C02','C05'],driver:null,tank:200,odometer:66120,status:'Idle',gps:'OK',lastSeen:'1 min ago',route:'Parked at Ambattur yard'},
+ {id:'V05',number:'TS 09 UB 3344',type:'Reefer container 20ft',branch:'B03',clients:['C04'],driver:'D05',tank:300,odometer:154880,status:'Running',gps:'Failed',lastSeen:'2 h 14 min ago',route:'Hyderabad \u2192 Mumbai'},
+ {id:'V06',number:'TN 34 CQ 5566',type:'Reefer trailer 32ft',branch:'B02',clients:['C03'],driver:'D04',tank:400,odometer:187002,status:'Maintenance',gps:'OK',lastSeen:'40 min ago',route:'Service bay, Namakkal'},
+ {id:'V07',number:'KA 01 AJ 9087',type:'Closed body 24ft',branch:'B04',clients:['C06'],driver:'D06',tank:250,odometer:44510,status:'Running',gps:'OK',lastSeen:'1 min ago',route:'Bengaluru \u2192 Chennai'},
+ {id:'V08',number:'TN 28 BD 2209',type:'Reefer container 20ft',branch:'B01',clients:['C01','C02'],driver:'D07',tank:300,odometer:132760,status:'Idle',gps:'OK',lastSeen:'3 min ago',route:'Parked at Sriperumbudur hub'},
+ {id:'V09',number:'MH 04 GH 6612',type:'Reefer trailer 32ft',branch:'B05',clients:['C01'],driver:'D08',tank:400,odometer:201115,status:'Running',gps:'OK',lastSeen:'just now',route:'Mumbai \u2192 Pune'},
+ {id:'V10',number:'TN 28 AQ 8890',type:'Closed body 19ft',branch:'B01',clients:['C02','C05'],driver:'D09',tank:200,odometer:75300,status:'Idle',gps:'OK',lastSeen:'9 min ago',route:'Parked at Ambattur yard'}
 ];
 const drivers=[
  {id:'D01',name:'Murugan S.',licence:'TN2820190004521',phone:'90031 22110',branch:'B01',type:'Regular',status:'Active',approval:'Approved',present:24,absent:2,util:'88%'},
