@@ -25,6 +25,9 @@
     :root{
       --st-enroute-bg:#E2EEF7;--st-enroute-fg:#1F5F8B;--st-enroute-edge:#2F7DB5;
       --st-long-bg:var(--kr-saffron-100);--st-long-fg:#7A4300;--st-long-edge:var(--kr-saffron-500);
+      --st-loading-bg:#DDF3EF;--st-loading-fg:#0B6B5C;--st-loading-edge:#14A08A;
+      --st-unloading-bg:#E9E7FB;--st-unloading-fg:#3F3897;--st-unloading-edge:#5B52D4;
+      --st-delayed-bg:#FDE6DC;--st-delayed-fg:#9A3412;--st-delayed-edge:#E3571B;
       --st-gps-bg:var(--kr-red-100);--st-gps-fg:var(--kr-red-800);--st-gps-edge:var(--kr-red-600);
       --st-closed-bg:var(--kr-green-100);--st-closed-fg:var(--kr-green-800);--st-closed-edge:var(--kr-green-600);
       --st-flagged-bg:#F0E6F8;--st-flagged-fg:#652A8C;--st-flagged-edge:#8E4DBA;
@@ -90,7 +93,6 @@
             <div style="display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid var(--border-default);font-size:14px"><span style="color:var(--text-muted)">Mobile number</span><span style="font-weight:700;color:var(--text-heading)">+91 {{ obPhoneText }}</span></div>
             <div style="display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-top:1px solid var(--border-default);font-size:14px"><span style="color:var(--text-muted)">Requested</span><span style="font-weight:700;color:var(--text-heading)">{{ obRequestedAt }}</span></div>
           </div>
-          <a href="TMS Admin Portal.dc.html#device-approvals" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:600">Prototype: open the Admin Portal to approve &rarr;</a>
         </sc-if>
         <div style="margin-top:auto;padding-top:28px;display:flex;flex-direction:column;gap:8px">
           <sc-if value="{{ obSending }}" hint-placeholder-val="{{ false }}">
@@ -997,7 +999,7 @@
       <!-- ATTENDANCE · MARK BY VEHICLE -->
       <sc-if value="{{ is.attMark }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1;display:flex;flex-direction:column">
-          <div role="tablist" aria-label="Attendance" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 8px;background:#fff;border-bottom:1px solid var(--border-default)">
+          <div role="tablist" aria-label="Attendance" style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);padding:0 8px;background:#fff;border-bottom:1px solid var(--border-default)">
             <sc-for list="{{ attTabs }}" as="tb" hint-placeholder-count="2">
               <button role="tab" aria-selected="{{ tb.selected }}" data-tab="{{ tb.id }}" onClick="{{ setAttTab }}" style="all:unset;cursor:pointer;box-sizing:border-box;display:flex;align-items:center;justify-content:center;height:50px;padding:0 6px;text-align:center;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:{{ tb.color }};border-bottom:3px solid {{ tb.bar }};margin-bottom:-1px;transition:color var(--dur-fast)" style-hover="color:var(--text-brand)">{{ tb.label }}</button>
             </sc-for>
@@ -1019,7 +1021,7 @@
             <div>
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
                 <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Present today &middot; {{ amRowCount }}</span>
-                <button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand)">Month view &rarr;</button>
+                <sc-if value="{{ showAttMonth }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand)">Month view &rarr;</button></sc-if>
               </div>
               <div style="border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden">
                 <table style="width:100%;border-collapse:collapse;font-size:13px">
@@ -1061,7 +1063,7 @@
               </sc-if>
               <div style="display:flex;justify-content:space-between;align-items:baseline">
                 <span style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted)">Saved attendance &middot; {{ savedDayCount }} days</span>
-                <button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand)">Month view &rarr;</button>
+                <sc-if value="{{ showAttMonth }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand)">Month view &rarr;</button></sc-if>
               </div>
               <sc-for list="{{ savedDays }}" as="sd" hint-placeholder-count="3">
                 <div style="border:1px solid var(--border-default);border-left:4px solid {{ sd.edge }};border-radius:var(--radius-lg);overflow:hidden;background:#fff">
@@ -1103,7 +1105,7 @@
           <div style="padding:16px;display:flex;flex-direction:column;gap:18px">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <div><div style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-heading)">14 September</div><div style="font-size:13px;color:var(--text-muted)">{{ attendanceMarked }} of {{ attendanceTotal }} drivers marked</div></div>
-              <button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand);padding:10px 0">Month view &rarr;</button>
+              <sc-if value="{{ showAttMonth }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goAttMonth }}" style="all:unset;cursor:pointer;font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-brand);padding:10px 0">Month view &rarr;</button></sc-if>
             </div>
             <div style="height:6px;background:var(--kr-grey-100);border-radius:3px;overflow:hidden"><div style="height:100%;width:{{ attendancePct }};background:var(--color-brand);transition:width var(--dur-base) var(--ease-out)"></div></div>
             <div>
@@ -1477,13 +1479,13 @@ class Component extends DCLogic {
   active() { return this.allTrips().filter(t => t.branch === this.BR && t.status === 'Enroute' && !this.state.closedIds.includes(t.id)); }
   // Badge colours per status label → [background, text, edge], from the --st-* palette in <helmet>.
   statusTone(label) {
-    const k = { 'Enroute': 'enroute', 'On trip': 'enroute', 'Verified': 'enroute', 'Long open': 'long', 'Idle': 'long', 'Pending': 'long', 'GPS issue': 'gps', 'Rejected': 'gps', 'Closed': 'closed', 'Present': 'closed', 'Approved': 'closed', 'Closed · flagged': 'flagged', 'Absent': 'absent' }[label] || 'neutral';
+    const k = { 'Enroute': 'enroute', 'Loading': 'loading', 'Unloading': 'unloading', 'Delayed': 'delayed', 'On trip': 'enroute', 'Verified': 'enroute', 'Long open': 'long', 'Idle': 'long', 'Pending': 'long', 'GPS issue': 'gps', 'Rejected': 'gps', 'Closed': 'closed', 'Present': 'closed', 'Approved': 'closed', 'Closed · flagged': 'flagged', 'Absent': 'absent' }[label] || 'neutral';
     return [`var(--st-${k}-bg)`, `var(--st-${k}-fg)`, `var(--st-${k}-edge)`];
   }
   decorate(t) {
     const T = this.T(); const v = T.V[t.vehicle], d = this.drv(t.driver), c = T.C[t.client];
     const long = t.hoursOpen > 24, gpsBad = (t.flags || []).some(f => /GPS/.test(f));
-    const badge = long ? 'Long open' : gpsBad ? 'GPS issue' : t.status;
+    const badge = long ? 'Long open' : gpsBad ? 'GPS issue' : t.stage || t.status;
     const tone = this.statusTone(badge);
     const fixed = t.fixedKm || 0, prog = fixed ? Math.min(100, Math.round((t.gpsKm || 0) / fixed * 100)) : 0;
     const vNum = v ? v.number : '—', locName = (this.loc(t.loading) || {}).name || '—';
@@ -1735,10 +1737,12 @@ class Component extends DCLogic {
     // Attendance · mark by vehicle — vehicle and driver lists come from the admin masters
     const am = s.am, amVeh = T.V[am.vehicle], amDrv = this.drv(am.driver);
     const amDriverList = branchDrv.filter(d => d.approval === 'Approved');
-    const amVehicleOptions = branchVeh.map(v => ({ value: v.id, label: `${v.number} · ${v.type}` }));
-    const amDriverOptions = amDriverList.map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.status === 'Inactive' ? ' · inactive' : ''}` }));
+    const amUsedVeh = new Set(amDriverList.filter(d => s.att[d.id] === 'P' && s.attVeh[d.id]).map(d => s.attVeh[d.id]));
+    const amFreeVeh = branchVeh.filter(v => !amUsedVeh.has(v.id) || v.id === am.vehicle);
+    const amVehicleOptions = amFreeVeh.map(v => ({ value: v.id, label: `${v.number} · ${v.type}` }));
+    const amDriverOptions = amDriverList.filter(d => !s.att[d.id] || d.id === am.driver).map(d => ({ value: d.id, label: `${d.name} · ${d.type}${d.status === 'Inactive' ? ' · inactive' : ''}` }));
     const amMappedDrv = amVeh && amVeh.driver ? this.drv(amVeh.driver) : null;
-    const amVehicleHint = amVeh ? `${amVeh.type} · ${amVeh.status === 'Running' ? 'on trip' : amVeh.status.toLowerCase()} · ${amVeh.route}.` : `${branchVeh.length} Chennai HO vehicles from the admin vehicle master.`;
+    const amVehicleHint = amVeh ? `${amVeh.type} · ${amVeh.status === 'Running' ? 'on trip' : String(amVeh.status || '').toLowerCase()}${amVeh.route ? ' · ' + amVeh.route : ''}.` : amUsedVeh.size ? `${amFreeVeh.length} of ${branchVeh.length} Chennai HO vehicles free. ${amUsedVeh.size} already marked today are hidden.` : `${branchVeh.length} Chennai HO vehicles from the admin vehicle master.`;
     // Vehicle status: Idle or Maintenance; a vehicle that is on a trip can also be recorded as On trip
     const amStatusOptions = [...(amVeh && amVeh.status === 'Running' ? ['On trip'] : []), 'Idle', 'Maintenance'].map(x => ({ value: x, label: x }));
     const amStatusHint = amVeh && amDrv ? `Choose the status of ${amVeh.number} to add ${amDrv.name} to today’s attendance.` : 'Idle or under maintenance. The driver is added once vehicle, driver and status are chosen.';
@@ -1746,7 +1750,7 @@ class Component extends DCLogic {
     const amDriverHint = amVeh && !amDrv ? `Pick the driver for ${amVeh.number}${amMappedDrv ? ` (mapped: ${amMappedDrv.name})` : ''}, then the vehicle status.`
       : amVeh && amDrv ? `${amDrv.name} will be marked present on ${amVeh.number} once you choose the vehicle status.`
       : amDrv && !amVeh ? `Pick the vehicle for ${amDrv.name} to mark them present.`
-      : `${amDriverList.length} approved Chennai HO drivers from the admin driver master. Pick a vehicle, driver and vehicle status to mark the driver present.`;
+      : `${amDriverOptions.length} of ${amDriverList.length} approved Chennai HO drivers not marked yet. Pick a vehicle, driver and vehicle status to mark the driver present.`;
     // Marked attendance tab · saved days, newest first
     const TODAY_DAY = '2026-09-14';
     const todayEntries = Object.fromEntries(amDriverList.filter(d => s.att[d.id]).map(d => [d.id, [s.att[d.id], s.att[d.id] === 'P' ? (s.attVeh[d.id] || '') : '', s.att[d.id] === 'P' ? (s.attVehStatus[d.id] || '') : '']]));
@@ -1760,9 +1764,9 @@ class Component extends DCLogic {
       const open = openDay === r.day, isToday = r.day === TODAY_DAY;
       return { day: r.day, label: r.label, isToday, savedLine: `Saved at ${r.savedAt} by R. Senthil Kumar`, present, absent, unmarked: unmarked || false, rows, open, expanded: open ? 'true' : 'false', rot: open ? '180deg' : '0deg', edge: unmarked ? 'var(--color-hazard)' : 'var(--color-brand)' };
     });
-    const amRows = amDriverList.filter(d => s.att[d.id]).map((d, i) => { const v = s.att[d.id], vn = (T.V[s.attVeh[d.id] || (branchVeh.find(x => x.driver === d.id) || {}).id] || {}).number;
+    const amRows = amDriverList.filter(d => s.att[d.id]).map((d, i) => { const v = s.att[d.id], vn = (T.V[s.attVeh[d.id]] || {}).number;
       const vs = vehStatusOf(d.id), [vsBg, vsFg] = this.statusTone(vs);
-      return { id: d.id, sno: i + 1, name: d.name, vehicle: vn || 'No vehicle', vehStatus: vs, vsBg, vsFg, badge: v === 'P' ? 'Present' : 'Absent', badgeBg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[0], badgeFg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[1], bg: v === 'P' ? 'var(--color-brand-tint)' : '#fff', removeLabel: `Remove ${d.name}` }; });
+      return { id: d.id, sno: i + 1, name: d.name, vehicle: vn || (v === 'A' ? '—' : 'No vehicle'), vehStatus: vs, vsBg, vsFg, badge: v === 'P' ? 'Present' : 'Absent', badgeBg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[0], badgeFg: this.statusTone(v === 'P' ? 'Present' : 'Absent')[1], bg: v === 'P' ? 'var(--color-brand-tint)' : '#fff', removeLabel: `Remove ${d.name}` }; });
     // Vehicle idle status
     const activeByVeh = Object.fromEntries(this.active().map(t => [t.vehicle, t]));
     const idleRows = branchVeh.map(v => {
@@ -1829,6 +1833,10 @@ class Component extends DCLogic {
       { group: 'System states', items: [['offline', '', 'Offline · queued sync'], ['home', 'toast', 'Toast · saved']] }
     ].map((g, gi) => { const items = g.items.map(([screen, variant, label]) => { const a = s.screen === screen && (s.railVariant || '') === variant; return { screen, variant, label, current: a ? 'page' : 'false', weight: a ? 700 : 500, color: a ? 'var(--text-brand)' : 'var(--text-body)', bg: a ? 'var(--color-brand-tint)' : 'transparent', bar: a ? 'var(--color-brand)' : 'transparent' }; }); return { group: g.group, items, count: items.length, divider: gi ? 'var(--border-default)' : 'transparent', labelColor: items.some(i => i.bar !== 'transparent') ? 'var(--text-brand)' : 'var(--text-muted)' }; });
     const goOpen = () => s.gpsGranted ? this.go('open', { showErrors: false, form: this.blankForm(), railVariant: '', resumeOpen: null, unclosedAlert: null }) : this.go('gpsPerm');
+    // Temporarily hidden attendance tabs — remove ids from this list to bring them back.
+    const HIDDEN_ATT_TABS = ['marked'];
+    // Temporarily hidden: Month view link on attendance — set to true to bring it back.
+    const SHOW_ATT_MONTH = false;
     return {
       rail, jump: e => this.jump(e.currentTarget.dataset.screen, e.currentTarget.dataset.variant),
       isLogin, isApp, is, authToast: isAuth && s.toast,
@@ -2053,8 +2061,9 @@ class Component extends DCLogic {
       idleHasErrors: s.showIdleErrors && idleMissing > 0, idleErrorText: `${idleMissing} idle ${idleMissing === 1 ? 'vehicle needs' : 'vehicles need'} a reason before saving.`,
       saveIdle: () => { if (idleMissing) { this.setState({ showIdleErrors: true, railVariant: 'errors' }); return; } this.setState(st => ({ showIdleErrors: false, idle: Object.fromEntries(Object.entries(st.idle).map(([id, r]) => [id, r.on && !r.since ? { ...r, since: '14 Sep 09:41', hours: 0 } : r])) })); this.toast('success', 'Idle status saved', `${idleStats.idle} idle · ${idleStats.running} on trip · ${idleStats.ready} ready. Shared with Head Office.`); this.logActivity({ title: 'Vehicle idle status saved', body: `${idleStats.idle} idle · ${idleStats.running} on trip · ${idleStats.ready} ready. Shared with Head Office.`, rows: idleRows.filter(v => v.on).map(v => [v.number, v.reason + (v.note ? ' · ' + v.note : '')]), link: { screen: 'idle' }, linkLabel: 'Open idle status' }); this.go('home'); },
       am, amVehicleOptions, amDriverOptions, amVehicleHint, amDriverHint, amRows, amRowCount: amRows.length, amRowsEmpty: !amRows.length,
-      attTabs: [['mark', 'Mark new attendance'], ['marked', 'Marked attendance']].map(([id, label]) => { const on = s.attTab === id; return { id, label, selected: on ? 'true' : 'false', color: on ? 'var(--text-brand)' : 'var(--text-muted)', bar: on ? 'var(--color-brand)' : 'transparent' }; }),
-      attTabMark: s.attTab !== 'marked', attTabMarked: s.attTab === 'marked',
+      showAttMonth: SHOW_ATT_MONTH,
+      attTabs: [['mark', 'Mark new attendance'], ['marked', 'Marked attendance']].filter(([id]) => !HIDDEN_ATT_TABS.includes(id)).map(([id, label]) => { const on = s.attTab === id; return { id, label, selected: on ? 'true' : 'false', color: on ? 'var(--text-brand)' : 'var(--text-muted)', bar: on ? 'var(--color-brand)' : 'transparent' }; }),
+      attTabMark: s.attTab !== 'marked' || HIDDEN_ATT_TABS.includes('marked'), attTabMarked: s.attTab === 'marked' && !HIDDEN_ATT_TABS.includes('marked'),
       setAttTab: e => this.setState({ attTab: e.currentTarget.dataset.tab, railVariant: '' }),
       savedDays, savedDayCount: savedDays.length, savedDaysEmpty: !savedDays.length, attUnsaved,
       attUnsavedText: savedToday ? "Today's attendance has changed since you saved it." : `Today's attendance is not saved yet · ${Object.keys(todayEntries).length} marked.`,
@@ -2108,6 +2117,8 @@ class Component extends DCLogic {
     if (patch.vehicle !== undefined && patch.vehicle !== this.state.am.vehicle) am.status = '';
     if (!am.vehicle || !am.driver || !am.status) { this.setState({ am }); return; }
     const T = this.T(), d = this.drv(am.driver), v = T.V[am.vehicle];
+    const taken = Object.keys(this.state.attVeh).find(id => id !== am.driver && this.state.att[id] === 'P' && this.state.attVeh[id] === am.vehicle);
+    if (taken) { this.setState({ am: { ...am, vehicle: '', status: '' } }); this.toast('warning', 'Vehicle already marked', `${v.number} is already on today’s list with ${(this.drv(taken) || {}).name || 'another driver'}. Pick another vehicle.`); return; }
     this.setState(st => ({ att: { ...st.att, [am.driver]: 'P' }, attVeh: { ...st.attVeh, [am.driver]: am.vehicle }, attVehStatus: { ...st.attVehStatus, [am.driver]: am.status }, am: { vehicle: '', driver: '', status: '' } }));
     this.toast('success', 'Marked present', `${d.name} · ${v.number} · ${am.status} · 14 September.`);
   }

@@ -15,18 +15,71 @@
   <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/tokens/base.css">
   <link rel="stylesheet" href="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/styles.css">
   <script src="_ds/kongunadu-roadlines-design-system-369b0513-a28e-4907-a5aa-ae858e8c2e46/_ds_bundle.js"></script>
-  <style>body{margin:0;background:#fff}a{color:var(--link)}a:hover{color:var(--link-hover)}</style>
+  <style>body{margin:0;background:#fff}a{color:var(--link)}a:hover{color:var(--link-hover)}
+    .kr-hero{position:relative;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;padding:0 0 32px;background:#fff;font-family:var(--font-body);overflow:hidden}
+    .kr-hero__brand{position:absolute;top:24px;left:16px;right:16px;display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
+    .kr-hero__brand::before{content:"";position:absolute;inset:-40px -10% -30px;background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(255,255,255,0));z-index:-1}
+    .kr-hero__logo{width:min(600px,84vw);height:auto}
+    .kr-hero__tagline,.kr-hero__motto{display:flex;align-items:center;gap:18px;font-family:var(--font-display);font-weight:600;text-transform:uppercase;color:var(--kr-grey-700,#4A5560)}
+    .kr-hero__tagline{font-size:clamp(12px,1.3vw,17px);letter-spacing:.32em}
+    .kr-hero__tagline span{width:clamp(32px,10vw,140px);height:3px;background:var(--kr-red-600)}
+    .kr-hero__scene{position:relative;width:100%}
+    .kr-hero__truck{display:block;width:100%;height:auto}
+    .kr-hero__swoosh{position:absolute;left:0;bottom:-1px;width:100%;height:9vw}
+    .kr-hero__card{position:relative;z-index:2;width:calc(100% - 32px);max-width:560px;box-sizing:border-box;margin-top:-6.6vw;padding:32px 40px 36px;background:#fff;border-radius:18px;box-shadow:0 18px 48px rgba(20,32,43,.18);display:flex;flex-direction:column;gap:14px;text-align:center}
+    .kr-hero__title{margin:0;font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3vw,36px);letter-spacing:-.01em;color:var(--kr-green-900)}
+    .kr-hero__sub{margin:-6px 0 10px;font-size:17px;color:var(--text-muted)}
+    .kr-hero__btn{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:10px 22px;border-radius:10px;box-sizing:border-box;text-align:left;text-decoration:none;transition:background var(--dur-fast,.15s),transform var(--dur-fast,.15s),box-shadow var(--dur-fast,.15s)}
+    .kr-hero__btn span{display:flex;flex-direction:column;gap:2px}
+    .kr-hero__btn strong{font-family:var(--font-display);font-weight:800;font-size:18px}
+    .kr-hero__btn small{font-size:13px;opacity:.8}
+    .kr-hero__btn--primary{background:var(--color-brand);color:#fff}
+    .kr-hero__btn--primary:hover{background:var(--color-brand-strong);color:#fff;box-shadow:var(--shadow-md);transform:translateY(-1px)}
+    .kr-hero__btn--secondary{background:#fff;color:var(--color-brand);border:2px solid var(--color-brand)}
+    .kr-hero__btn--secondary:hover{background:var(--color-brand-tint);color:var(--color-brand);transform:translateY(-1px)}
+    .kr-hero__btn:focus-visible{outline:3px solid var(--kr-green-500);outline-offset:3px}
+    .kr-hero__motto{margin-top:28px;font-size:14px;letter-spacing:.24em;white-space:nowrap}
+    .kr-hero__motto span{width:clamp(32px,8vw,90px);height:1px;background:var(--border-strong,#B8C0C8)}
+    .kr-hero__more{margin-top:18px;font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none}
+    .kr-hero__more:hover{color:var(--text-brand)}
+    @media (max-width:900px){.kr-hero__truck{height:350px;object-fit:cover;object-position:50% 100%}.kr-hero__swoosh{height:56px}.kr-hero__card{margin-top:-48px}}
+    @media (max-width:560px){.kr-hero__brand{top:16px}.kr-hero__card{padding:24px 20px 28px}.kr-hero__tagline{letter-spacing:.18em;gap:10px}.kr-hero__motto{font-size:12px;letter-spacing:.16em;gap:10px}}
+  </style>
 </helmet>
-<div style="font-family:var(--font-body);color:var(--text-body);max-width:1200px;margin:0 auto;padding:48px 24px 80px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
+<div>
+<section class="kr-hero">
+  <div class="kr-hero__brand">
+    <img src="assets/logo-1600.png" alt="Kongunadu Road Lines" class="kr-hero__logo">
+    <div class="kr-hero__tagline"><span></span>Fueling a better tomorrow<span></span></div>
+  </div>
+  <div class="kr-hero__scene">
+    <img src="assets/hero-scene.jpg" alt="Kongunadu Road Lines tanker on the highway" class="kr-hero__truck">
+    <svg class="kr-hero__swoosh" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 64 C 360 150, 1080 196, 1440 96 L1440 200 L0 200 Z" fill="#fff"/>
+      <path d="M0 50 C 360 138, 1080 184, 1440 82" fill="none" stroke="var(--kr-red-600)" stroke-width="5" vector-effect="non-scaling-stroke"/>
+      <path d="M0 64 C 360 150, 1080 196, 1440 96" fill="none" stroke="#9FCFC0" stroke-width="8" vector-effect="non-scaling-stroke"/>
+    </svg>
+  </div>
+  <div class="kr-hero__card">
+    <h1 class="kr-hero__title">Welcome Back</h1>
+    <p class="kr-hero__sub">Choose where you want to sign in</p>
+    <a href="TMS Supervisor App.dc.html" class="kr-hero__btn kr-hero__btn--primary">
+      <span><strong>Open Supervisor App</strong><small>Mobile app · branch supervisors</small></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <a href="TMS Admin Portal.dc.html" class="kr-hero__btn kr-hero__btn--secondary">
+      <span><strong>Open Admin Portal</strong><small>Web portal · Head Office</small></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+  <div class="kr-hero__motto"><span></span>Safe &bull; Reliable &bull; On time<span></span></div>
+  <a href="#screen-map" class="kr-hero__more">Screen map &darr;</a>
+</section>
+<div id="screen-map" style="font-family:var(--font-body);color:var(--text-body);max-width:1200px;margin:0 auto;padding:48px 24px 80px;box-sizing:border-box;display:flex;flex-direction:column;gap:40px">
   <header style="display:flex;flex-direction:column;gap:16px">
-    <img src="assets/logo-1600.png" alt="Kongunadu Road Lines" style="height:40px;width:auto;align-self:flex-start">
     <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-brand)">Transport Management System · Phase 1 frontend</div>
-    <h1 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em;line-height:1.05;color:var(--text-heading);text-wrap:pretty">Module → screen → workflow structure</h1>
+    <h2 style="margin:0;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-0.02em;line-height:1.05;color:var(--text-heading);text-wrap:pretty">Module → screen → workflow structure</h2>
     <p style="margin:0;font-size:17px;max-width:760px;text-wrap:pretty">Derived from the BRD/SRS v1.0 (14 September 2026). Two surfaces: a mobile app for branch supervisors and a web portal for Head Office administration. Every screen below is built and linked; states listed per screen are reachable in the prototypes.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <a href="TMS Supervisor App.dc.html" style="text-decoration:none"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" size="lg" hint-size="auto,48px">Open Supervisor App</x-import></a>
-      <a href="TMS Admin Portal.dc.html" style="text-decoration:none"><x-import component-from-global-scope="KongunaduRoadlinesDesignSystem_369b05.Button" variant="secondary" size="lg" hint-size="auto,48px">Open Admin Portal</x-import></a>
-    </div>
   </header>
 
   <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
@@ -78,6 +131,7 @@
       <li>Future-phase items shown disabled or noted: OTP/MFA login, Google Maps route intelligence, driver app, offline mode.</li>
     </ul>
   </section>
+</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
