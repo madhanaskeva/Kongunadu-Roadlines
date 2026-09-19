@@ -1,0 +1,113 @@
+.tms-sidebar {
+  background: #fbfcfc !important;
+  border-right: 1px solid #dfe7e3 !important;
+  width: 264px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px 24px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.tms-sidebar-brand {
+  padding: 4px 10px 14px !important;
+  border-bottom: 1px solid #e7eeeb;
+  display: block;
+}
+
+.tms-sidebar-brand img {
+  max-width: 178px;
+  height: auto;
+  display: block;
+}
+
+.tms-sidebar-kicker {
+  padding: 12px 10px 8px !important;
+  color: var(--kr-green-700) !important;
+  font-family: var(--font-display) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase;
+}
+
+.tms-sidebar-group {
+  position: relative;
+  margin: 0 !important;
+  padding: 10px 0 14px !important;
+}
+
+.tms-sidebar-group-label {
+  display: block;
+  padding: 2px 12px 6px !important;
+  color: #78847f !important;
+  font-family: var(--font-display);
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase;
+}
+
+.tms-sidebar-group:not(:last-of-type)::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 5px;
+  height: 1px;
+  background: #dce7e1;
+}
+
+.tms-sidebar-item {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: 38px !important;
+  padding: 0 12px !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 8px !important;
+  color: #1c2924 !important;
+  font-size: 13px !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.tms-sidebar-item:hover {
+  background: #eaf5f0 !important;
+  color: var(--kr-green-900) !important;
+}
+
+.tms-sidebar-item.active {
+  box-shadow: inset 3px 0 0 var(--color-brand), 0 1px 2px rgba(28, 74, 56, 0.06);
+  background: #eaf5f0 !important;
+  color: var(--kr-green-900) !important;
+  font-weight: 700 !important;
+}
+
+.tms-sidebar-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 4px;
+  color: #ffffff;
+}
+
+.tms-sidebar-account {
+  margin-top: auto !important;
+  padding: 16px 12px 0 !important;
+  border-top: 1px solid #d8e2dd !important;
+}
+
